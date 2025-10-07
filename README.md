@@ -27,3 +27,31 @@ A full-stack pizza order & delivery management platform for a pickup/delivery-on
 
 4. **Backend & POS**
    - Inventory, customer records, transaction log
+
+
+[![Node.js](https://img.shields.io/badge/Node.js-20+-green)](https://nodejs.org/) 
+[![Git](https://img.shields.io/badge/Git-installed-brightgreen)](https://git-scm.com/) 
+[![Vercel](https://img.shields.io/badge/Deployment-Vercel-blue)](https://vercel.com/) 
+
+Pieline is a modern web project. This README provides all instructions to set up, run, and deploy the app locally and via Vercel.
+
+---
+
+## 🖥️ Prerequisites
+
+Ensure you have the following installed:
+
+- **Git** – [Download Git](https://git-scm.com/downloads)  
+- **Node.js 20+** – [Download Node.js](https://nodejs.org/)  
+- **Visual Studio Code** – [Download VS Code](https://code.visualstudio.com/)
+
+---
+
+## 🚀 Setup & Development
+
+### 1. Clone the Repository
+Open **PowerShell** or **Git Bash**:
+
+```bash
+git clone https://github.com/AblazedTC/Pieline.git
+cd Pieline
