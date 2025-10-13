@@ -1,27 +1,78 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# dependencies
+#Website Front End
+
+# Dependencies
 /node_modules
 
-# next.js
+# Next.js
 /.next/
 /out/
 
-# production
+# Production
 /build
 
-# debug
+# Debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files
+# Env files
 .env*
 
-# vercel
+# Vercel
 .vercel
 
-# typescript
+# Typescript
 *.tsbuildinfo
 next-env.d.ts
+
+#POS App
+
+# Build results
+bin/
+obj/
+[Bb]uild/
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio folders
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Rider / VS Code
+.idea/
+.vscode/
+
+# NuGet
+*.nupkg
+*.snupkg
+*.nuspec
+packages/
+*.dll
+*.exe
+
+# Logs
+*.log
+
+# Others
+[Tt]emp/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa]rtifacts/
+
+# Publish
+**/PublishProfiles/
+
+# Ignore SQLite / Local DBs if generated
+*.mdf
+*.ldf
+
+# Ignore secrets/config if local only
+appsettings.Development.json
