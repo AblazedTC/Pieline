@@ -1,4 +1,4 @@
-﻿using MySqlConnector;
+﻿using MongoDB.Driver;
 using POSApp.Data;
 using System;
 using System.Collections.Generic;
@@ -25,22 +25,23 @@ namespace POSApp
 
         private async void onLoginClick(object sender, RoutedEventArgs e)
         {
-            var email = (UsernameBox.Text ?? "").Trim();
+            var rawPhone = UsernameBox.Text ?? "";
+            var phone = NormalizePhone(rawPhone);
             var password = PasswordBox.Password ?? "";
 
-            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(password))
             {
-                MessageBox.Show("Please enter both username (email) and password.", "Input Error", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Please enter both username (phone number) and password.", "Input Error", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
             try
             {
-                var result = await TryLoginAsync(email, password);
+                var result = await TryLoginAsync(phone, password);
 
                 if (!result.found)
                 {
-                    MessageBox.Show("Email not found.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    MessageBox.Show("Phone number not found.", "Login Failed", MessageBoxButton.OK, MessageBoxImage.Warning);
                     return;
                 }
 
@@ -66,42 +67,23 @@ namespace POSApp
             }
         }
 
-        private static async Task<(bool found, bool passwordMatch, Data.User user)>
-            TryLoginAsync(string email, string passwordPlain)
+        private static async Task<(bool found, bool passwordMatch, User? user)>
+        TryLoginAsync(string phone, string passwordPlain)
         {
-            const string sql = @"
-                SELECT id, full_name, phone, email, password_plain, user_type
-                FROM users
-                WHERE email = @e
-                LIMIT 1;";
+            var filter = Builders<User>.Filter.Eq(u => u.Phone, phone);
+            var user = await MongoDb.Users.Find(filter).FirstOrDefaultAsync();
 
-            await using var conn = await Db.OpenAsync("pieline_db");
-            await using var cmd = new MySqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@e", email);
+            if (user == null)
+                return (false, false, null);
 
-            await using var rdr = await cmd.ExecuteReaderAsync();
-            if (!await rdr.ReadAsync())
-                return (found: false, passwordMatch: false, user: null!);
-
-            var id = rdr.GetInt32(0);
-            var fullName = rdr.GetString(1);
-            var phone = rdr.GetString(2);
-            var storedEmail = rdr.GetString(3);
-            var storedPwd = rdr.GetString(4);
-            var userType = rdr.GetString(5);
-
-            var match = string.Equals(storedPwd, passwordPlain, StringComparison.Ordinal);
-
-            var user = new Data.User
-            {
-                Id = id,
-                FullName = fullName,
-                Phone = phone,
-                Email = storedEmail,
-                UserType = userType
-            };
-
-            return (found: true, passwordMatch: match, user);
+            var match = string.Equals(user.PasswordPlain, passwordPlain, StringComparison.Ordinal);
+            return (true, match, user);
+        }
+        private string NormalizePhone(string input)
+        {
+            if (string.IsNullOrWhiteSpace(input))
+                return "";
+            return new string(input.Where(char.IsDigit).ToArray());
         }
     }
 }

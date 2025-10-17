@@ -1,24 +1,42 @@
-﻿using System;
+﻿using MongoDB.Bson;
+using MongoDB.Driver;
+using System;
+using System.Text.Json;
 using System.Threading.Tasks;
-using MySqlConnector;
 
 namespace POSApp.Data
 {
-    public static class Db
+    public static class MongoDb
     {
-        public static string AppConn(string dbName) =>
-            $"Server=127.0.0.1;Port=3306;Database={dbName};User ID=appuser;Password=admin123;SslMode=None;Connection Timeout=3";
-        public static async Task<MySqlConnection> OpenAsync(string dbName)
+        private static readonly Lazy<IMongoClient> _client = new(() =>
         {
-            var conn = new MySqlConnection(AppConn(dbName));
-            await conn.OpenAsync();
-            return conn;
+            var connStr = Environment.GetEnvironmentVariable("MONGODB_URI");
+            if (string.IsNullOrWhiteSpace(connStr))
+                throw new InvalidOperationException("MONGODB_URI not set. Add it as an environment variable.");
+
+            return new MongoClient(connStr);
+        });
+
+        public static IMongoClient Client => _client.Value;
+        public static IMongoDatabase AppDb => Client.GetDatabase("pieline_db");
+        public static IMongoCollection<User> Users => AppDb.GetCollection<User>("users");
+
+        public static async Task TestConnectionAsync()
+        {
+            var cmd = new BsonDocument("ping", 1);
+            await AppDb.RunCommandAsync<BsonDocument>(cmd);
         }
 
-        public static async Task TestConnectionAsync(string dbName)
+        public static async Task EnsureIndexesAsync()
         {
-            await using var conn = new MySqlConnection(AppConn(dbName));
-            await conn.OpenAsync();
+            var phoneKeys = Builders<User>.IndexKeys.Ascending(u => u.Phone);
+            var phoneOpts = new CreateIndexOptions { Unique = true, Name = "uq_phone" };
+            await Users.Indexes.CreateOneAsync(new CreateIndexModel<User>(phoneKeys, phoneOpts));
+
+            var emailKeys = Builders<User>.IndexKeys.Ascending(u => u.Email);
+            var emailOpts = new CreateIndexOptions { Unique = true, Name = "uq_email" };
+            await Users.Indexes.CreateOneAsync(new CreateIndexModel<User>(emailKeys, emailOpts));
         }
+
     }
 }

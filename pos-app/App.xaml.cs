@@ -12,8 +12,8 @@ namespace POSApp
         {
             try
             {
-                // Initialize DB before any windows/pages that use it
-                await Db.TestConnectionAsync("pieline_db");
+                await MongoDb.TestConnectionAsync();
+                await MongoDb.EnsureIndexesAsync();
             }
             catch (Exception ex)
             {
@@ -22,7 +22,7 @@ namespace POSApp
                 return;
             }
 
-            // Prevent the app from auto-closing when the login dialog closes
+            // Prevent the app from auto-closing when the login page closes
             Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             var login = new LoginWindow();
