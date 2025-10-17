@@ -12,8 +12,7 @@ namespace POSApp
         {
             try
             {
-                await MongoDb.TestConnectionAsync();
-                await MongoDb.EnsureIndexesAsync();
+                await Db.TestConnectionAsync();
             }
             catch (Exception ex)
             {
@@ -22,7 +21,6 @@ namespace POSApp
                 return;
             }
 
-            // Prevent the app from auto-closing when the login page closes
             Current.ShutdownMode = ShutdownMode.OnExplicitShutdown;
 
             var login = new LoginWindow();

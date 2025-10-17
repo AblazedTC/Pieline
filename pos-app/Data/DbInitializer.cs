@@ -1,42 +1,42 @@
-﻿using MongoDB.Bson;
-using MongoDB.Driver;
+﻿using Microsoft.Extensions.Configuration;
+using MySqlConnector;
 using System;
-using System.Text.Json;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace POSApp.Data
 {
-    public static class MongoDb
+    public static class Db
     {
-        private static readonly Lazy<IMongoClient> _client = new(() =>
+        private static readonly IConfiguration config;
+
+        static Db()
         {
-            var connStr = Environment.GetEnvironmentVariable("MONGODB_URI");
-            if (string.IsNullOrWhiteSpace(connStr))
-                throw new InvalidOperationException("MONGODB_URI not set. Add it as an environment variable.");
+            try
+            {
+                config = new ConfigurationBuilder().AddJsonFile("appsettings.json", optional: false, reloadOnChange: true).Build();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load appsettings.json from {AppContext.BaseDirectory}\n\n{ex.Message}","Fatal Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                throw;
+            }
+        }
 
-            return new MongoClient(connStr);
-        });
+        public static string AppConn =>
+            config.GetConnectionString("Default");
 
-        public static IMongoClient Client => _client.Value;
-        public static IMongoDatabase AppDb => Client.GetDatabase("pieline_db");
-        public static IMongoCollection<User> Users => AppDb.GetCollection<User>("users");
+        public static async Task<MySqlConnection> OpenAsync()
+        {
+            var conn = new MySqlConnection(AppConn);
+            await conn.OpenAsync();
+            return conn;
+        }
 
         public static async Task TestConnectionAsync()
         {
-            var cmd = new BsonDocument("ping", 1);
-            await AppDb.RunCommandAsync<BsonDocument>(cmd);
+            await using var conn = new MySqlConnection(AppConn);
+            await conn.OpenAsync();
         }
-
-        public static async Task EnsureIndexesAsync()
-        {
-            var phoneKeys = Builders<User>.IndexKeys.Ascending(u => u.Phone);
-            var phoneOpts = new CreateIndexOptions { Unique = true, Name = "uq_phone" };
-            await Users.Indexes.CreateOneAsync(new CreateIndexModel<User>(phoneKeys, phoneOpts));
-
-            var emailKeys = Builders<User>.IndexKeys.Ascending(u => u.Email);
-            var emailOpts = new CreateIndexOptions { Unique = true, Name = "uq_email" };
-            await Users.Indexes.CreateOneAsync(new CreateIndexModel<User>(emailKeys, emailOpts));
-        }
-
     }
 }

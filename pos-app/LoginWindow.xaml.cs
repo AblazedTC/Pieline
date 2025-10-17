@@ -1,4 +1,4 @@
-﻿using MongoDB.Driver;
+﻿using MySqlConnector;
 using POSApp.Data;
 using System;
 using System.Collections.Generic;
@@ -25,9 +25,9 @@ namespace POSApp
 
         private async void onLoginClick(object sender, RoutedEventArgs e)
         {
-            var rawPhone = UsernameBox.Text ?? "";
-            var phone = NormalizePhone(rawPhone);
+            var username = (UsernameBox.Text ?? "").Trim();
             var password = PasswordBox.Password ?? "";
+            var phone = new string(username.Where(char.IsDigit).ToArray());
 
             if (string.IsNullOrWhiteSpace(phone) || string.IsNullOrWhiteSpace(password))
             {
@@ -67,23 +67,40 @@ namespace POSApp
             }
         }
 
-        private static async Task<(bool found, bool passwordMatch, User? user)>
-        TryLoginAsync(string phone, string passwordPlain)
+        private static async Task<(bool found, bool passwordMatch, Data.User user)>
+            TryLoginAsync(string phone, string passwordPlain)
         {
-            var filter = Builders<User>.Filter.Eq(u => u.Phone, phone);
-            var user = await MongoDb.Users.Find(filter).FirstOrDefaultAsync();
+            const string sql = @"
+                SELECT phone, email, full_name, password_plain, user_type
+                FROM users
+                WHERE phone = @p
+                LIMIT 1;";
 
-            if (user == null)
-                return (false, false, null);
+            await using var conn = await Db.OpenAsync();
+            await using var cmd = new MySqlCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@p", phone);
 
-            var match = string.Equals(user.PasswordPlain, passwordPlain, StringComparison.Ordinal);
-            return (true, match, user);
-        }
-        private string NormalizePhone(string input)
-        {
-            if (string.IsNullOrWhiteSpace(input))
-                return "";
-            return new string(input.Where(char.IsDigit).ToArray());
+            await using var rdr = await cmd.ExecuteReaderAsync();
+            if (!await rdr.ReadAsync())
+                return (found: false, passwordMatch: false, user: null!);
+
+            var dbPhone = rdr.GetString(rdr.GetOrdinal("phone"));
+            var storedEmail = rdr.GetString(rdr.GetOrdinal("email"));
+            var fullName = rdr.GetString(rdr.GetOrdinal("full_name"));
+            var storedPwd = rdr.GetString(rdr.GetOrdinal("password_plain"));
+            var userType = rdr.GetString(rdr.GetOrdinal("user_type"));
+
+            var match = string.Equals(storedPwd, passwordPlain, StringComparison.Ordinal);
+
+            var user = new Data.User
+            {
+                Phone = dbPhone,
+                Email = storedEmail,
+                FullName = fullName,
+                UserType = userType
+            };
+
+            return (found: true, passwordMatch: match, user);
         }
     }
 }

@@ -75,4 +75,4 @@ x86/
 *.ldf
 
 # Ignore secrets/config if local only
-appsettings.Development.json
+appsettings.json
