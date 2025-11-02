@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36623.8 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PieLine", "PieLine\PieLine.csproj", "{1E3A8341-6705-4983-88F2-1505D64377D7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1E3A8341-6705-4983-88F2-1505D64377D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E3A8341-6705-4983-88F2-1505D64377D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E3A8341-6705-4983-88F2-1505D64377D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E3A8341-6705-4983-88F2-1505D64377D7}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F457F958-365F-47D2-9637-1F5807F01780}
+	EndGlobalSection
+EndGlobal
