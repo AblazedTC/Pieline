@@ -160,6 +160,10 @@ StyleCopReport.xml.idea/
 
 appsettings.json
 
+/bin/
+
+/data/
+
 # Chutzpah Test filesnode_modules
 
 _Chutzpah*
