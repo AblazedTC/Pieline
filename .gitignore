@@ -162,7 +162,7 @@ appsettings.json
 
 /bin/
 
-/data/
+*.csproj.user
 
 # Chutzpah Test filesnode_modules
 
