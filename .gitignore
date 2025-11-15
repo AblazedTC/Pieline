@@ -160,7 +160,7 @@ StyleCopReport.xml.idea/
 
 appsettings.json
 
-/bin/
+bin/
 
 *.csproj.user
 
