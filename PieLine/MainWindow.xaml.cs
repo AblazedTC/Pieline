@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Diagnostics;
+using System.Windows.Media.Animation;
 
 namespace PieLine
 {
@@ -17,6 +18,9 @@ namespace PieLine
         // Dynamic data
         public ObservableCollection<MenuGroup> MenuGroups { get; } = new ObservableCollection<MenuGroup>();
         private List<FoodItem> _allMenuItems = new List<FoodItem>();
+
+        // Simple cart
+        public ObservableCollection<FoodItem> CartItems { get; } = new ObservableCollection<FoodItem>();
 
         // Build-your-own pizza state (unchanged)
         private string _buildSize;
@@ -42,10 +46,19 @@ namespace PieLine
 
             DataContext = this;
 
+            // Defer loading and initial UI update until the window is loaded so FindName can locate named controls
+            this.Loaded += MainWindow_Loaded;
+
+            // Update cart total when items change
+            CartItems.CollectionChanged += (s, e) => UpdateCartTotal();
+        }
+
+        private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
+        {
             // Load menu from JSON
             LoadMenuItemsFromJson();
 
-            // Initialize builder summary
+            // Initialize builder summary after XAML names exist
             UpdateBuildPizzaSummary();
         }
 
@@ -186,8 +199,11 @@ namespace PieLine
         {
             if (sender is Button btn && btn.DataContext is FoodItem item)
             {
-                // placeholder action — integrate with your cart later
-                MessageBox.Show($"Added {item.Name} to cart (placeholder)", "Add to cart", MessageBoxButton.OK, MessageBoxImage.Information);
+                // Add to cart
+                CartItems.Add(item);
+
+                // Open cart sidebar to show item
+                OpenCartSidebar();
             }
         }
 
@@ -203,6 +219,13 @@ namespace PieLine
             UpdateBuildPizzaSummary();
 
             var overlay = GetNamedControl<Grid>("BuildPizzaOverlay");
+            Debug.WriteLine($"Build overlay found: {overlay != null}");
+#if DEBUG
+            if (overlay == null)
+            {
+                MessageBox.Show("BuildPizzaOverlay not found via FindName", "Debug", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+#endif
             if (overlay != null)
                 overlay.Visibility = Visibility.Visible;
         }
@@ -216,10 +239,29 @@ namespace PieLine
 
         private void BuildPizzaAddToCart_Click(object sender, RoutedEventArgs e)
         {
-            // TODO: add this built pizza to your cart data structure
+            // Create a simple FoodItem representing the build
+            decimal total = 0m;
+            if (_buildSize != null && _buildSizePrices.TryGetValue(_buildSize, out decimal basePrice))
+                total += basePrice;
+            total += _buildToppings.Count * BuildToppingPrice;
+
+            var builtItem = new FoodItem
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = $"Custom Pizza ({_buildSize ?? "?"})",
+                Category = "Pizza",
+                Description = string.Join(", ", _buildToppings.OrderBy(t => t)),
+                Price = total
+            };
+
+            CartItems.Add(builtItem);
+
             var overlay = GetNamedControl<Grid>("BuildPizzaOverlay");
             if (overlay != null)
                 overlay.Visibility = Visibility.Collapsed;
+
+            // Open cart to show the new item
+            OpenCartSidebar();
         }
 
         private void BuildPizzaSetExclusiveSelection(Panel parent, Button clicked)
@@ -303,6 +345,15 @@ namespace PieLine
             var toppingsPanel = GetNamedControl<WrapPanel>("BuildPizzaSummaryToppingsPanel");
             var totalText = GetNamedControl<TextBlock>("BuildPizzaSummaryTotalText");
 
+            Debug.WriteLine($"Summary controls found: size={sizeText!=null}, sauce={sauceText!=null}, crust={crustText!=null}, toppings={toppingsPanel!=null}, total={totalText!=null}");
+#if DEBUG
+            if (sizeText == null || sauceText == null || crustText == null || toppingsPanel == null || totalText == null)
+            {
+                MessageBox.Show("One or more BuildPizza summary controls were not found via FindName", "Debug", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return; // UI not yet loaded
+            }
+#endif
+
             if (sizeText == null || sauceText == null || crustText == null || toppingsPanel == null || totalText == null)
                 return; // UI not yet loaded
 
@@ -335,6 +386,88 @@ namespace PieLine
             }
             total += _buildToppings.Count * BuildToppingPrice;
 
+            totalText.Text = $"$ {total:0.00}";
+        }
+
+        // ====== Cart Sidebar Controls ======
+        private void CartButton_Click(object sender, RoutedEventArgs e)
+        {
+            OpenCartSidebar();
+        }
+
+        private void CartCloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            CloseCartSidebar();
+        }
+
+        private void CartOverlayBackground_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            CloseCartSidebar();
+        }
+
+        private void OpenCartSidebar()
+        {
+            var overlay = GetNamedControl<Grid>("CartSidebarOverlay");
+            var transform = GetNamedControl<TranslateTransform>("CartSidebarTransform");
+            if (overlay == null || transform == null)
+                return;
+
+            overlay.Visibility = Visibility.Visible;
+            overlay.IsHitTestVisible = true;
+
+            var anim = new DoubleAnimation
+            {
+                From = 360,
+                To = 0,
+                Duration = TimeSpan.FromMilliseconds(300),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+
+            transform.BeginAnimation(TranslateTransform.XProperty, anim);
+
+            // Refresh total and ensure binding updates
+            UpdateCartTotal();
+        }
+
+        private void CloseCartSidebar()
+        {
+            var overlay = GetNamedControl<Grid>("CartSidebarOverlay");
+            var transform = GetNamedControl<TranslateTransform>("CartSidebarTransform");
+            if (overlay == null || transform == null)
+                return;
+
+            var anim = new DoubleAnimation
+            {
+                From = 0,
+                To = 360,
+                Duration = TimeSpan.FromMilliseconds(250),
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
+            };
+
+            anim.Completed += (s, e) =>
+            {
+                overlay.Visibility = Visibility.Collapsed;
+                overlay.IsHitTestVisible = false;
+            };
+
+            transform.BeginAnimation(TranslateTransform.XProperty, anim);
+        }
+
+        private void CartRemove_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.DataContext is FoodItem item)
+            {
+                CartItems.Remove(item);
+            }
+        }
+
+        private void UpdateCartTotal()
+        {
+            var totalText = GetNamedControl<TextBlock>("CartTotalText");
+            if (totalText == null)
+                return;
+
+            decimal total = CartItems.Sum(i => i.Price);
             totalText.Text = $"$ {total:0.00}";
         }
     }
