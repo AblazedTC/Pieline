@@ -1,16 +1,1116 @@
-<Window x:Class="PieLine.MainWindow"
+﻿<Window x:Class="PieLine.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Mom's and Pop's Pizzeria - Main"
         Height="768" Width="1024"
         Background="#F5E6D3"
         WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- Colors -->
+        <SolidColorBrush x:Key="AccentRed" Color="#FF4A1E"/>
+        <SolidColorBrush x:Key="AccentGold" Color="#C5AA00"/>
+        <SolidColorBrush x:Key="CardBackground" Color="White"/>
+        <SolidColorBrush x:Key="HeaderBackground" Color="#F5E6D3"/>
+
+        <!-- Top-right icon buttons -->
+        <Style x:Key="HeaderIconButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Margin" Value="4,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+        </Style>
+
+        <!-- Search TextBox (borderless inside rounded box) -->
+        <Style x:Key="SearchTextBoxStyle" TargetType="TextBox">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+
+        <!-- Card "Add to Cart" button -->
+        <Style x:Key="AddToCartButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentRed}"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="Margin" Value="0,16,0,0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        </Style>
+
+        <!-- Tag / chip style -->
+        <Style x:Key="TagChipStyle" TargetType="Border">
+            <Setter Property="Background" Value="#F0F0F0"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="8,2"/>
+            <Setter Property="Margin" Value="0,0,6,0"/>
+        </Style>
+
+        <!-- Builder choice buttons (size, sauce, crust, toppings) -->
+        <Style x:Key="ChoiceButtonStyle" TargetType="Button">
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="Padding" Value="18,8"/>
+            <Setter Property="MinWidth" Value="90"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentRed}"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="{StaticResource AccentRed}"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="HorizontalAlignment" Value="Left"/>
+            <!-- pill-shaped template -->
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                            CornerRadius="24"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"
+                                          Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Big rounded white panels in the builder (size / sauce / crust / toppings) -->
+        <Style x:Key="BuilderGroupBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="CornerRadius" Value="26"/>
+            <Setter Property="Padding" Value="18"/>
+            <Setter Property="Margin" Value="0,0,0,14"/>
+            <Setter Property="BorderBrush" Value="#E0E0E0"/>
+            <Setter Property="BorderThickness" Value="1"/>
+        </Style>
+
+
+        <!-- Selected topping pills in builder summary -->
+        <Style x:Key="ToppingPillStyle" TargetType="Border">
+            <Setter Property="Background" Value="{StaticResource AccentGold}"/>
+            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Padding" Value="8,2"/>
+            <Setter Property="Margin" Value="0,0,6,6"/>
+        </Style>
+    </Window.Resources>
+
     <Grid>
-        <TextBlock Text="Welcome to Mom's and Pop's Pizzeria!"
-                   HorizontalAlignment="Center"
-                   VerticalAlignment="Center"
-                   FontSize="32"
-                   FontWeight="Bold"
-                   Foreground="#1A1A1A"/>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Header -->
+            <RowDefinition Height="1"/>
+            <!-- Black separator -->
+            <RowDefinition Height="Auto"/>
+            <!-- Search + Build button -->
+            <RowDefinition Height="*"/>
+            <!-- Content (cards) -->
+        </Grid.RowDefinitions>
+
+        <!-- ================= HEADER BAR ================= -->
+        <Border Grid.Row="0"
+                Background="{StaticResource HeaderBackground}"
+                Padding="20,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo + Name -->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                    <Border Width="32" Height="32"
+                            Background="{StaticResource AccentRed}"
+                            CornerRadius="6"
+                            Margin="0,0,10,0">
+                        <TextBlock Text="MP"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="14"
+                                   Foreground="White"/>
+                    </Border>
+
+                    <TextBlock Text="Mom's and Pop's Pizzeria"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Foreground="#1A1A1A"/>
+                </StackPanel>
+
+                <!-- Right icons -->
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <Button Style="{StaticResource HeaderIconButtonStyle}" Content="i"/>
+                    <Button Style="{StaticResource HeaderIconButtonStyle}">
+                        <TextBlock Text="Home" Foreground="#FF4A1E"/>
+                    </Button>
+                    <Button Style="{StaticResource HeaderIconButtonStyle}" Content="User"/>
+                    <Button Style="{StaticResource HeaderIconButtonStyle}" Content="Cart"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Black separator -->
+        <Border Grid.Row="1" Background="Black" Height="1"/>
+
+        <!-- ============== SEARCH + BUILD YOUR OWN ROW ============== -->
+        <Grid Grid.Row="2" Margin="20,10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Search bar -->
+            <Border Grid.Column="0"
+                    Background="White"
+                    CornerRadius="20"
+                    Padding="10,6"
+                    BorderBrush="#DDDDDD"
+                    BorderThickness="1">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Text="Search"
+                               VerticalAlignment="Center"
+                               Margin="4,0"/>
+
+                    <TextBox Grid.Column="1"
+                             Style="{StaticResource SearchTextBoxStyle}"
+                             x:Name="SearchTextBox"
+                             Text="Search items"
+                             Foreground="#888"
+                             GotFocus="SearchTextBox_GotFocus"
+                             LostFocus="SearchTextBox_LostFocus"
+                             TextChanged="SearchTextBox_TextChanged"/>
+                </Grid>
+            </Border>
+
+            <!-- Build your own pizza button -->
+            <Button Grid.Column="1"
+                    Content="Build Your Own Pizza"
+                    Margin="16,0,0,0"
+                    Padding="24,10"
+                    Background="{StaticResource AccentRed}"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    BorderBrush="{StaticResource AccentRed}"
+                    Cursor="Hand"
+                    HorizontalAlignment="Right"
+                    Click="BuildYourOwnPizzaButton_Click"/>
+        </Grid>
+
+        <!-- ================= MENU CARDS CONTENT ================= -->
+        <Border Grid.Row="3"
+                Margin="20"
+                CornerRadius="16"
+                Background="#FBEFE3">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="10">
+
+                    <!-- PIZZA SECTION -->
+                    <WrapPanel Margin="0,0,0,10">
+
+                        <!-- Cheese -->
+                        <Border x:Name="CheeseCard"
+                                Tag="Cheese Pizza"
+                                Width="260" Margin="10"
+                                Background="{StaticResource CardBackground}"
+                                CornerRadius="20"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1">
+                            <StackPanel>
+                                <Border Height="150"
+                                        CornerRadius="20,20,0,0"
+                                        Background="#DDDDDD">
+                                    <TextBlock Text="Cheese Image"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#777"/>
+                                </Border>
+                                <StackPanel Margin="14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Cheese"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"
+                                                   Grid.Column="0"
+                                                   VerticalAlignment="Center"/>
+                                        <Border Grid.Column="1"
+                                                Background="{StaticResource AccentGold}"
+                                                CornerRadius="16"
+                                                Padding="10,4"
+                                                Margin="0,0,0,4">
+                                            <TextBlock Text="$ 12.99"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <TextBlock Text="A classic cheese pizza topped with rich tomato sauce and a generous layer of our melted mozzarella."
+                                               TextWrapping="Wrap"
+                                               Margin="0,6,0,10"
+                                               FontSize="12"
+                                               Foreground="#555"/>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="Mozzarella" FontSize="11"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Button Style="{StaticResource AddToCartButtonStyle}"
+                                            Content="+ Add to Cart"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Pepperoni -->
+                        <Border x:Name="PepperoniCard"
+                                Tag="Pepperoni Pizza"
+                                Width="260" Margin="10"
+                                Background="{StaticResource CardBackground}"
+                                CornerRadius="20"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1">
+                            <StackPanel>
+                                <Border Height="150"
+                                        CornerRadius="20,20,0,0"
+                                        Background="#DDDDDD">
+                                    <TextBlock Text="Pepperoni Image"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#777"/>
+                                </Border>
+                                <StackPanel Margin="14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Pepperoni"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"/>
+                                        <Border Grid.Column="1"
+                                                Background="{StaticResource AccentGold}"
+                                                CornerRadius="16"
+                                                Padding="10,4"
+                                                Margin="0,0,0,4">
+                                            <TextBlock Text="$ 14.99"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <TextBlock Text="A timeless favorite featuring zesty tomato sauce, mozzarella cheese, and perfectly crisp slices of pepperoni."
+                                               TextWrapping="Wrap"
+                                               Margin="0,6,0,10"
+                                               FontSize="12"
+                                               Foreground="#555"/>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="Mozzarella" FontSize="11"/>
+                                        </Border>
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="Pepperoni" FontSize="11"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Button Style="{StaticResource AddToCartButtonStyle}"
+                                            Content="+ Add to Cart"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Veggie -->
+                        <Border x:Name="VeggieCard"
+                                Tag="Veggie Pizza"
+                                Width="260" Margin="10"
+                                Background="{StaticResource CardBackground}"
+                                CornerRadius="20"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1">
+                            <StackPanel>
+                                <Border Height="150"
+                                        CornerRadius="20,20,0,0"
+                                        Background="#DDDDDD">
+                                    <TextBlock Text="Veggie Image"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#777"/>
+                                </Border>
+                                <StackPanel Margin="14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Veggie"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"/>
+                                        <Border Grid.Column="1"
+                                                Background="{StaticResource AccentGold}"
+                                                CornerRadius="16"
+                                                Padding="10,4"
+                                                Margin="0,0,0,4">
+                                            <TextBlock Text="$ 13.99"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <TextBlock Text="A colorful medley of bell peppers, onions, mushrooms, and olives atop tomato sauce and mozzarella."
+                                               TextWrapping="Wrap"
+                                               Margin="0,6,0,10"
+                                               FontSize="12"
+                                               Foreground="#555"/>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="Mozzarella" FontSize="11"/>
+                                        </Border>
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="Bell Pepper" FontSize="11"/>
+                                        </Border>
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="Onion" FontSize="11"/>
+                                        </Border>
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="+3" FontSize="11"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Button Style="{StaticResource AddToCartButtonStyle}"
+                                            Content="+ Add to Cart"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </WrapPanel>
+
+                    <!-- BEVERAGES -->
+                    <WrapPanel Margin="0,10,0,10">
+
+                        <!-- Coke -->
+                        <Border x:Name="CokeCard"
+                                Tag="Coke Beverage Drink Soda"
+                                Width="260" Margin="10"
+                                Background="{StaticResource CardBackground}"
+                                CornerRadius="20"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1">
+                            <StackPanel>
+                                <Border Height="150"
+                                        CornerRadius="20,20,0,0"
+                                        Background="#DDDDDD">
+                                    <TextBlock Text="Coke Image"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#777"/>
+                                </Border>
+                                <StackPanel Margin="14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Coke"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"/>
+                                        <Border Grid.Column="1"
+                                                Background="{StaticResource AccentGold}"
+                                                CornerRadius="16"
+                                                Padding="10,4"
+                                                Margin="0,0,0,4">
+                                            <TextBlock Text="$ 1.99"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <TextBlock Text="Chilled classic cola to pair perfectly with your meal."
+                                               TextWrapping="Wrap"
+                                               Margin="0,6,0,10"
+                                               FontSize="12"
+                                               Foreground="#555"/>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="20 oz bottle" FontSize="11"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Button Style="{StaticResource AddToCartButtonStyle}"
+                                            Content="+ Add to Cart"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Sprite -->
+                        <Border x:Name="SpriteCard"
+                                Tag="Sprite Beverage Drink Soda"
+                                Width="260" Margin="10"
+                                Background="{StaticResource CardBackground}"
+                                CornerRadius="20"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1">
+                            <StackPanel>
+                                <Border Height="150"
+                                        CornerRadius="20,20,0,0"
+                                        Background="#DDDDDD">
+                                    <TextBlock Text="Sprite Image"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#777"/>
+                                </Border>
+                                <StackPanel Margin="14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Sprite"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"/>
+                                        <Border Grid.Column="1"
+                                                Background="{StaticResource AccentGold}"
+                                                CornerRadius="16"
+                                                Padding="10,4"
+                                                Margin="0,0,0,4">
+                                            <TextBlock Text="$ 1.99"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <TextBlock Text="Refreshing lemon-lime soda served cold."
+                                               TextWrapping="Wrap"
+                                               Margin="0,6,0,10"
+                                               FontSize="12"
+                                               Foreground="#555"/>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="20 oz bottle" FontSize="11"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Button Style="{StaticResource AddToCartButtonStyle}"
+                                            Content="+ Add to Cart"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Fanta -->
+                        <Border x:Name="FantaCard"
+                                Tag="Fanta Beverage Drink Soda"
+                                Width="260" Margin="10"
+                                Background="{StaticResource CardBackground}"
+                                CornerRadius="20"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1">
+                            <StackPanel>
+                                <Border Height="150"
+                                        CornerRadius="20,20,0,0"
+                                        Background="#DDDDDD">
+                                    <TextBlock Text="Fanta Image"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#777"/>
+                                </Border>
+                                <StackPanel Margin="14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Fanta"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"/>
+                                        <Border Grid.Column="1"
+                                                Background="{StaticResource AccentGold}"
+                                                CornerRadius="16"
+                                                Padding="10,4"
+                                                Margin="0,0,0,4">
+                                            <TextBlock Text="$ 1.99"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <TextBlock Text="Sweet and bubbly orange soda, ice cold."
+                                               TextWrapping="Wrap"
+                                               Margin="0,6,0,10"
+                                               FontSize="12"
+                                               Foreground="#555"/>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="20 oz bottle" FontSize="11"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Button Style="{StaticResource AddToCartButtonStyle}"
+                                            Content="+ Add to Cart"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </WrapPanel>
+
+                    <!-- DESSERTS -->
+                    <WrapPanel Margin="0,10,0,10">
+
+                        <!-- Cookie -->
+                        <Border x:Name="CookieCard"
+                                Tag="Chocolate Chunk Cookie Dessert"
+                                Width="260" Margin="10"
+                                Background="{StaticResource CardBackground}"
+                                CornerRadius="20"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1">
+                            <StackPanel>
+                                <Border Height="150"
+                                        CornerRadius="20,20,0,0"
+                                        Background="#DDDDDD">
+                                    <TextBlock Text="Cookie Image"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#777"/>
+                                </Border>
+                                <StackPanel Margin="14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Chocolate Chunk Cookie"
+                                                   FontSize="16"
+                                                   FontWeight="Bold"
+                                                   TextWrapping="Wrap"/>
+                                        <Border Grid.Column="1"
+                                                Background="{StaticResource AccentGold}"
+                                                CornerRadius="16"
+                                                Padding="10,4"
+                                                Margin="0,0,0,4">
+                                            <TextBlock Text="$ 3.49"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <TextBlock Text="Warm, soft cookie loaded with rich chocolate chunks."
+                                               TextWrapping="Wrap"
+                                               Margin="0,6,0,10"
+                                               FontSize="12"
+                                               Foreground="#555"/>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="Fresh baked" FontSize="11"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Button Style="{StaticResource AddToCartButtonStyle}"
+                                            Content="+ Add to Cart"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Cinnamon Roll -->
+                        <Border x:Name="CinnamonRollCard"
+                                Tag="Cinnamon Roll Dessert"
+                                Width="260" Margin="10"
+                                Background="{StaticResource CardBackground}"
+                                CornerRadius="20"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1">
+                            <StackPanel>
+                                <Border Height="150"
+                                        CornerRadius="20,20,0,0"
+                                        Background="#DDDDDD">
+                                    <TextBlock Text="Cinnamon Roll Image"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#777"/>
+                                </Border>
+                                <StackPanel Margin="14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Cinnamon Roll"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"/>
+                                        <Border Grid.Column="1"
+                                                Background="{StaticResource AccentGold}"
+                                                CornerRadius="16"
+                                                Padding="10,4"
+                                                Margin="0,0,0,4">
+                                            <TextBlock Text="$ 4.49"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <TextBlock Text="Soft roll swirled with cinnamon sugar and topped with icing."
+                                               TextWrapping="Wrap"
+                                               Margin="0,6,0,10"
+                                               FontSize="12"
+                                               Foreground="#555"/>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="Warm" FontSize="11"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Button Style="{StaticResource AddToCartButtonStyle}"
+                                            Content="+ Add to Cart"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Molten Lava Cake -->
+                        <Border x:Name="LavaCakeCard"
+                                Tag="Molten Lava Cake Dessert"
+                                Width="260" Margin="10"
+                                Background="{StaticResource CardBackground}"
+                                CornerRadius="20"
+                                BorderBrush="#E0E0E0"
+                                BorderThickness="1">
+                            <StackPanel>
+                                <Border Height="150"
+                                        CornerRadius="20,20,0,0"
+                                        Background="#DDDDDD">
+                                    <TextBlock Text="Lava Cake Image"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Foreground="#777"/>
+                                </Border>
+                                <StackPanel Margin="14">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Text="Molten Lava Cake"
+                                                   FontSize="18"
+                                                   FontWeight="Bold"
+                                                   TextWrapping="Wrap"/>
+                                        <Border Grid.Column="1"
+                                                Background="{StaticResource AccentGold}"
+                                                CornerRadius="16"
+                                                Padding="10,4"
+                                                Margin="0,0,0,4">
+                                            <TextBlock Text="$ 4.99"
+                                                       FontSize="12"
+                                                       FontWeight="Bold"
+                                                       Foreground="White"/>
+                                        </Border>
+                                    </Grid>
+
+                                    <TextBlock Text="Rich chocolate cake with a warm, gooey center."
+                                               TextWrapping="Wrap"
+                                               Margin="0,6,0,10"
+                                               FontSize="12"
+                                               Foreground="#555"/>
+
+                                    <StackPanel Orientation="Horizontal">
+                                        <Border Style="{StaticResource TagChipStyle}">
+                                            <TextBlock Text="Decadent" FontSize="11"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Button Style="{StaticResource AddToCartButtonStyle}"
+                                            Content="+ Add to Cart"/>
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </WrapPanel>
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+
+        <!-- ===== Build Your Own Pizza Overlay (popout) ===== -->
+        <Grid x:Name="BuildPizzaOverlay"
+              Grid.RowSpan="4"
+              Background="#80000000"
+              Visibility="Collapsed">
+
+            <!-- Main panel -->
+            <Border Margin="30"
+            Background="#FBEFE3"
+            CornerRadius="25"
+            Padding="30"
+            BorderBrush="#E0E0E0"
+            BorderThickness="1"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <!-- LEFT: MUCH WIDER -->
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <!-- RIGHT SUMMARY: MUCH THINNER -->
+                        <ColumnDefinition Width="2*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+
+                    <!-- ===== TITLE BAR ===== -->
+                    <Grid Grid.Row="0" Grid.ColumnSpan="3" Margin="0,0,0,10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Text="Build Your Own Pizza"
+                           FontSize="26"
+                           FontWeight="Bold"
+                           VerticalAlignment="Center"/>
+
+                        <Button Grid.Column="1"
+                        Content="X"
+                        Width="34" Height="34"
+                        FontSize="18"
+                        Background="Transparent"
+                        BorderBrush="Transparent"
+                        Foreground="Black"
+                        Cursor="Hand"
+                        Click="BuildPizzaClose_Click"/>
+                    </Grid>
+
+
+                    <!-- ===== LEFT OPTIONS (scrollable) ===== -->
+                    <ScrollViewer Grid.Row="1" Grid.Column="0"
+                          VerticalScrollBarVisibility="Auto"
+                          Margin="0,0,25,0">
+
+                        <StackPanel>
+
+
+                            <!-- ***** SIZE SECTION ***** -->
+                            <Border Style="{StaticResource BuilderGroupBorderStyle}"
+                            Padding="22" Margin="0,0,0,20">
+                                <StackPanel>
+                                    <TextBlock Text="Choose your Size"
+                                       FontWeight="Bold"
+                                       FontSize="18"
+                                       Margin="0,0,0,14"/>
+
+                                    <!-- Bigger buttons + 2×2 layout -->
+                                    <UniformGrid Rows="2" Columns="2" Margin="0,6,0,0">
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="24,12" FontSize="16"
+                                        Content="Small" Tag="Small"
+                                        Click="BuildPizzaSizeButton_Click"/>
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="24,12" FontSize="16"
+                                        Content="Medium" Tag="Medium"
+                                        Click="BuildPizzaSizeButton_Click"/>
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="24,12" FontSize="16"
+                                        Content="Large" Tag="Large"
+                                        Click="BuildPizzaSizeButton_Click"/>
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="24,12" FontSize="16"
+                                        Content="Extra Large" Tag="ExtraLarge"
+                                        Click="BuildPizzaSizeButton_Click"/>
+
+                                    </UniformGrid>
+                                </StackPanel>
+                            </Border>
+
+
+
+                            <!-- ***** SAUCE + CRUST SIDE BY SIDE ***** -->
+                            <Grid Margin="0,0,0,20">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+
+                                <!-- SAUCE -->
+                                <Border Style="{StaticResource BuilderGroupBorderStyle}"
+                                Padding="22" Margin="0,0,15,0">
+                                    <StackPanel>
+                                        <TextBlock Text="Choose your Sauce"
+                                           FontWeight="Bold"
+                                           FontSize="18"
+                                           Margin="0,0,0,14"/>
+
+                                        <WrapPanel>
+                                            <Button Style="{StaticResource ChoiceButtonStyle}"
+                                            Padding="22,10" FontSize="16"
+                                            Content="Tomato" Tag="Tomato"
+                                            Click="BuildPizzaSauceButton_Click"/>
+
+                                            <Button Style="{StaticResource ChoiceButtonStyle}"
+                                            Padding="22,10" FontSize="16"
+                                            Content="Marinara" Tag="Marinara"
+                                            Click="BuildPizzaSauceButton_Click"/>
+
+                                            <Button Style="{StaticResource ChoiceButtonStyle}"
+                                            Padding="22,10" FontSize="16"
+                                            Content="Alfredo" Tag="Alfredo"
+                                            Click="BuildPizzaSauceButton_Click"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
+
+
+
+                                <!-- CRUST -->
+                                <Border Style="{StaticResource BuilderGroupBorderStyle}"
+                                Padding="22" Grid.Column="1">
+                                    <StackPanel>
+                                        <TextBlock Text="Choose your Crust"
+                                           FontWeight="Bold"
+                                           FontSize="18"
+                                           Margin="0,0,0,14"/>
+
+                                        <WrapPanel>
+                                            <Button Style="{StaticResource ChoiceButtonStyle}"
+                                            Padding="22,10" FontSize="16"
+                                            Content="Thin" Tag="Thin"
+                                            Click="BuildPizzaCrustButton_Click"/>
+
+                                            <Button Style="{StaticResource ChoiceButtonStyle}"
+                                            Padding="22,10" FontSize="16"
+                                            Content="Regular" Tag="Regular"
+                                            Click="BuildPizzaCrustButton_Click"/>
+
+                                            <Button Style="{StaticResource ChoiceButtonStyle}"
+                                            Padding="22,10" FontSize="16"
+                                            Content="Pan" Tag="Pan"
+                                            Click="BuildPizzaCrustButton_Click"/>
+                                        </WrapPanel>
+                                    </StackPanel>
+                                </Border>
+                            </Grid>
+
+
+
+                            <!-- ***** TOPPINGS ***** -->
+                            <Border Style="{StaticResource BuilderGroupBorderStyle}"
+                            Padding="22" Margin="0,0,0,40">
+
+                                <StackPanel>
+                                    <TextBlock Text="Choose your Toppings"
+                                       FontWeight="Bold"
+                                       FontSize="18"
+                                       Margin="0,0,0,14"/>
+
+                                    <!-- Veg -->
+                                    <TextBlock Text="Veg" FontWeight="SemiBold"
+                                       FontSize="16" Margin="0,6,0,4"/>
+                                    <WrapPanel>
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="22,10" FontSize="16"
+                                        Content="Cheese" Tag="Cheese"
+                                        Click="BuildPizzaToppingButton_Click"/>
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="22,10" FontSize="16"
+                                        Content="Onion" Tag="Onion"
+                                        Click="BuildPizzaToppingButton_Click"/>
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="22,10" FontSize="16"
+                                        Content="Pineapple" Tag="Pineapple"
+                                        Click="BuildPizzaToppingButton_Click"/>
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="22,10" FontSize="16"
+                                        Content="Jalapeno" Tag="Jalapeno"
+                                        Click="BuildPizzaToppingButton_Click"/>
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="22,10" FontSize="16"
+                                        Content="Olives" Tag="Olives"
+                                        Click="BuildPizzaToppingButton_Click"/>
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="22,10" FontSize="16"
+                                        Content="Mushroom" Tag="Mushroom"
+                                        Click="BuildPizzaToppingButton_Click"/>
+                                    </WrapPanel>
+
+
+                                    <!-- Meat -->
+                                    <TextBlock Text="Meat" FontWeight="SemiBold"
+                                       FontSize="16" Margin="0,14,0,4"/>
+                                    <WrapPanel>
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="22,10" FontSize="16"
+                                        Content="Pepperoni" Tag="Pepperoni"
+                                        Click="BuildPizzaToppingButton_Click"/>
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="22,10" FontSize="16"
+                                        Content="Sausage" Tag="Italian sausage"
+                                        Click="BuildPizzaToppingButton_Click"/>
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="22,10" FontSize="16"
+                                        Content="Beef" Tag="Beef"
+                                        Click="BuildPizzaToppingButton_Click"/>
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="22,10" FontSize="16"
+                                        Content="Chicken" Tag="Chicken"
+                                        Click="BuildPizzaToppingButton_Click"/>
+
+                                        <Button Style="{StaticResource ChoiceButtonStyle}"
+                                        Padding="22,10" FontSize="16"
+                                        Content="Bacon" Tag="Bacon"
+                                        Click="BuildPizzaToppingButton_Click"/>
+                                    </WrapPanel>
+                                </StackPanel>
+
+                            </Border>
+
+                        </StackPanel>
+                    </ScrollViewer>
+
+
+
+
+                    <!-- ===== CENTER DIVIDER ===== -->
+                    <Border Grid.Row="1" Grid.Column="1"
+                    Width="2" Margin="10"
+                    Background="#E0C5A8"/>
+
+
+
+
+                    <!-- ===== RIGHT SUMMARY PANEL ===== -->
+                    <Border Grid.Row="1" Grid.Column="2"
+                    Background="White"
+                    CornerRadius="20"
+                    Padding="20"
+                    Margin="10,0,0,0"
+                    BorderBrush="#E0E0E0"
+                    BorderThickness="1">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+
+                            <TextBlock Text="Your Pizza"
+                               FontSize="20"
+                               FontWeight="Bold"
+                               Margin="0,0,0,10"/>
+
+
+                            <StackPanel Grid.Row="1" Margin="0,0,0,10">
+
+                                <Grid Margin="0,0,0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Size:" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="BuildPizzaSummarySizeText"
+                                       Grid.Column="1" Margin="8,0,0,0"/>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Sauce:" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="BuildPizzaSummarySauceText"
+                                       Grid.Column="1" Margin="8,0,0,0"/>
+                                </Grid>
+
+                                <Grid Margin="0,0,0,6">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Crust:" FontWeight="SemiBold"/>
+                                    <TextBlock x:Name="BuildPizzaSummaryCrustText"
+                                       Grid.Column="1" Margin="8,0,0,0"/>
+                                </Grid>
+
+                                <TextBlock Text="Toppings:" FontWeight="SemiBold" Margin="0,12,0,4"/>
+
+                                <WrapPanel x:Name="BuildPizzaSummaryToppingsPanel"/>
+                            </StackPanel>
+
+
+                            <!-- Price row -->
+                            <Grid Grid.Row="2" Margin="0,10,0,6">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Text="Total" FontWeight="Bold"/>
+                                <TextBlock x:Name="BuildPizzaSummaryTotalText"
+                                   Grid.Column="1"
+                                   FontWeight="Bold"
+                                   Margin="10,0,0,0"
+                                   Foreground="{StaticResource AccentRed}"/>
+                            </Grid>
+
+
+                            <Button Grid.Row="3"
+                            Content="+ Add to Cart"
+                            Height="50"
+                            FontSize="18"
+                            Background="{StaticResource AccentRed}"
+                            Foreground="White"
+                            FontWeight="Bold"
+                            BorderBrush="{StaticResource AccentRed}"
+                            Cursor="Hand"
+                            Margin="0,6,0,0"
+                            HorizontalAlignment="Stretch"
+                            Click="BuildPizzaAddToCart_Click"/>
+                        </Grid>
+
+                    </Border>
+                </Grid>
+
+            </Border>
+        </Grid>
     </Grid>
 </Window>
