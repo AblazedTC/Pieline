@@ -1,0 +1,64 @@
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
+namespace PieLine
+{
+    public class MenuGroup : INotifyPropertyChanged
+    {
+        private string _category = string.Empty;
+        private ObservableCollection<FoodItem> _items = new();
+
+        public string Category
+        {
+            get => _category;
+            set => SetProperty(ref _category, value);
+        }
+
+        public ObservableCollection<FoodItem> Items
+        {
+            get => _items;
+            set => SetProperty(ref _items, value ?? new ObservableCollection<FoodItem>());
+        }
+
+        public MenuGroup() { }
+
+        public MenuGroup(string category, IEnumerable<FoodItem>? items = null)
+        {
+            _category = category ?? string.Empty;
+            _items = items is not null
+                ? new ObservableCollection<FoodItem>(items)
+                : new ObservableCollection<FoodItem>();
+        }
+
+        public void AddItem(FoodItem item)
+        {
+            if (item is null) return;
+            _items.Add(item);
+            OnPropertyChanged(nameof(Items));
+        }
+
+        public bool RemoveItem(FoodItem item)
+        {
+            var removed = _items.Remove(item);
+            if (removed) OnPropertyChanged(nameof(Items));
+            return removed;
+        }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
+            => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        protected bool SetProperty<T>(ref T storage, T value, [CallerMemberName] string? propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(storage, value)) return false;
+            storage = value!;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+        #endregion
+    }
+}

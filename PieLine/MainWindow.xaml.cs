@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -9,10 +12,11 @@ namespace PieLine
 {
     public partial class MainWindow : Window
     {
-        // Menu cards for search filtering
-        private readonly List<FrameworkElement> _menuCards = new List<FrameworkElement>();
+        // Dynamic data
+        public ObservableCollection<MenuGroup> MenuGroups { get; } = new ObservableCollection<MenuGroup>();
+        private List<FoodItem> _allMenuItems = new List<FoodItem>();
 
-        // Build-your-own pizza state
+        // Build-your-own pizza state (unchanged)
         private string _buildSize;
         private string _buildSauce;
         private string _buildCrust;
@@ -34,21 +38,62 @@ namespace PieLine
         {
             InitializeComponent();
 
-            // Register menu cards for search
-            _menuCards.Add(CheeseCard);
-            _menuCards.Add(PepperoniCard);
-            _menuCards.Add(VeggieCard);
+            DataContext = this;
 
-            _menuCards.Add(CokeCard);
-            _menuCards.Add(SpriteCard);
-            _menuCards.Add(FantaCard);
-
-            _menuCards.Add(CookieCard);
-            _menuCards.Add(CinnamonRollCard);
-            _menuCards.Add(LavaCakeCard);
+            // Load menu from JSON
+            LoadMenuItemsFromJson();
 
             // Initialize builder summary
             UpdateBuildPizzaSummary();
+        }
+
+        private void LoadMenuItemsFromJson()
+        {
+            try
+            {
+                string path = Path.Combine(AppContext.BaseDirectory, "menuitems.json");
+                if (!File.Exists(path))
+                {
+                    // nothing to load, leave empty
+                    return;
+                }
+
+                var json = File.ReadAllText(path);
+                var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var items = JsonSerializer.Deserialize<List<FoodItem>>(json, opts) ?? new List<FoodItem>();
+                _allMenuItems = items;
+
+                RefreshGroups(null);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Failed to load menuitems.json: {ex.Message}", "Load error", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        // Rebuild MenuGroups from _allMenuItems applying optional filter
+        private void RefreshGroups(string query)
+        {
+            string q = string.IsNullOrWhiteSpace(query) || query == "Search items" ? null : query.Trim().ToLowerInvariant();
+
+            var filtered = string.IsNullOrEmpty(q)
+                ? _allMenuItems
+                : _allMenuItems.Where(m =>
+                    (m.Name ?? "").ToLowerInvariant().Contains(q)
+                    || (m.Description ?? "").ToLowerInvariant().Contains(q)
+                    || (m.Category ?? "").ToLowerInvariant().Contains(q)
+                    || string.Join(" ", m.Tags ?? Array.Empty<string>()).ToLowerInvariant().Contains(q)
+                  ).ToList();
+
+            var groups = filtered
+                .GroupBy(i => string.IsNullOrWhiteSpace(i.Category) ? "Uncategorized" : i.Category)
+                .OrderBy(g => g.Key)
+                .Select(g => new MenuGroup(g.Key) { Items = new ObservableCollection<FoodItem>(g.OrderBy(i => i.Name)) })
+                .ToList();
+
+            MenuGroups.Clear();
+            foreach (var g in groups)
+                MenuGroups.Add(g);
         }
 
         // ========= Search box handling =========
@@ -69,44 +114,33 @@ namespace PieLine
                 SearchTextBox.Text = "Search items";
                 SearchTextBox.Foreground =
                     new SolidColorBrush(Color.FromRgb(136, 136, 136)); // #888
+                RefreshGroups(null);
             }
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             string text = SearchTextBox.Text;
-
-            if (text == "Search items")
+            if (text == "Search items" || string.IsNullOrWhiteSpace(text))
             {
-                ShowAllCards();
+                RefreshGroups(null);
                 return;
             }
 
-            string query = text.Trim().ToLower();
-
-            if (string.IsNullOrEmpty(query))
-            {
-                ShowAllCards();
-                return;
-            }
-
-            foreach (var card in _menuCards)
-            {
-                string tagText = (card.Tag as string) ?? "";
-                bool match = tagText.ToLower().Contains(query);
-                card.Visibility = match ? Visibility.Visible : Visibility.Collapsed;
-            }
+            RefreshGroups(text);
         }
 
-        private void ShowAllCards()
+        // Called by the "Add to Cart" button inside each dynamic card
+        private void CardAddToCart_Click(object sender, RoutedEventArgs e)
         {
-            foreach (var card in _menuCards)
+            if (sender is Button btn && btn.DataContext is FoodItem item)
             {
-                card.Visibility = Visibility.Visible;
+                // placeholder action — integrate with your cart later
+                MessageBox.Show($"Added {item.Name} to cart (placeholder)", "Add to cart", MessageBoxButton.OK, MessageBoxImage.Information);
             }
         }
 
-        // ========= Build Your Own Pizza overlay =========
+        // ========= Build Your Own Pizza overlay (existing unchanged logic) =========
 
         private void BuildYourOwnPizzaButton_Click(object sender, RoutedEventArgs e)
         {

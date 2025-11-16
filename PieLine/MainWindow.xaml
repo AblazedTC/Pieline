@@ -213,7 +213,7 @@
 
         <!-- ================= MENU CARDS CONTENT ================= -->
         <Border Grid.Row="3"
-                Margin="20"
+                Margin="20,20,20,20"
                 CornerRadius="16"
                 Background="#FBEFE3">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
