@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Diagnostics;
 
 namespace PieLine
 {
@@ -47,23 +49,65 @@ namespace PieLine
             UpdateBuildPizzaSummary();
         }
 
+        // Helper to safely find named controls in XAML at runtime.
+        private T? GetNamedControl<T>(string name) where T : class
+        {
+            return this.FindName(name) as T;
+        }
+
         private void LoadMenuItemsFromJson()
         {
             try
             {
-                string path = Path.Combine(AppContext.BaseDirectory, "menuitems.json");
-                if (!File.Exists(path))
+                string outDir = AppContext.BaseDirectory;
+                var candidates = new[]
                 {
-                    // nothing to load, leave empty
+                    //Path.Combine(outDir, "menuitems.json"),
+                    //Path.Combine(outDir, "Data", "menuitems.json"),
+                    //Path.Combine(outDir, "data", "menuitems.json"),
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "PieLine", "menuitems.json")
+                };
+
+                // development-time candidate (when running from IDE)
+                var devCandidate = Path.GetFullPath(Path.Combine(outDir, "..", "..", "..", "Data", "menuitems.json"));
+                var path = candidates.FirstOrDefault(File.Exists) ?? (File.Exists(devCandidate) ? devCandidate : null);
+
+                if (path == null)
+                {
+                    Debug.WriteLine("menuitems.json not found in any candidate paths.");
+                    return; // no file found — leave menu empty
+                }
+
+                Debug.WriteLine($"Loading menuitems.json from: {path}");
+
+#if DEBUG
+                // Temporary: show the exact runtime path in a debug-only popup so it's obvious where the file came from.
+                MessageBox.Show($"Loading menuitems.json from:\n{path}", "Debug: menuitems.json path", MessageBoxButton.OK, MessageBoxImage.Information);
+#endif
+
+                var json = File.ReadAllText(path);
+                if (string.IsNullOrWhiteSpace(json))
+                {
+                    Debug.WriteLine($"menuitems.json found at {path} but file is empty. No items loaded.");
+                    return; // empty file — don't attempt to deserialize
+                }
+
+                var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var items = JsonSerializer.Deserialize<List<FoodItem>>(json, opts);
+                if (items == null || items.Count == 0)
+                {
+                    Debug.WriteLine($"menuitems.json at {path} deserialized to no items.");
+                    _allMenuItems = new List<FoodItem>();
+                    RefreshGroups(null);
                     return;
                 }
 
-                var json = File.ReadAllText(path);
-                var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var items = JsonSerializer.Deserialize<List<FoodItem>>(json, opts) ?? new List<FoodItem>();
                 _allMenuItems = items;
-
                 RefreshGroups(null);
+            }
+            catch (JsonException jex)
+            {
+                MessageBox.Show($"menuitems.json contains invalid JSON: {jex.Message}", "JSON error", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             catch (Exception ex)
             {
@@ -87,7 +131,14 @@ namespace PieLine
 
             var groups = filtered
                 .GroupBy(i => string.IsNullOrWhiteSpace(i.Category) ? "Uncategorized" : i.Category)
-                .OrderBy(g => g.Key)
+                // custom ordering: Pizza, Drink, Dessert, then others alphabetically
+                .OrderBy(g =>
+                {
+                    var priority = new[] { "Pizza", "Drink", "Dessert" };
+                    int idx = Array.IndexOf(priority, g.Key);
+                    return idx == -1 ? int.MaxValue : idx;
+                })
+                .ThenBy(g => g.Key)
                 .Select(g => new MenuGroup(g.Key) { Items = new ObservableCollection<FoodItem>(g.OrderBy(i => i.Name)) })
                 .ToList();
 
@@ -151,18 +202,24 @@ namespace PieLine
             _buildToppings.Clear();
             UpdateBuildPizzaSummary();
 
-            BuildPizzaOverlay.Visibility = Visibility.Visible;
+            var overlay = GetNamedControl<Grid>("BuildPizzaOverlay");
+            if (overlay != null)
+                overlay.Visibility = Visibility.Visible;
         }
 
         private void BuildPizzaClose_Click(object sender, RoutedEventArgs e)
         {
-            BuildPizzaOverlay.Visibility = Visibility.Collapsed;
+            var overlay = GetNamedControl<Grid>("BuildPizzaOverlay");
+            if (overlay != null)
+                overlay.Visibility = Visibility.Collapsed;
         }
 
         private void BuildPizzaAddToCart_Click(object sender, RoutedEventArgs e)
         {
             // TODO: add this built pizza to your cart data structure
-            BuildPizzaOverlay.Visibility = Visibility.Collapsed;
+            var overlay = GetNamedControl<Grid>("BuildPizzaOverlay");
+            if (overlay != null)
+                overlay.Visibility = Visibility.Collapsed;
         }
 
         private void BuildPizzaSetExclusiveSelection(Panel parent, Button clicked)
@@ -240,15 +297,21 @@ namespace PieLine
 
         private void UpdateBuildPizzaSummary()
         {
-            if (BuildPizzaSummarySizeText == null)
-                return; // not loaded yet
+            var sizeText = GetNamedControl<TextBlock>("BuildPizzaSummarySizeText");
+            var sauceText = GetNamedControl<TextBlock>("BuildPizzaSummarySauceText");
+            var crustText = GetNamedControl<TextBlock>("BuildPizzaSummaryCrustText");
+            var toppingsPanel = GetNamedControl<WrapPanel>("BuildPizzaSummaryToppingsPanel");
+            var totalText = GetNamedControl<TextBlock>("BuildPizzaSummaryTotalText");
 
-            BuildPizzaSummarySizeText.Text = _buildSize ?? "-";
-            BuildPizzaSummarySauceText.Text = _buildSauce ?? "-";
-            BuildPizzaSummaryCrustText.Text = _buildCrust ?? "-";
+            if (sizeText == null || sauceText == null || crustText == null || toppingsPanel == null || totalText == null)
+                return; // UI not yet loaded
+
+            sizeText.Text = _buildSize ?? "-";
+            sauceText.Text = _buildSauce ?? "-";
+            crustText.Text = _buildCrust ?? "-";
 
             // toppings pills
-            BuildPizzaSummaryToppingsPanel.Children.Clear();
+            toppingsPanel.Children.Clear();
             foreach (var topping in _buildToppings.OrderBy(t => t))
             {
                 var pill = new Border
@@ -261,7 +324,7 @@ namespace PieLine
                         Foreground = Brushes.White
                     }
                 };
-                BuildPizzaSummaryToppingsPanel.Children.Add(pill);
+                toppingsPanel.Children.Add(pill);
             }
 
             // price
@@ -272,7 +335,7 @@ namespace PieLine
             }
             total += _buildToppings.Count * BuildToppingPrice;
 
-            BuildPizzaSummaryTotalText.Text = $"$ {total:0.00}";
+            totalText.Text = $"$ {total:0.00}";
         }
     }
 }
