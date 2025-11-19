@@ -689,8 +689,8 @@
             <Border Grid.Column="1"
                     Background="White"
                     BorderBrush="#E0E0E0"
-                    BorderThickness="1"
-                    Padding="16"
+                    BorderThickness="0"
+                    Padding="0,35,0,10"
                     x:Name="CartSidebar"
                     HorizontalAlignment="Right">
                 <Border.RenderTransform>
@@ -705,16 +705,16 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <DockPanel Grid.Row="0">
+                    <DockPanel Grid.Row="0" Margin="10,0,0,0">
                         <TextBlock Text="Your Cart" FontSize="20" FontWeight="Bold" DockPanel.Dock="Left"/>
                         <Button Content="X" Width="34" Height="34" HorizontalAlignment="Right" DockPanel.Dock="Right" Click="CartCloseButton_Click"/>
                     </DockPanel>
 
-                    <ScrollViewer Grid.Row="1" Margin="0,12,0,12">
+                    <ScrollViewer Grid.Row="1" Margin="10,12,0,12" VerticalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding CartItems}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Padding="8" Margin="0,0,0,8" Background="#FFF8F2" CornerRadius="8">
+                                    <Border Padding="8" Margin="0,0,0,10" Background="#FFF8F2" CornerRadius="8">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
@@ -723,7 +723,7 @@
                                             </Grid.ColumnDefinitions>
                                             <StackPanel>
                                                 <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                                                <TextBlock Text="{Binding Description}" FontSize="12" Foreground="#666" TextWrapping="Wrap"/>
+                                                <TextBlock Text="{Binding Toppings}" FontSize="12" Foreground="#666" TextWrapping="Wrap"/>
                                             </StackPanel>
                                             <TextBlock Grid.Column="1" Text="{Binding Price, StringFormat=$ {0:0.00}}" VerticalAlignment="Center" Margin="8,0" Foreground="{StaticResource AccentRed}"/>
                                             <Button Grid.Column="2" Content="Remove" Margin="8,0,0,0" Click="CartRemove_Click" DataContext="{Binding}"/>
@@ -735,15 +735,15 @@
                     </ScrollViewer>
 
                     <StackPanel Grid.Row="2">
-                        <Grid Margin="0,0,0,8">
+                        <Grid Margin="0,0,0,10">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Total" FontWeight="Bold"/>
-                            <TextBlock x:Name="CartTotalText" Grid.Column="1" FontWeight="Bold" Foreground="{StaticResource AccentRed}"/>
+                            <TextBlock Text="Total" FontWeight="Bold" Padding="10,0,0,0"/>
+                            <TextBlock x:Name="CartTotalText" Padding="0,0,0,0" Grid.Column="1" FontWeight="Bold" Foreground="{StaticResource AccentRed}"/>
                         </Grid>
-
+                           
                         <Button Content="Checkout" Background="{StaticResource AccentGold}" Foreground="White" Height="44" FontWeight="Bold"/>
                     </StackPanel>
                 </Grid>
