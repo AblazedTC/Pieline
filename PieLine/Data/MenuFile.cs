@@ -62,7 +62,7 @@ namespace PieLine
                 ""price"": 12.99,
                 ""description"": ""A classic cheese pizza topped with rich tomato sauce and melted mozzarella."",
                 ""tags"": [""Mozzarella"", ""Vegetarian""],
-                ""image"": ""images/cheese.png""
+                ""image"": ""Images/cheese.png""
                 },
                 {
                 ""id"": ""pizza-pepperoni-001"",
@@ -71,7 +71,7 @@ namespace PieLine
                 ""price"": 14.99,
                 ""description"": ""Zesty tomato sauce, mozzarella cheese, and crisp slices of pepperoni."",
                 ""tags"": [""Pepperoni"", ""Spicy""],
-                ""image"": ""images/pepperoni.png""
+                ""image"": ""Images/pepperoni.png""
                 },
                 {
                 ""id"": ""drink-coke-001"",
@@ -80,7 +80,7 @@ namespace PieLine
                 ""price"": 1.99,
                 ""description"": ""Chilled classic cola."",
                 ""tags"": [""20 oz bottle""],
-                ""image"": ""images/coke.png""
+                ""image"": ""Images/coke.png""
                 }
             ]";
             var items = JsonSerializer.Deserialize<List<MenuItem>>(defaultJson, JsonOptions);
