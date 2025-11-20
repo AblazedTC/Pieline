@@ -235,7 +235,7 @@
                                         </ItemsControl.ItemsPanel>
 
                                         <ItemsControl.ItemTemplate>
-                                            <DataTemplate DataType="{x:Type local:FoodItem}">
+                                            <DataTemplate DataType="{x:Type local:MenuItem}">
                                                 <Border Width="260" Margin="10"
                                                         Background="{StaticResource CardBackground}"
                                                         CornerRadius="20"

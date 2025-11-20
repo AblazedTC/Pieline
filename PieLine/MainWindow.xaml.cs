@@ -1,14 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using System.Diagnostics;
 using System.Windows.Media.Animation;
 
 namespace PieLine
@@ -16,21 +12,21 @@ namespace PieLine
     public partial class MainWindow : Window
     {
         // Dynamic data
-        public ObservableCollection<MenuGroup> MenuGroups { get; } = new ObservableCollection<MenuGroup>();
-        private List<FoodItem> _allMenuItems = new List<FoodItem>();
+        public ObservableCollection<MenuGroup> MenuGroups { get; } = new();
+        private List<MenuItem> _allMenuItems = new();
 
         // Simple cart
-        public ObservableCollection<FoodItem> CartItems { get; } = new ObservableCollection<FoodItem>();
+        public ObservableCollection<MenuItem> CartItems { get; } = new();
 
-        // Build-your-own pizza state (unchanged)
+        // Build-your-own pizza state
         private string _buildSize;
         private string _buildSauce;
         private string _buildCrust;
         private readonly HashSet<string> _buildToppings =
-            new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+            new(StringComparer.OrdinalIgnoreCase);
 
         private readonly Dictionary<string, decimal> _buildSizePrices =
-            new Dictionary<string, decimal>
+            new()
             {
                 { "Small", 8.99m },
                 { "Medium", 10.99m },
@@ -46,113 +42,53 @@ namespace PieLine
 
             DataContext = this;
 
-            // Defer loading and initial UI update until the window is loaded so FindName can locate named controls
-            this.Loaded += MainWindow_Loaded;
+            Loaded += MainWindow_Loaded;
 
-            // Update cart total when items change
             CartItems.CollectionChanged += (s, e) => UpdateCartTotal();
         }
 
         private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
         {
-            // Load menu from JSON
-            LoadMenuItemsFromJson();
-
-            // Initialize builder summary after XAML names exist
+            _allMenuItems = MenuFile.LoadMenuItems();
+            RefreshGroups(null);
             UpdateBuildPizzaSummary();
         }
 
         // Helper to safely find named controls in XAML at runtime.
-        private T? GetNamedControl<T>(string name) where T : class
-        {
-            return this.FindName(name) as T;
-        }
-
-        private void LoadMenuItemsFromJson()
-        {
-            try
-            {
-                string outDir = AppContext.BaseDirectory;
-                var candidates = new[]
-                {
-                    //Path.Combine(outDir, "menuitems.json"),
-                    //Path.Combine(outDir, "Data", "menuitems.json"),
-                    //Path.Combine(outDir, "data", "menuitems.json"),
-                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "PieLine", "menuitems.json")
-                };
-
-                // development-time candidate (when running from IDE)
-                var devCandidate = Path.GetFullPath(Path.Combine(outDir, "..", "..", "..", "Data", "menuitems.json"));
-                var path = candidates.FirstOrDefault(File.Exists) ?? (File.Exists(devCandidate) ? devCandidate : null);
-
-                if (path == null)
-                {
-                    Debug.WriteLine("menuitems.json not found in any candidate paths.");
-                    return; // no file found — leave menu empty
-                }
-
-                Debug.WriteLine($"Loading menuitems.json from: {path}");
-
-#if DEBUG
-                // Temporary: show the exact runtime path in a debug-only popup so it's obvious where the file came from.
-                MessageBox.Show($"Loading menuitems.json from:\n{path}", "Debug: menuitems.json path", MessageBoxButton.OK, MessageBoxImage.Information);
-#endif
-
-                var json = File.ReadAllText(path);
-                if (string.IsNullOrWhiteSpace(json))
-                {
-                    Debug.WriteLine($"menuitems.json found at {path} but file is empty. No items loaded.");
-                    return; // empty file — don't attempt to deserialize
-                }
-
-                var opts = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
-                var items = JsonSerializer.Deserialize<List<FoodItem>>(json, opts);
-                if (items == null || items.Count == 0)
-                {
-                    Debug.WriteLine($"menuitems.json at {path} deserialized to no items.");
-                    _allMenuItems = new List<FoodItem>();
-                    RefreshGroups(null);
-                    return;
-                }
-
-                _allMenuItems = items;
-                RefreshGroups(null);
-            }
-            catch (JsonException jex)
-            {
-                MessageBox.Show($"menuitems.json contains invalid JSON: {jex.Message}", "JSON error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Failed to load menuitems.json: {ex.Message}", "Load error", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-        }
+        private T? GetNamedControl<T>(string name) where T : class =>
+            FindName(name) as T;
 
         // Rebuild MenuGroups from _allMenuItems applying optional filter
-        private void RefreshGroups(string query)
+        private void RefreshGroups(string? query)
         {
-            string q = string.IsNullOrWhiteSpace(query) || query == "Search items" ? null : query.Trim().ToLowerInvariant();
+            string? q = string.IsNullOrWhiteSpace(query) || query == "Search items"
+                ? null
+                : query.Trim().ToLowerInvariant();
 
             var filtered = string.IsNullOrEmpty(q)
                 ? _allMenuItems
                 : _allMenuItems.Where(m =>
-                    (m.Name ?? "").ToLowerInvariant().Contains(q)
-                    || (m.Description ?? "").ToLowerInvariant().Contains(q)
-                    || (m.Category ?? "").ToLowerInvariant().Contains(q)
-                    || string.Join(" ", m.Tags ?? Array.Empty<string>()).ToLowerInvariant().Contains(q)
+                    (m.Name ?? "").ToLowerInvariant().Contains(q) ||
+                    (m.Description ?? "").ToLowerInvariant().Contains(q) ||
+                    (m.Category ?? "").ToLowerInvariant().Contains(q) ||
+                    string.Join(" ", m.Tags ?? Enumerable.Empty<string>())
+                          .ToLowerInvariant().Contains(q)
                   ).ToList();
 
             var groups = filtered
                 .GroupBy(i => string.IsNullOrWhiteSpace(i.Category) ? "Uncategorized" : i.Category)
-                // custom ordering: Pizza, Drink, Dessert, then others alphabetically
+                // custom ordering: Pizza, Beverage, Dessert, then others alphabetically
                 .OrderBy(g =>
                 {
-                    var priority = new[] { "Pizza", "Drink", "Dessert" };
+                    var priority = new[] { "Pizza", "Beverage", "Dessert" };
                     int idx = Array.IndexOf(priority, g.Key);
                     return idx == -1 ? int.MaxValue : idx;
                 })
                 .ThenBy(g => g.Key)
-                .Select(g => new MenuGroup(g.Key) { Items = new ObservableCollection<FoodItem>(g.OrderBy(i => i.Name)) })
+                .Select(g => new MenuGroup(g.Key)
+                {
+                    Items = new ObservableCollection<MenuItem>(g.OrderBy(i => i.Name))
+                })
                 .ToList();
 
             MenuGroups.Clear();
@@ -197,17 +133,14 @@ namespace PieLine
         // Called by the "Add to Cart" button inside each dynamic card
         private void CardAddToCart_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && btn.DataContext is FoodItem item)
+            if (sender is Button btn && btn.DataContext is MenuItem item)
             {
-                // Add to cart
                 CartItems.Add(item);
-
-                // Open cart sidebar to show item
                 OpenCartSidebar();
             }
         }
 
-        // ========= Build Your Own Pizza overlay (existing unchanged logic) =========
+        // ========= Build Your Own Pizza overlay =========
 
         private void BuildYourOwnPizzaButton_Click(object sender, RoutedEventArgs e)
         {
@@ -219,13 +152,6 @@ namespace PieLine
             UpdateBuildPizzaSummary();
 
             var overlay = GetNamedControl<Grid>("BuildPizzaOverlay");
-            Debug.WriteLine($"Build overlay found: {overlay != null}");
-#if DEBUG
-            if (overlay == null)
-            {
-                MessageBox.Show("BuildPizzaOverlay not found via FindName", "Debug", MessageBoxButton.OK, MessageBoxImage.Warning);
-            }
-#endif
             if (overlay != null)
                 overlay.Visibility = Visibility.Visible;
         }
@@ -239,13 +165,12 @@ namespace PieLine
 
         private void BuildPizzaAddToCart_Click(object sender, RoutedEventArgs e)
         {
-            // Create a simple FoodItem representing the build
             decimal total = 0m;
             if (_buildSize != null && _buildSizePrices.TryGetValue(_buildSize, out decimal basePrice))
                 total += basePrice;
             total += _buildToppings.Count * BuildToppingPrice;
 
-            var builtItem = new FoodItem
+            var builtItem = new MenuItem
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = $"Custom Pizza ({_buildSize ?? "?"})",
@@ -260,7 +185,6 @@ namespace PieLine
             if (overlay != null)
                 overlay.Visibility = Visibility.Collapsed;
 
-            // Open cart to show the new item
             OpenCartSidebar();
         }
 
@@ -321,14 +245,12 @@ namespace PieLine
                 if (_buildToppings.Contains(topping))
                 {
                     _buildToppings.Remove(topping);
-                    // unselected
                     btn.Background = Brushes.White;
                     btn.Foreground = (Brush)FindResource("AccentRed");
                 }
                 else
                 {
                     _buildToppings.Add(topping);
-                    // selected
                     btn.Background = (Brush)FindResource("AccentRed");
                     btn.Foreground = Brushes.White;
                 }
@@ -345,23 +267,14 @@ namespace PieLine
             var toppingsPanel = GetNamedControl<WrapPanel>("BuildPizzaSummaryToppingsPanel");
             var totalText = GetNamedControl<TextBlock>("BuildPizzaSummaryTotalText");
 
-            Debug.WriteLine($"Summary controls found: size={sizeText!=null}, sauce={sauceText!=null}, crust={crustText!=null}, toppings={toppingsPanel!=null}, total={totalText!=null}");
-#if DEBUG
-            if (sizeText == null || sauceText == null || crustText == null || toppingsPanel == null || totalText == null)
-            {
-                MessageBox.Show("One or more BuildPizza summary controls were not found via FindName", "Debug", MessageBoxButton.OK, MessageBoxImage.Warning);
-                return; // UI not yet loaded
-            }
-#endif
-
-            if (sizeText == null || sauceText == null || crustText == null || toppingsPanel == null || totalText == null)
+            if (sizeText == null || sauceText == null || crustText == null ||
+                toppingsPanel == null || totalText == null)
                 return; // UI not yet loaded
 
             sizeText.Text = _buildSize ?? "-";
             sauceText.Text = _buildSauce ?? "-";
             crustText.Text = _buildCrust ?? "-";
 
-            // toppings pills
             toppingsPanel.Children.Clear();
             foreach (var topping in _buildToppings.OrderBy(t => t))
             {
@@ -378,12 +291,9 @@ namespace PieLine
                 toppingsPanel.Children.Add(pill);
             }
 
-            // price
             decimal total = 0m;
             if (_buildSize != null && _buildSizePrices.TryGetValue(_buildSize, out decimal basePrice))
-            {
                 total += basePrice;
-            }
             total += _buildToppings.Count * BuildToppingPrice;
 
             totalText.Text = $"$ {total:0.00}";
@@ -425,7 +335,6 @@ namespace PieLine
 
             transform.BeginAnimation(TranslateTransform.XProperty, anim);
 
-            // Refresh total and ensure binding updates
             UpdateCartTotal();
         }
 
@@ -455,7 +364,7 @@ namespace PieLine
 
         private void CartRemove_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && btn.DataContext is FoodItem item)
+            if (sender is Button btn && btn.DataContext is MenuItem item)
             {
                 CartItems.Remove(item);
             }

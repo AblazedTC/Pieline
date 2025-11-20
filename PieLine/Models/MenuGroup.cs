@@ -8,7 +8,7 @@ namespace PieLine
     public class MenuGroup : INotifyPropertyChanged
     {
         private string _category = string.Empty;
-        private ObservableCollection<FoodItem> _items = new();
+        private ObservableCollection<MenuItem> _items = new();
 
         public string Category
         {
@@ -16,30 +16,30 @@ namespace PieLine
             set => SetProperty(ref _category, value);
         }
 
-        public ObservableCollection<FoodItem> Items
+        public ObservableCollection<MenuItem> Items
         {
             get => _items;
-            set => SetProperty(ref _items, value ?? new ObservableCollection<FoodItem>());
+            set => SetProperty(ref _items, value ?? new ObservableCollection<MenuItem>());
         }
 
         public MenuGroup() { }
 
-        public MenuGroup(string category, IEnumerable<FoodItem>? items = null)
+        public MenuGroup(string category, IEnumerable<MenuItem>? items = null)
         {
             _category = category ?? string.Empty;
             _items = items is not null
-                ? new ObservableCollection<FoodItem>(items)
-                : new ObservableCollection<FoodItem>();
+                ? new ObservableCollection<MenuItem>(items)
+                : new ObservableCollection<MenuItem>();
         }
 
-        public void AddItem(FoodItem item)
+        public void AddItem(MenuItem item)
         {
             if (item is null) return;
             _items.Add(item);
             OnPropertyChanged(nameof(Items));
         }
 
-        public bool RemoveItem(FoodItem item)
+        public bool RemoveItem(MenuItem item)
         {
             var removed = _items.Remove(item);
             if (removed) OnPropertyChanged(nameof(Items));
