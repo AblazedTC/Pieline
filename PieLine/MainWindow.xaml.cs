@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Diagnostics;
 using System.Windows.Media.Animation;
 
 namespace PieLine
@@ -12,21 +16,21 @@ namespace PieLine
     public partial class MainWindow : Window
     {
         // Dynamic data
-        public ObservableCollection<MenuGroup> MenuGroups { get; } = new();
-        private List<MenuItem> _allMenuItems = new();
+        public ObservableCollection<MenuGroup> MenuGroups { get; } = new ObservableCollection<MenuGroup>();
+        private List<MenuItem> _allMenuItems = new List<MenuItem>();
 
         // Simple cart
-        public ObservableCollection<MenuItem> CartItems { get; } = new();
+        public ObservableCollection<MenuItem> CartItems { get; } = new ObservableCollection<MenuItem>();
 
-        // Build-your-own pizza state
+        // Build-your-own pizza state (unchanged)
         private string _buildSize;
         private string _buildSauce;
         private string _buildCrust;
         private readonly HashSet<string> _buildToppings =
-            new(StringComparer.OrdinalIgnoreCase);
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
         private readonly Dictionary<string, decimal> _buildSizePrices =
-            new()
+            new Dictionary<string, decimal>
             {
                 { "Small", 8.99m },
                 { "Medium", 10.99m },
@@ -36,22 +40,56 @@ namespace PieLine
 
         private const decimal BuildToppingPrice = 1.00m;
 
+        private const double SidebarWidth = 360.0; // keep consistent with XAML
+
         public MainWindow()
         {
             InitializeComponent();
 
             DataContext = this;
 
-            Loaded += MainWindow_Loaded;
+            // Defer loading and initial UI update until the window is loaded so FindName can locate named controls
+            this.Loaded += MainWindow_Loaded;
 
+            // Update cart total when items change
             CartItems.CollectionChanged += (s, e) => UpdateCartTotal();
         }
 
         private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
         {
-            _allMenuItems = MenuFile.LoadMenuItems();
-            RefreshGroups(null);
+            // Load menu from JSON
+            LoadMenuItemsFromJson();
+
+            // Initialize builder summary after XAML names exist
             UpdateBuildPizzaSummary();
+
+            // ensure overlay starts hidden
+            var overlay = GetNamedControl<Border>("CartBackgroundOverlay");
+            if (overlay != null)
+            {
+                overlay.Opacity = 0;
+                overlay.Visibility = Visibility.Collapsed;
+                //overlay.Width =0; // removed - overlay now covers full screen
+                // ensure Width is not fixed to0 from earlier experiments
+                overlay.ClearValue(FrameworkElement.WidthProperty);
+            }
+        }
+
+        // Load menu items from MenuFile helper
+        private void LoadMenuItemsFromJson()
+        {
+            try
+            {
+                var items = MenuFile.LoadMenuItems() ?? new List<MenuItem>();
+                _allMenuItems = items;
+                RefreshGroups(null);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Failed to load menu items: {ex.Message}");
+                _allMenuItems = new List<MenuItem>();
+                RefreshGroups(null);
+            }
         }
 
         // Helper to safely find named controls in XAML at runtime.
@@ -317,49 +355,72 @@ namespace PieLine
 
         private void OpenCartSidebar()
         {
-            var overlay = GetNamedControl<Grid>("CartSidebarOverlay");
+            var overlayGrid = GetNamedControl<Grid>("CartSidebarOverlay");
             var transform = GetNamedControl<TranslateTransform>("CartSidebarTransform");
-            if (overlay == null || transform == null)
+            var overlay = GetNamedControl<Border>("CartBackgroundOverlay");
+            if (overlayGrid == null || transform == null || overlay == null)
                 return;
 
-            overlay.Visibility = Visibility.Visible;
-            overlay.IsHitTestVisible = true;
+            overlayGrid.Visibility = Visibility.Visible;
+            overlayGrid.IsHitTestVisible = true;
 
-            var anim = new DoubleAnimation
+            // Animate sidebar in
+            var sidebarAnim = new DoubleAnimation
             {
-                From = 360,
-                To = 0,
+                From = SidebarWidth,
+                To =0,
                 Duration = TimeSpan.FromMilliseconds(300),
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
             };
+            transform.BeginAnimation(TranslateTransform.XProperty, sidebarAnim);
 
-            transform.BeginAnimation(TranslateTransform.XProperty, anim);
+            // Ensure overlay will stretch (clear any fixed Width) and fade in (full-screen overlay)
+            overlay.ClearValue(FrameworkElement.WidthProperty);
+            overlay.Visibility = Visibility.Visible;
+            var overlayFadeIn = new DoubleAnimation(0,0.5, TimeSpan.FromMilliseconds(300))
+            {
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
+            };
+            overlay.BeginAnimation(UIElement.OpacityProperty, overlayFadeIn);
 
+            // Refresh total and ensure binding updates
             UpdateCartTotal();
         }
 
         private void CloseCartSidebar()
         {
-            var overlay = GetNamedControl<Grid>("CartSidebarOverlay");
+            var overlayGrid = GetNamedControl<Grid>("CartSidebarOverlay");
             var transform = GetNamedControl<TranslateTransform>("CartSidebarTransform");
-            if (overlay == null || transform == null)
+            var overlay = GetNamedControl<Border>("CartBackgroundOverlay");
+            if (overlayGrid == null || transform == null || overlay == null)
                 return;
 
-            var anim = new DoubleAnimation
+            // Animate sidebar out
+            var sidebarAnim = new DoubleAnimation
             {
-                From = 0,
-                To = 360,
+                From =0,
+                To = SidebarWidth,
                 Duration = TimeSpan.FromMilliseconds(250),
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
             };
 
-            anim.Completed += (s, e) =>
+            // Fade overlay out (full-screen overlay)
+            var overlayFadeOut = new DoubleAnimation(overlay.Opacity,0, TimeSpan.FromMilliseconds(250))
             {
-                overlay.Visibility = Visibility.Collapsed;
-                overlay.IsHitTestVisible = false;
+                EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
             };
 
-            transform.BeginAnimation(TranslateTransform.XProperty, anim);
+            overlayFadeOut.Completed += (s, ev) =>
+            {
+                overlayGrid.Visibility = Visibility.Collapsed;
+                overlayGrid.IsHitTestVisible = false;
+                overlay.Opacity =0;
+                // reset Width so next open isn't constrained
+                overlay.ClearValue(FrameworkElement.WidthProperty);
+            };
+
+            transform.BeginAnimation(TranslateTransform.XProperty, sidebarAnim);
+            overlay.BeginAnimation(UIElement.OpacityProperty, overlayFadeOut);
         }
 
         private void CartRemove_Click(object sender, RoutedEventArgs e)

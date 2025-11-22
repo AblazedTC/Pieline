@@ -684,17 +684,17 @@
                 <ColumnDefinition Width="360"/>
             </Grid.ColumnDefinitions>
 
-            <!-- Clickable dark overlay that closes the cart when clicked -->
-            <Border Grid.Column="0" Background="#80000000" MouseDown="CartOverlayBackground_MouseDown"/>
+            <!-- Clickable dark overlay that closes the cart when clicked (covers full area) -->
+            <Border x:Name="CartBackgroundOverlay" Grid.Column="0" Grid.ColumnSpan="2" Background="#80000000" MouseDown="CartOverlayBackground_MouseDown" HorizontalAlignment="Stretch" Opacity="0" Visibility="Collapsed"/>
 
             <!-- Sidebar panel (starts translated to the right) -->
             <Border Grid.Column="1"
                     Background="White"
                     BorderBrush="#E0E0E0"
-                    BorderThickness="0"
+                    BorderThickness="1"
                     Padding="0,35,0,10"
                     x:Name="CartSidebar"
-                    HorizontalAlignment="Right">
+                    HorizontalAlignment="Stretch">
                 <Border.RenderTransform>
                     <TranslateTransform x:Name="CartSidebarTransform" X="360" />
                 </Border.RenderTransform>
