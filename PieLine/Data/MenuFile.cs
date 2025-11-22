@@ -74,6 +74,43 @@ namespace PieLine
                 ""image"": ""Images/pepperoni.png""
                 },
                 {
+                ""Id"": ""pizza-veggie-001"",
+                ""Name"": ""Veggie Pizza"",
+                ""Category"": ""Pizza"",
+                ""Price"": 14.99,
+                ""Description"": ""A colorful medley of fresh bell peppers, onions, mushrooms, and olives atop our tomato sauce and mozzarella"",
+                ""Tags"": [
+                  ""Vegetarian"",
+                  ""Mozzarella"",
+                  ""Bell Peppers"",
+                  ""Onions"",
+                  ""Mushrooms"",
+                  ""Olives""],
+                ""Image"": ""Images/veggie.png""
+                },
+                {
+                ""Id"": ""drink-Sprite-001"",
+                ""Name"": ""Sprite"",
+                ""Category"": ""Beverage"",
+                ""Price"": 1.99,
+                ""Description"": ""The classic lemon-lime soda."",
+                ""Tags"": [
+                    ""20 oz bottle""
+                ],
+                ""Image"": ""Images/sprite.png""
+                },
+                {
+                ""Id"": ""drink-fanta-001"",
+                ""Name"": ""Fanta"",
+                ""Category"": ""Beverage"",
+                ""Price"": 1.99,
+                ""Description"": ""A soft drink with a tingly fruity taste."",
+                ""Tags"": [
+                    ""20 oz bottle""
+                ],
+                ""Image"": ""Images/fanta.png""
+                },
+                {
                 ""id"": ""drink-coke-001"",
                 ""name"": ""Coke"",
                 ""category"": ""Beverage"",
@@ -81,6 +118,44 @@ namespace PieLine
                 ""description"": ""Chilled classic cola."",
                 ""tags"": [""20 oz bottle""],
                 ""image"": ""Images/coke.png""
+                },
+                {
+                ""Id"": ""dessert-chocchunkcookie-001"",
+                ""Name"": ""Chocolate Chunk Cookie"",
+                ""Category"": ""Dessert"",
+                ""Price"": 6.99,
+                ""Description"": ""A gooey chocolatey dessert"",
+                ""Tags"": [
+                    ""Cookie"",
+                    ""Sweet"",
+                    ""Chocolate""
+                ],
+                ""Image"": ""Images/ccc.png""
+                },
+                {
+                ""Id"": ""dessert-cinnamonroll-001"",
+                ""Name"": ""Cinnamon Roll"",
+                ""Category"": ""Dessert"",
+                ""Price"": 6.99,
+                ""Description"": ""A gooey chocolatey dessert"",
+                ""Tags"": [
+                    ""Baked"",
+                    ""Cinnamon""
+                ],
+                ""Image"": ""Images/cinnamonroll.png""
+                },
+                {
+                ""Id"": ""dessert-lavacake-001"",
+                ""Name"": ""Molten Lava Cake"",
+                ""Category"": ""Dessert"",
+                ""Price"": 6.99,
+                ""Description"": ""A gooey chocolatey dessert"",
+                ""Tags"": [
+                    ""Chocolate"",
+                    ""Cake"",
+                    ""Baked""
+                ],
+                ""Image"": ""Images/lavacake.png""
                 }
             ]";
             var items = JsonSerializer.Deserialize<List<MenuItem>>(defaultJson, JsonOptions);
