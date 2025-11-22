@@ -745,8 +745,14 @@
                             <TextBlock Text="Total" FontWeight="Bold" Padding="10,0,0,0"/>
                             <TextBlock x:Name="CartTotalText" Padding="0,0,0,0" Grid.Column="1" FontWeight="Bold" Foreground="{StaticResource AccentRed}"/>
                         </Grid>
-                           
-                        <Button Content="Checkout" Background="{StaticResource AccentGold}" Foreground="White" Height="44" FontWeight="Bold"/>
+
+                        <Button x:Name="CheckoutButton"
+                                Click="CheckoutButton_Click"
+                                Content="Checkout"
+                                Background="{StaticResource AccentGold}"
+                                Foreground="White"
+                                Height="44"
+                                FontWeight="Bold"/>
                     </StackPanel>
                 </Grid>
             </Border>

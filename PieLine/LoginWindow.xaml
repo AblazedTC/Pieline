@@ -115,16 +115,16 @@
 
                 <!-- Sign in button -->
                 <Button x:Name="LoginButton"
-            Grid.Row="5" Grid.ColumnSpan="2"
-            Content="Sign in"
-            Height="40"
-            Margin="0,0,0,10"
-            HorizontalAlignment="Stretch"
-            Click="LoginButton_Click"
-            Background="#FF4A1E"
-            Foreground="White"
-            FontWeight="Bold"
-            BorderBrush="#FF4A1E"/>
+                    Grid.Row="5" Grid.ColumnSpan="2"
+                    Content="Sign in"
+                    Height="40"
+                    Margin="0,0,0,10"
+                    HorizontalAlignment="Stretch"
+                    Click="LoginButton_Click"
+                    Background="#FF4A1E"
+                    Foreground="White"
+                    FontWeight="Bold"
+                    BorderBrush="#FF4A1E"/>
 
                 <!-- Sign up link -->
                 <StackPanel Grid.Row="6" Grid.ColumnSpan="2"

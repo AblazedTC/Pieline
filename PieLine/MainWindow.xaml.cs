@@ -310,6 +310,21 @@ namespace PieLine
             CloseCartSidebar();
         }
 
+        private void CheckoutButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!CartItems.Any())
+            {
+                MessageBox.Show("Your cart is empty.", "Checkout", MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            var items = CartItems.ToList();
+
+            var paymentWindow = new PaymentWindow(items);
+            paymentWindow.Show();
+            this.Close();
+        }
+
         private void CartOverlayBackground_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
             CloseCartSidebar();
