@@ -15,6 +15,8 @@ namespace PieLine
 {
     public partial class MainWindow : Window
     {
+        public string LogoPath { get; set; } = "Images/logo.png";
+
         // Dynamic data
         public ObservableCollection<MenuGroup> MenuGroups { get; } = new ObservableCollection<MenuGroup>();
         private List<MenuItem> _allMenuItems = new List<MenuItem>();
