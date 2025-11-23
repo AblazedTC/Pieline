@@ -8,7 +8,7 @@
         <SolidColorBrush x:Key="ScrollBarGold" Color="#D4AF37"/>
         <SolidColorBrush x:Key="ScrollBarGoldHover" Color="#F0C75E"/>
         <SolidColorBrush x:Key="ScrollBarGoldPressed" Color="#B8941F"/>
-        <SolidColorBrush x:Key="ScrollBarTrack" Color="#F5F5F5"/>
+        <SolidColorBrush x:Key="ScrollBarTrack" Color="Transparent"/>
 
         <!-- ScrollBar Thumb (the draggable part) -->
         <Style x:Key="ScrollBarThumbStyle" TargetType="{x:Type Thumb}">
@@ -91,40 +91,37 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type ScrollViewer}">
                         <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                            <!-- Content -->
+                            <ScrollContentPresenter x:Name="PART_ScrollContentPresenter"
+                                            Margin="0,0,0,0" />
 
-                            <ScrollContentPresenter Grid.Column="0" Grid.Row="0"/>
-
+                            <!-- Vertical scrollbar OVERLAY -->
                             <ScrollBar x:Name="PART_VerticalScrollBar"
-                              Grid.Column="1"
-                              Grid.Row="0"
-                              Style="{StaticResource CustomScrollBarStyle}"
-                              Maximum="{TemplateBinding ScrollableHeight}"
-                              ViewportSize="{TemplateBinding ViewportHeight}"
-                              Value="{TemplateBinding VerticalOffset}"
-                              Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
+                               Orientation="Vertical"
+                               Style="{StaticResource CustomScrollBarStyle}"
+                               HorizontalAlignment="Right"
+                               VerticalAlignment="Stretch"
+                               Width="12"
+                               Maximum="{TemplateBinding ScrollableHeight}"
+                               ViewportSize="{TemplateBinding ViewportHeight}"
+                               Value="{TemplateBinding VerticalOffset}"
+                               Visibility="{TemplateBinding ComputedVerticalScrollBarVisibility}"/>
 
+                            <!-- Horizontal scrollbar OVERLAY -->
                             <ScrollBar x:Name="PART_HorizontalScrollBar"
-                              Grid.Column="0"
-                              Grid.Row="1"
-                              Orientation="Horizontal"
-                              Style="{StaticResource CustomScrollBarStyle}"
-                              Maximum="{TemplateBinding ScrollableWidth}"
-                              ViewportSize="{TemplateBinding ViewportWidth}"
-                              Value="{TemplateBinding HorizontalOffset}"
-                              Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"/>
+                               Orientation="Horizontal"
+                               Style="{StaticResource CustomScrollBarStyle}"
+                               VerticalAlignment="Bottom"
+                               HorizontalAlignment="Stretch"
+                               Height="12"
+                               Maximum="{TemplateBinding ScrollableWidth}"
+                               ViewportSize="{TemplateBinding ViewportWidth}"
+                               Value="{TemplateBinding HorizontalOffset}"
+                               Visibility="{TemplateBinding ComputedHorizontalScrollBarVisibility}"/>
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
-
     </Application.Resources>
 </Application>

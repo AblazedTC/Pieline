@@ -4,11 +4,14 @@ namespace PieLine
 {
     public partial class RegisterWindow : Window
     {
+        public string LogoPath { get; set; } = "Images/logo.png";
+
         private bool isUpdatingPhone = false;
 
         public RegisterWindow()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
         private void PhoneTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -18,7 +21,7 @@ namespace PieLine
 
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
-            CommonHelpers.SetError(RegisterErrorTextBlock, null);
+            CommonHelpers.SetError(RegisterErrorBorder, RegisterErrorTextBlock, null);
 
             string name = NameTextBox.Text.Trim();
             string email = EmailTextBox.Text.Trim();
@@ -28,18 +31,18 @@ namespace PieLine
 
             if (password != confirm)
             {
-                CommonHelpers.SetError(RegisterErrorTextBlock,
+                CommonHelpers.SetError(RegisterErrorBorder, RegisterErrorTextBlock,
                     "Error: Password and confirmed password must match.");
                 return;
             }
 
             if (!UserFile.TryAddUser(name, email, phoneDigits, password, out string error))
             {
-                CommonHelpers.SetError(RegisterErrorTextBlock, error);
+                CommonHelpers.SetError(RegisterErrorBorder, RegisterErrorTextBlock, error);
                 return;
             }
 
-            CommonHelpers.SetError(RegisterErrorTextBlock, null);
+            CommonHelpers.SetError(RegisterErrorBorder, RegisterErrorTextBlock, null);
             var loginWindow = new LoginWindow();
             CommonHelpers.PersistantWindows(this, loginWindow);
         }

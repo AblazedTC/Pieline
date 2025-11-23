@@ -5,6 +5,8 @@ namespace PieLine
 {
     public partial class LoginWindow : Window
     {
+        public string LogoPath { get; set; } = "Images/logo.png";
+
         private bool isUpdatingPhone = false;
 
         private int failedLoginAttempts = 0;
@@ -13,6 +15,7 @@ namespace PieLine
         public LoginWindow()
         {
             InitializeComponent();
+            DataContext = this;
         }
 
         private void PhoneTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -23,7 +26,7 @@ namespace PieLine
         private void StartLockout()
         {
             lockoutUntil = DateTime.Now.AddMinutes(10);
-            CommonHelpers.SetError(LoginErrorTextBlock,
+            CommonHelpers.SetError(LoginErrorBorder, LoginErrorTextBlock,
                 "Error: Maximum sign in attempts reached, please try again in 10 minutes.");
         }
 
@@ -31,12 +34,12 @@ namespace PieLine
         {
             if (lockoutUntil.HasValue && DateTime.Now < lockoutUntil.Value)
             {
-                CommonHelpers.SetError(LoginErrorTextBlock,
+                CommonHelpers.SetError(LoginErrorBorder, LoginErrorTextBlock,
                     "Error: Maximum sign in attempts reached, please try again in 10 minutes.");
                 return;
             }
 
-            CommonHelpers.SetError(LoginErrorTextBlock, null);
+            CommonHelpers.SetError(LoginErrorBorder, LoginErrorTextBlock, null);
 
             string phoneDigits = CommonHelpers.ExtractDigits(PhoneTextBox.Text);
             string password = PasswordBox.Password;
@@ -51,7 +54,7 @@ namespace PieLine
                     return;
                 }
 
-                CommonHelpers.SetError(LoginErrorTextBlock,
+                CommonHelpers.SetError(LoginErrorBorder, LoginErrorTextBlock,
                     "Error: Invalid phone number, please enter a valid phone number then try again.");
                 return;
             }
@@ -65,14 +68,14 @@ namespace PieLine
                     return;
                 }
 
-                CommonHelpers.SetError(LoginErrorTextBlock,
+                CommonHelpers.SetError(LoginErrorBorder, LoginErrorTextBlock,
                     "Error: Invalid password, please enter a valid password then try again.");
                 return;
             }
 
             failedLoginAttempts = 0;
             lockoutUntil = null;
-            CommonHelpers.SetError(LoginErrorTextBlock, null);
+            CommonHelpers.SetError(LoginErrorBorder, LoginErrorTextBlock, null);
 
             var main = new MainWindow();
             CommonHelpers.PersistantWindows(this, main);

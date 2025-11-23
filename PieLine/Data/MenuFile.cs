@@ -61,7 +61,10 @@ namespace PieLine
                 ""category"": ""Pizza"",
                 ""price"": 12.99,
                 ""description"": ""A classic cheese pizza topped with rich tomato sauce and melted mozzarella."",
-                ""tags"": [""Mozzarella"", ""Vegetarian""],
+                ""tags"": [
+                    ""Mozzarella"",
+                    ""Tomato""
+                ],
                 ""image"": ""Images/cheese.png""
                 },
                 {
@@ -70,7 +73,10 @@ namespace PieLine
                 ""category"": ""Pizza"",
                 ""price"": 14.99,
                 ""description"": ""Zesty tomato sauce, mozzarella cheese, and crisp slices of pepperoni."",
-                ""tags"": [""Pepperoni"", ""Spicy""],
+                ""tags"": [
+                    ""Pepperoni"",
+                    ""Spicy""
+                ],
                 ""image"": ""Images/pepperoni.png""
                 },
                 {
@@ -78,14 +84,12 @@ namespace PieLine
                 ""Name"": ""Veggie Pizza"",
                 ""Category"": ""Pizza"",
                 ""Price"": 14.99,
-                ""Description"": ""A colorful medley of fresh bell peppers, onions, mushrooms, and olives atop our tomato sauce and mozzarella"",
+                ""Description"": ""A colorful medley of fresh bell peppers, onions, mushrooms."",
                 ""Tags"": [
                   ""Vegetarian"",
-                  ""Mozzarella"",
                   ""Bell Peppers"",
-                  ""Onions"",
-                  ""Mushrooms"",
-                  ""Olives""],
+                  ""Onions""
+                ],
                 ""Image"": ""Images/veggie.png""
                 },
                 {
@@ -116,15 +120,17 @@ namespace PieLine
                 ""category"": ""Beverage"",
                 ""price"": 1.99,
                 ""description"": ""Chilled classic cola."",
-                ""tags"": [""20 oz bottle""],
+                ""tags"": [
+                    ""20 oz bottle""
+                ],
                 ""image"": ""Images/coke.png""
                 },
                 {
                 ""Id"": ""dessert-chocchunkcookie-001"",
-                ""Name"": ""Chocolate Chunk Cookie"",
+                ""Name"": ""Chocolate Cookie"",
                 ""Category"": ""Dessert"",
                 ""Price"": 6.99,
-                ""Description"": ""A gooey chocolatey dessert"",
+                ""Description"": ""A crisp chocolatey dessert"",
                 ""Tags"": [
                     ""Cookie"",
                     ""Sweet"",
@@ -149,7 +155,7 @@ namespace PieLine
                 ""Name"": ""Molten Lava Cake"",
                 ""Category"": ""Dessert"",
                 ""Price"": 6.99,
-                ""Description"": ""A gooey chocolatey dessert"",
+                ""Description"": ""A gooey cinnamon dessert"",
                 ""Tags"": [
                     ""Chocolate"",
                     ""Cake"",

@@ -4,7 +4,7 @@
         xmlns:local="clr-namespace:PieLine"
         Title="Mom's and Pop's Pizzeria - Main"
         Height="768" Width="1024"
-        Background="#F5E6D3"
+        Background="#FFF5EE"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
@@ -12,7 +12,7 @@
         <SolidColorBrush x:Key="AccentRed" Color="#FF4A1E"/>
         <SolidColorBrush x:Key="AccentGold" Color="#C5AA00"/>
         <SolidColorBrush x:Key="CardBackground" Color="White"/>
-        <SolidColorBrush x:Key="HeaderBackground" Color="#F5E6D3"/>
+        <SolidColorBrush x:Key="HeaderBackground" Color="White"/>
 
         <!-- Top-right icon buttons -->
         <Style x:Key="HeaderIconButtonStyle" TargetType="Button">
@@ -165,7 +165,7 @@
         <Border Grid.Row="1" Background="Black" Height="1"/>
 
         <!-- ============== SEARCH + BUILD YOUR OWN ROW ============== -->
-        <Grid Grid.Row="2" Margin="20,10">
+        <Grid Grid.Row="2" Margin="20,25">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -173,10 +173,11 @@
 
             <!-- Search bar -->
             <Border Grid.Column="0"
-                    Background="White"
+                    Background="#FDFCF9"
                     CornerRadius="20"
                     Padding="10,6"
-                    BorderBrush="#DDDDDD"
+                    Margin="4,0"
+                    BorderBrush="#888"
                     BorderThickness="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -185,8 +186,7 @@
                     </Grid.ColumnDefinitions>
 
                     <TextBlock Text="Search"
-                               VerticalAlignment="Center"
-                               Margin="4,0"/>
+                               VerticalAlignment="Center"/>
 
                     <TextBox Grid.Column="1"
                              Style="{StaticResource SearchTextBoxStyle}"
@@ -215,16 +215,16 @@
 
         <!-- ================= MENU CARDS CONTENT (REPLACED WITH DYNAMIC BINDING) ================= -->
         <Border Grid.Row="3"
-                Margin="20,20,20,20"
+                Margin="20,0,20,20"
                 CornerRadius="16"
-                Background="#FBEFE3">
+                Background="#FFF5EE">
             <ScrollViewer VerticalScrollBarVisibility="Auto">
                 <StackPanel Margin="10">
 
                     <ItemsControl ItemsSource="{Binding MenuGroups}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <StackPanel Margin="0,0,0,12">
+                                <StackPanel Margin="0,0,0,0">
                                     <TextBlock Text="{Binding Category}"
                                                FontSize="20"
                                                FontWeight="Bold"
@@ -238,7 +238,7 @@
 
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate DataType="{x:Type local:MenuItem}">
-                                                <Border Width="260" Margin="10"
+                                                <Border Width="260" Margin="20"
                                                         Background="{StaticResource CardBackground}"
                                                         CornerRadius="20"
                                                         BorderBrush="#E0E0E0"
@@ -417,8 +417,6 @@
                                 </StackPanel>
                             </Border>
 
-
-
                             <!-- ***** SAUCE + CRUST SIDE BY SIDE ***** -->
                             <Grid Margin="0,0,0,20">
                                 <Grid.ColumnDefinitions>
@@ -454,8 +452,6 @@
                                         </WrapPanel>
                                     </StackPanel>
                                 </Border>
-
-
 
                                 <!-- CRUST -->
                                 <Border Style="{StaticResource BuilderGroupBorderStyle}"
@@ -716,7 +712,7 @@
                         <ItemsControl ItemsSource="{Binding CartItems}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Padding="8" Margin="0,0,0,10" Background="#FFF8F2" CornerRadius="8">
+                                    <Border Padding="8" Margin="0,0,0,10" Background="#FFF7EE" CornerRadius="8">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>

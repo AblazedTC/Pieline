@@ -1,165 +1,268 @@
 <Window x:Class="PieLine.RegisterWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Create an account - Mom's and Pop's Pizzeria"
-        Height="768" Width="1024"
-        Background="#F5E6D3"
-        WindowStartupLocation="CenterOwner">
+        xmlns:local="clr-namespace:PieLine"
+        Title="Mom's and Pop's Pizzeria"
+        Height="800" Width="1024"
+        Background="#FFF7EE"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        
+        <!-- Accent red -->
+        <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
+
+        <!-- Rounded TextBox -->
+        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#1A1A1A"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Rounded PasswordBox -->
+        <Style x:Key="RoundedPasswordBoxStyle" TargetType="PasswordBox">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="BorderBrush" Value="#1A1A1A"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="PasswordBox">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Rounded error bar -->
+        <Style x:Key="ErrorBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="#FFB3B3"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+
+        <!-- Rounded primary button -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="46"/>
+            <Setter Property="FontSize" Value="20"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="{StaticResource AccentRed}"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <local:ImagePathConverter x:Key="ImagePathConverter"/>
+
+    </Window.Resources>
+
+    <!-- Layout -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- Header -->
-        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,40,0,0">
-            <TextBlock Text="Mom's and Pop's Pizzeria"
-                       FontSize="42" FontWeight="Bold"
-                       Foreground="#1A1A1A"/>
-        </StackPanel>
+        <ScrollViewer Grid.Row="1"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
 
-        <!-- Card -->
-        <Border Grid.Row="1"
-                Width="600" MaxHeight="650"
-                Background="White"
-                BorderBrush="#2C2C2C" BorderThickness="2"
-                CornerRadius="15"
-                Padding="50"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/> <!-- Title -->
-                    <RowDefinition Height="Auto"/> <!-- Name -->
-                    <RowDefinition Height="Auto"/> <!-- Phone -->
-                    <RowDefinition Height="Auto"/> <!-- Email -->
-                    <RowDefinition Height="Auto"/> <!-- Password -->
-                    <RowDefinition Height="Auto"/> <!-- Confirm -->
-                    <RowDefinition Height="Auto"/> <!-- Error -->
-                    <RowDefinition Height="Auto"/> <!-- Button -->
-                    <RowDefinition Height="*"/>   <!-- Sign in link -->
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
+              <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
 
-                <Label Grid.Row="0" Grid.ColumnSpan="2"
-                       Content="Create an account"
-                       FontSize="26"
-                       FontWeight="Bold"
-                       HorizontalAlignment="Left"
-                       Margin="0,0,0,10"/>
+                    <!-- Header -->
+                    <StackPanel Grid.Row="0"
+                                Orientation="Horizontal"
+                                HorizontalAlignment="Center"
+                                Margin="0,10,0,0">
 
-                <TextBlock Grid.Row="0" Grid.ColumnSpan="2"
-                           Text="Enter your information to get started"
-                           Margin="0,35,0,30"
-                           FontSize="14"
-                           Foreground="#555"/>
+                        <Border Width="50" Height="50" CornerRadius="4" Margin="0,0,12,0">
+                            <Border.Background>
+                                <ImageBrush ImageSource="{Binding LogoPath, Converter={StaticResource ImagePathConverter}}"
+                                            Stretch="Uniform" />
+                            </Border.Background>
+                        </Border>
 
-                <!-- Full Name -->
-                <TextBlock Grid.Row="1" Grid.Column="0"
-                           Text="Full Name"
-                           Margin="0,0,10,10"
-                           FontSize="16"
-                           VerticalAlignment="Center"/>
-                <TextBox x:Name="NameTextBox"
-                         Grid.Row="1" Grid.Column="1"
-                         Margin="0,0,0,10"
-                         Height="30"
-                         Padding="5"
-                         MinWidth="250"/>
+                        <TextBlock Text="Mom's and Pop's Pizzeria"
+                                   FontSize="42"
+                                   FontWeight="Bold"
+                                   Foreground="#1A1A1A"/>
+                    </StackPanel>
 
-                <!-- Phone -->
-                <TextBlock Grid.Row="2" Grid.Column="0"
-                           Text="Phone Number"
-                           Margin="0,0,10,10"
-                           FontSize="16"
-                           VerticalAlignment="Center"/>
-                <TextBox x:Name="PhoneTextBox"
-                         Grid.Row="2" Grid.Column="1"
-                         Margin="0,0,0,10"
-                         Height="30"
-                         Padding="5"
-                         MinWidth="250"
-                         MaxLength="20"
-                         TextChanged="PhoneTextBox_TextChanged"/>
+                    <!-- Main Card -->
+                    <Border Width="680"
+                        Background="White"
+                        BorderBrush="#1A1A1A"
+                        BorderThickness="2"
+                        CornerRadius="20"
+                        Padding="100,18"
+                        HorizontalAlignment="Center"
+                        Margin="0,10,0,40">
 
-                <!-- Email -->
-                <TextBlock Grid.Row="3" Grid.Column="0"
-                           Text="Email"
-                           Margin="0,0,10,10"
-                           FontSize="16"
-                           VerticalAlignment="Center"/>
-                <TextBox x:Name="EmailTextBox"
-                         Grid.Row="3" Grid.Column="1"
-                         Margin="0,0,0,10"
-                         Height="30"
-                         Padding="5"
-                         MinWidth="250"/>
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <!-- Title -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Full name -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Phone -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Email -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Password -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Confirm -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Error -->
+                                <RowDefinition Height="Auto"/>
+                                <!-- Create -->
+                                <RowDefinition Height="*"/>
+                                <!-- Sign in -->
+                            </Grid.RowDefinitions>
 
-                <!-- Password -->
-                <TextBlock Grid.Row="4" Grid.Column="0"
-                           Text="Password"
-                           Margin="0,0,10,10"
-                           FontSize="16"
-                           VerticalAlignment="Center"/>
-                <PasswordBox x:Name="PasswordBox"
-                             Grid.Row="4" Grid.Column="1"
-                             Margin="0,0,0,10"
-                             Height="30"
-                             Padding="5"/>
+                            <!-- Title -->
+                            <StackPanel Grid.Row="0" Margin="0,0,0,30">
+                                <TextBlock Text="Create an account"
+                                           FontSize="30"
+                                           FontWeight="Bold"/>
+                                <TextBlock Text="Enter your information to get started"
+                                           FontSize="18"
+                                           FontWeight="SemiBold"/>
+                            </StackPanel>
 
-                <!-- Confirm Password -->
-                <TextBlock Grid.Row="5" Grid.Column="0"
-                           Text="Confirm Password"
-                           Margin="0,0,10,10"
-                           FontSize="16"
-                           VerticalAlignment="Center"/>
-                <PasswordBox x:Name="ConfirmPasswordBox"
-                             Grid.Row="5" Grid.Column="1"
-                             Margin="0,0,0,10"
-                             Height="30"
-                             Padding="5"/>
+                            <!-- Full Name -->
+                            <StackPanel Grid.Row="1" Margin="0,0,0,16">
+                                <TextBlock Text="Full Name"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Margin="4,0,0,4"/>
+                                <TextBox x:Name="NameTextBox"
+                                         Style="{StaticResource RoundedTextBoxStyle}"
+                                         MaxLength="32"/>
+                            </StackPanel>
 
-                <!-- Error area -->
-                <TextBlock x:Name="RegisterErrorTextBlock"
-                           Grid.Row="6" Grid.ColumnSpan="2"
-                           Margin="0,0,0,10"
-                           Padding="10"
-                           Background="#FDE2E2"
-                           Foreground="#B00020"
-                           TextWrapping="Wrap"
-                           FontSize="14"
-                           Visibility="Collapsed"
-                           TextAlignment="Center"/>
+                            <!-- Phone -->
+                            <StackPanel Grid.Row="2" Margin="0,0,0,16">
+                                <TextBlock Text="Phone Number"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Margin="4,0,0,4"/>
+                                <TextBox x:Name="PhoneTextBox"
+                                         Style="{StaticResource RoundedTextBoxStyle}"
+                                         MaxLength="14"
+                                         TextChanged="PhoneTextBox_TextChanged"/>
+                            </StackPanel>
 
-                <!-- Create account button -->
-                <Button x:Name="RegisterButton"
-                        Grid.Row="7" Grid.ColumnSpan="2"
-                        Content="Create account"
-                        Height="40"
-                        Margin="0,0,0,10"
-                        HorizontalAlignment="Stretch"
-                        Click="RegisterButton_Click"
-                        Background="#FF4A1E"
-                        Foreground="White"
-                        FontWeight="Bold"
-                        BorderBrush="#FF4A1E"/>
+                            <!-- Email -->
+                            <StackPanel Grid.Row="3" Margin="0,0,0,16">
+                                <TextBlock Text="Email"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Margin="4,0,0,4"/>
+                                <TextBox x:Name="EmailTextBox"
+                                         Style="{StaticResource RoundedTextBoxStyle}"
+                                         MaxLength="32"/>
+                            </StackPanel>
 
-                <!-- Back to sign in -->
-                <StackPanel Grid.Row="8" Grid.ColumnSpan="2"
-                            Orientation="Horizontal"
-                            HorizontalAlignment="Center"
-                            Margin="0,20,0,0">
-                    <TextBlock FontSize="14" Text="Already have an account? "/>
-                    <TextBlock FontSize="14">
-                        <Hyperlink Click="BackToLogin_Click">
-                            Sign in
-                        </Hyperlink>
-                    </TextBlock>
-                </StackPanel>
-            </Grid>
-        </Border>
+                            <!-- Password -->
+                            <StackPanel Grid.Row="4" Margin="0,0,0,16">
+                                <TextBlock Text="Password"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Margin="4,0,0,4"/>
+                                <PasswordBox x:Name="PasswordBox"
+                                             Style="{StaticResource RoundedPasswordBoxStyle}"
+                                             MaxLength="32"/>
+                            </StackPanel>
+
+                            <!-- Confirm Password -->
+                            <StackPanel Grid.Row="5" Margin="0,0,0,16">
+                                <TextBlock Text="Confirm Password"
+                                           FontSize="20"
+                                           FontWeight="Bold"
+                                           Margin="4,0,0,4"/>
+                                <PasswordBox x:Name="ConfirmPasswordBox"
+                                             Style="{StaticResource RoundedPasswordBoxStyle}"
+                                             MaxLength="32"/>
+                            </StackPanel>
+
+                            <!-- Error Box -->
+                            <StackPanel Grid.Row="6" Margin="0,10,0,-10">
+                                <Border x:Name="RegisterErrorBorder"
+                                    Style="{StaticResource ErrorBorderStyle}"
+                                    Visibility="Collapsed"
+                                    BorderBrush="#F13300"
+                                    BorderThickness="2">
+                                    <TextBlock x:Name="RegisterErrorTextBlock"
+                                            FontSize="18"
+                                            FontWeight="Bold"
+                                            TextWrapping="Wrap"
+                                            TextAlignment="Center"
+                                            Foreground="#1A1A1A"/>
+                                </Border>
+                            </StackPanel>
+
+                            <!-- Create Account Button -->
+                            <Button x:Name="RegisterButton"
+                                    Grid.Row="7"
+                                    Style="{StaticResource PrimaryButtonStyle}"
+                                    Content="Create account"
+                                    Click="RegisterButton_Click"
+                                    Margin="0,20,0,0"/>
+
+                            <!-- Sign in -->
+                            <StackPanel Grid.Row="8"
+                                    Orientation="Horizontal"
+                                    HorizontalAlignment="Center"
+                                    Margin="0,20,0,5">
+                                <TextBlock FontSize="18"
+                                        Text="Already have an account? "/>
+                                <TextBlock FontSize="18">
+                                <Hyperlink Click="BackToLogin_Click"
+                                            Foreground="{StaticResource AccentRed}">
+                                    Sign in
+                                </Hyperlink>
+                                </TextBlock>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+              </StackPanel>
+        </ScrollViewer>
     </Grid>
 </Window>

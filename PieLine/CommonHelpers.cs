@@ -19,19 +19,20 @@ namespace PieLine
             current.Close();
         }
 
-        public static void SetError(TextBlock errorBlock, string message)
+        public static void SetError(Border errorBorder, TextBlock errorBlock, string message)
         {
-            if (errorBlock == null) return;
+            if (errorBorder == null || errorBlock == null)
+                return;
 
             if (string.IsNullOrEmpty(message))
             {
-                errorBlock.Visibility = Visibility.Collapsed;
+                errorBorder.Visibility = Visibility.Collapsed;
                 errorBlock.Text = "";
             }
             else
             {
                 errorBlock.Text = message;
-                errorBlock.Visibility = Visibility.Visible;
+                errorBorder.Visibility = Visibility.Visible;
             }
         }
 
