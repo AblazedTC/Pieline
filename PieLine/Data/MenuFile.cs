@@ -63,7 +63,8 @@ namespace PieLine
                 ""description"": ""A classic cheese pizza topped with rich tomato sauce and melted mozzarella."",
                 ""tags"": [
                     ""Mozzarella"",
-                    ""Tomato""
+                    ""Tomato"",
+                    ""Medium""
                 ],
                 ""image"": ""Images/cheese.png""
                 },
@@ -75,7 +76,8 @@ namespace PieLine
                 ""description"": ""Zesty tomato sauce, mozzarella cheese, and crisp slices of pepperoni."",
                 ""tags"": [
                     ""Pepperoni"",
-                    ""Spicy""
+                    ""Spicy"",
+                    ""Medium""
                 ],
                 ""image"": ""Images/pepperoni.png""
                 },
@@ -86,9 +88,10 @@ namespace PieLine
                 ""Price"": 14.99,
                 ""Description"": ""A colorful medley of fresh bell peppers, onions, mushrooms."",
                 ""Tags"": [
-                  ""Vegetarian"",
                   ""Bell Peppers"",
-                  ""Onions""
+                  ""Medium"",
+                  ""Olives"",
+                  ""+5""
                 ],
                 ""Image"": ""Images/veggie.png""
                 },

@@ -37,7 +37,7 @@ namespace PieLine
                 { "Small", 8.99m },
                 { "Medium", 10.99m },
                 { "Large", 12.99m },
-                { "ExtraLarge", 14.99m }
+                { "Extra Large", 14.99m }
             };
 
         private const decimal BuildToppingPrice = 1.00m;
@@ -54,7 +54,11 @@ namespace PieLine
             this.Loaded += MainWindow_Loaded;
 
             // Update cart total when items change
-            CartItems.CollectionChanged += (s, e) => UpdateCartTotal();
+            CartItems.CollectionChanged += (s, e) =>
+            {
+                UpdateCartTotal();
+                UpdateCheckoutButtonState();
+            };
         }
 
         private void MainWindow_Loaded(object? sender, RoutedEventArgs e)
@@ -64,6 +68,8 @@ namespace PieLine
 
             // Initialize builder summary after XAML names exist
             UpdateBuildPizzaSummary();
+
+            UpdateCheckoutButtonState();
 
             // ensure overlay starts hidden
             var overlay = GetNamedControl<Border>("CartBackgroundOverlay");
@@ -184,12 +190,7 @@ namespace PieLine
 
         private void BuildYourOwnPizzaButton_Click(object sender, RoutedEventArgs e)
         {
-            // Reset state when opening
-            _buildSize = null;
-            _buildSauce = null;
-            _buildCrust = null;
-            _buildToppings.Clear();
-            UpdateBuildPizzaSummary();
+            ResetBuildPizzaButtons();
 
             var overlay = GetNamedControl<Grid>("BuildPizzaOverlay");
             if (overlay != null)
@@ -201,6 +202,7 @@ namespace PieLine
             var overlay = GetNamedControl<Grid>("BuildPizzaOverlay");
             if (overlay != null)
                 overlay.Visibility = Visibility.Collapsed;
+            ResetBuildPizzaButtons();
         }
 
         private void BuildPizzaAddToCart_Click(object sender, RoutedEventArgs e)
@@ -225,7 +227,35 @@ namespace PieLine
             if (overlay != null)
                 overlay.Visibility = Visibility.Collapsed;
 
+            ResetBuildPizzaButtons();
             OpenCartSidebar();
+        }
+
+        private void ResetBuildPizzaButtons()
+        {
+            _buildSize = null;
+            _buildSauce = null;
+            _buildCrust = null;
+            _buildToppings.Clear();
+            UpdateBuildPizzaSummary();
+
+            void ResetGroup(string panelName)
+            {
+                var panel = GetNamedControl<Panel>(panelName);
+                if (panel == null) return;
+
+                foreach (var btn in panel.Children.OfType<Button>())
+                {
+                    btn.Background = Brushes.White;
+                    btn.Foreground = Brushes.Black;
+                }
+            }
+
+            ResetGroup("BuildPizzaSizeButtonsPanel");
+            ResetGroup("BuildPizzaSauceButtonsPanel");
+            ResetGroup("BuildPizzaCrustButtonsPanel");
+            ResetGroup("VegToppingsButtonsPanel");
+            ResetGroup("MeatToppingsButtonsPanel");
         }
 
         private void BuildPizzaSetExclusiveSelection(Panel parent, Button clicked)
@@ -239,9 +269,7 @@ namespace PieLine
                         ? (Brush)FindResource("AccentRed")
                         : Brushes.White;
 
-                    btn.Foreground = isSelected
-                        ? Brushes.White
-                        : (Brush)FindResource("AccentRed");
+                    btn.Foreground = isSelected ? Brushes.White : Brushes.Black;
                 }
             }
         }
@@ -286,7 +314,7 @@ namespace PieLine
                 {
                     _buildToppings.Remove(topping);
                     btn.Background = Brushes.White;
-                    btn.Foreground = (Brush)FindResource("AccentRed");
+                    btn.Foreground = Brushes.Black;
                 }
                 else
                 {
@@ -312,6 +340,15 @@ namespace PieLine
             var paymentWindow = new PaymentWindow(items);
             paymentWindow.Show();
             this.Close();
+        }
+
+        private void UpdateCheckoutButtonState()
+        {
+            var checkoutButton = GetNamedControl<Button>("CheckoutButton");
+            if (checkoutButton == null)
+                return;
+
+            checkoutButton.IsEnabled = CartItems.Any();
         }
 
         private void UpdateBuildPizzaSummary()
@@ -340,7 +377,7 @@ namespace PieLine
                     {
                         Text = topping,
                         FontSize = 12,
-                        Foreground = Brushes.White
+                        Foreground = Brushes.Black
                     }
                 };
                 toppingsPanel.Children.Add(pill);
@@ -352,6 +389,22 @@ namespace PieLine
             total += _buildToppings.Count * BuildToppingPrice;
 
             totalText.Text = $"$ {total:0.00}";
+
+            UpdateBuildPizzaAddButtonState();
+        }
+
+        private void UpdateBuildPizzaAddButtonState()
+        {
+            var addButton = GetNamedControl<Button>("BuildPizzaAddToCartButton");
+            if (addButton == null)
+                return;
+
+            bool ready =
+                !string.IsNullOrEmpty(_buildSize) &&
+                !string.IsNullOrEmpty(_buildSauce) &&
+                !string.IsNullOrEmpty(_buildCrust);
+
+            addButton.IsEnabled = ready;
         }
 
         // ====== Cart Sidebar Controls ======

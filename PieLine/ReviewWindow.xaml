@@ -7,7 +7,7 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        <SolidColorBrush x:Key="AccentRed" Color="#FF4B0A"/>
+        <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
 
         <!-- Gold / Red step buttons in top-right -->
         <Style x:Key="StepChipButtonStyle" TargetType="Button">

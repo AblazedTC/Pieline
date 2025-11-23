@@ -9,8 +9,8 @@
 
     <Window.Resources>
         <!-- Colors -->
-        <SolidColorBrush x:Key="AccentRed" Color="#FF4A1E"/>
-        <SolidColorBrush x:Key="AccentGold" Color="#C5AA00"/>
+        <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
+        <SolidColorBrush x:Key="AccentGold" Color="#D4AF37"/>
         <SolidColorBrush x:Key="CardBackground" Color="White"/>
         <SolidColorBrush x:Key="HeaderBackground" Color="White"/>
 
@@ -38,11 +38,26 @@
             <Setter Property="Background" Value="{StaticResource AccentRed}"/>
             <Setter Property="Foreground" Value="White"/>
             <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="BorderBrush" Value="{StaticResource AccentRed}"/>
             <Setter Property="Height" Value="40"/>
             <Setter Property="Margin" Value="0,16,0,0"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="10">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
 
         <!-- Tag / chip style -->
@@ -150,7 +165,7 @@
                             VerticalAlignment="Center">
                     <Button Style="{StaticResource HeaderIconButtonStyle}" Content="i"/>
                     <Button Style="{StaticResource HeaderIconButtonStyle}">
-                        <TextBlock Text="Home" Foreground="#FF4A1E"/>
+                        <TextBlock Text="Home" Foreground="#F13300"/>
                     </Button>
                     <Button Style="{StaticResource HeaderIconButtonStyle}" Content="User"/>
                     <Button x:Name="CartButton" Style="{StaticResource HeaderIconButtonStyle}" Content="Cart" Click="CartButton_Click"/>
@@ -390,27 +405,27 @@
                                                Margin="0,0,0,14"/>
 
                                     <!-- Buttons -->
-                                    <UniformGrid Rows="2" Columns="2" Margin="0,6,0,0">
+                                    <UniformGrid Rows="2" Columns="2" Margin="0,6,0,0" x:Name="BuildPizzaSizeButtonsPanel">
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="24,12" FontSize="16"
-                                                Content="Small" Tag="Small"
-                                                Click="BuildPizzaSizeButton_Click"/>
+                                                    Padding="24,12" FontSize="16"
+                                                    Content="Small" Tag="Small"
+                                                    Click="BuildPizzaSizeButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="24,12" FontSize="16"
-                                                Content="Medium" Tag="Medium"
-                                                Click="BuildPizzaSizeButton_Click"/>
+                                                    Padding="24,12" FontSize="16"
+                                                    Content="Medium" Tag="Medium"
+                                                    Click="BuildPizzaSizeButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="24,12" FontSize="16"
-                                                Content="Large" Tag="Large"
-                                                Click="BuildPizzaSizeButton_Click"/>
+                                                    Padding="24,12" FontSize="16"
+                                                    Content="Large" Tag="Large"
+                                                    Click="BuildPizzaSizeButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="24,12" FontSize="16"
-                                                Content="Extra Large" Tag="ExtraLarge"
-                                                Click="BuildPizzaSizeButton_Click"/>
+                                                    Padding="24,12" FontSize="16"
+                                                    Content="Extra Large" Tag="Extra Large"
+                                                    Click="BuildPizzaSizeButton_Click"/>
 
                                     </UniformGrid>
                                 </StackPanel>
@@ -437,21 +452,23 @@
                                                    FontSize="18"
                                                    Margin="0,0,0,14"/>
 
-                                        <WrapPanel>
-                                            <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                    Padding="22,10" FontSize="16"
-                                                    Content="Tomato" Tag="Tomato"
-                                                    Click="BuildPizzaSauceButton_Click"/>
-
-                                            <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                    Padding="22,10" FontSize="16"
-                                                    Content="Marinara" Tag="Marinara"
-                                                    Click="BuildPizzaSauceButton_Click"/>
-
-                                            <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                    Padding="22,10" FontSize="16"
-                                                    Content="Alfredo" Tag="Alfredo"
-                                                    Click="BuildPizzaSauceButton_Click"/>
+                                        <WrapPanel HorizontalAlignment="Center">
+                                            <StackPanel x:Name="BuildPizzaSauceButtonsPanel">
+                                                <Button Style="{StaticResource ChoiceButtonStyle}"
+                                                        Padding="22,10" FontSize="16"
+                                                        Content="Tomato" Tag="Tomato"
+                                                        Click="BuildPizzaSauceButton_Click"/>
+                                                
+                                                <Button Style="{StaticResource ChoiceButtonStyle}"
+                                                        Padding="22,10" FontSize="16"
+                                                        Content="Marinara" Tag="Marinara"
+                                                        Click="BuildPizzaSauceButton_Click"/>
+                                                
+                                                <Button Style="{StaticResource ChoiceButtonStyle}"
+                                                        Padding="22,10" FontSize="16"
+                                                        Content="Alfredo" Tag="Alfredo"
+                                                        Click="BuildPizzaSauceButton_Click"/>
+                                            </StackPanel>
                                         </WrapPanel>
                                     </StackPanel>
                                 </Border>
@@ -469,21 +486,23 @@
                                                    FontSize="18"
                                                    Margin="0,0,0,14"/>
 
-                                        <WrapPanel>
-                                            <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                    Padding="22,10" FontSize="16"
-                                                    Content="Thin" Tag="Thin"
-                                                    Click="BuildPizzaCrustButton_Click"/>
+                                        <WrapPanel HorizontalAlignment="Center">
+                                            <StackPanel x:Name="BuildPizzaCrustButtonsPanel">
+                                                <Button Style="{StaticResource ChoiceButtonStyle}"
+                                                        Padding="22,10" FontSize="16"
+                                                        Content="Thin" Tag="Thin"
+                                                        Click="BuildPizzaCrustButton_Click"/>
 
-                                            <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                    Padding="22,10" FontSize="16"
-                                                    Content="Regular" Tag="Regular"
-                                                    Click="BuildPizzaCrustButton_Click"/>
+                                                <Button Style="{StaticResource ChoiceButtonStyle}"
+                                                        Padding="22,10" FontSize="16"
+                                                        Content="Regular" Tag="Regular"
+                                                        Click="BuildPizzaCrustButton_Click"/>
 
-                                            <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                    Padding="22,10" FontSize="16"
-                                                    Content="Pan" Tag="Pan"
-                                                    Click="BuildPizzaCrustButton_Click"/>
+                                                <Button Style="{StaticResource ChoiceButtonStyle}"
+                                                        Padding="22,10" FontSize="16"
+                                                        Content="Pan" Tag="Pan"
+                                                        Click="BuildPizzaCrustButton_Click"/>
+                                            </StackPanel>
                                         </WrapPanel>
                                     </StackPanel>
                                 </Border>
@@ -504,9 +523,9 @@
                                                Margin="0,0,0,14"/>
 
                                     <!-- Veg -->
-                                    <TextBlock Text="Veg" FontWeight="SemiBold"
+                                    <TextBlock Text="Vegetables" FontWeight="SemiBold"
                                                FontSize="16" Margin="0,6,0,4"/>
-                                    <WrapPanel>
+                                    <WrapPanel x:Name="VegToppingsButtonsPanel" HorizontalAlignment="Center">
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
                                                 Content="Cheese" Tag="Cheese"
@@ -542,7 +561,7 @@
                                     <!-- Meat -->
                                     <TextBlock Text="Meat" FontWeight="SemiBold"
                                                FontSize="16" Margin="0,14,0,4"/>
-                                    <WrapPanel>
+                                    <WrapPanel x:Name="MeatToppingsButtonsPanel" HorizontalAlignment="Center">
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
                                                 Content="Pepperoni" Tag="Pepperoni"
@@ -657,7 +676,9 @@
                             </Grid>
 
 
-                            <Button Grid.Row="3"
+                            <Button x:Name="BuildPizzaAddToCartButton"
+                                    Grid.Row="3" 
+                                    Style="{StaticResource AddToCartButtonStyle}"
                                     Content="+ Add to Cart"
                                     Height="50"
                                     FontSize="18"
@@ -668,6 +689,7 @@
                                     Cursor="Hand"
                                     Margin="0,6,0,0"
                                     HorizontalAlignment="Stretch"
+                                    IsEnabled="False"
                                     Click="BuildPizzaAddToCart_Click"/>
                         </Grid>
 
@@ -752,6 +774,7 @@
                                 Background="{StaticResource AccentGold}"
                                 Foreground="White"
                                 Height="44"
+                                IsEnabled="False"
                                 FontWeight="Bold"/>
                     </StackPanel>
                 </Grid>
