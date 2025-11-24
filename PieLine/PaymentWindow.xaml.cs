@@ -45,13 +45,13 @@ namespace PieLine
         {
             if (string.IsNullOrWhiteSpace(message))
             {
-                ErrorTextBlock.Visibility = Visibility.Collapsed;
-                ErrorTextBlock.Text = string.Empty;
+                CommonHelpers.SetError(ErrorBorder, ErrorTextBlock, null);
+                ErrorBorder.Visibility = Visibility.Collapsed;
             }
             else
             {
-                ErrorTextBlock.Text = message;
                 ErrorTextBlock.Visibility = Visibility.Visible;
+                CommonHelpers.SetError(ErrorBorder, ErrorTextBlock, message);
             }
         }
 
@@ -65,7 +65,7 @@ namespace PieLine
             else
             {
                 button.Background = Brushes.White;
-                button.Foreground = (Brush)FindResource("AccentRed");
+                button.Foreground = Brushes.Black;
             }
         }
 
@@ -89,30 +89,38 @@ namespace PieLine
 
         private void PickupButton_Click(object sender, RoutedEventArgs e)
         {
+            PickupButton.Tag = "Selected";
+            DeliveryButton.Tag = null;
             delivery = DeliveryOption.Pickup;
             UpdateDeliveryButtons();
-            SetError(null);
+            UpdateProceedButtonState();
         }
 
         private void DeliveryButton_Click(object sender, RoutedEventArgs e)
         {
+            DeliveryButton.Tag = "Selected";
+            PickupButton.Tag = null;
             delivery = DeliveryOption.Delivery;
             UpdateDeliveryButtons();
-            SetError(null);
+            UpdateProceedButtonState();
         }
 
         private void CashButton_Click(object sender, RoutedEventArgs e)
         {
+            CashButton.Tag = "Selected";
+            CardButton.Tag = null;
             payment = PaymentOption.Cash;
             UpdatePaymentButtons();
-            SetError(null);
+            UpdateProceedButtonState();
         }
 
         private void CardButton_Click(object sender, RoutedEventArgs e)
         {
+            CardButton.Tag = "Selected";
+            CashButton.Tag = null;
             payment = PaymentOption.Card;
             UpdatePaymentButtons();
-            SetError(null);
+            UpdateProceedButtonState();
         }
 
         private bool ValidateSelections()
@@ -217,6 +225,52 @@ namespace PieLine
             reviewWindow.Show();
             Close();
         }
+
+        private void AnyField_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateProceedButtonState();
+        }
+
+        private void UpdateProceedButtonState()
+        {
+            if (ProceedButton == null)
+                return;
+
+            bool hasDeliveryChoice =
+                (string?)PickupButton.Tag == "Selected" ||
+                (string?)DeliveryButton.Tag == "Selected";
+
+            bool hasPaymentChoice =
+                (string?)CashButton.Tag == "Selected" ||
+                (string?)CardButton.Tag == "Selected";
+
+            bool addressOk = true;
+            if ((string?)DeliveryButton.Tag == "Selected")
+            {
+                addressOk =
+                    !string.IsNullOrWhiteSpace(StreetTextBox.Text) &&
+                    !string.IsNullOrWhiteSpace(CityTextBox.Text) &&
+                    !string.IsNullOrWhiteSpace(StateTextBox.Text) &&
+                    !string.IsNullOrWhiteSpace(ZipTextBox.Text);
+            }
+
+            bool cardOk = true;
+            if ((string?)CardButton.Tag == "Selected")
+            {
+                cardOk =
+                    !string.IsNullOrWhiteSpace(CardholderNameTextBox.Text) &&
+                    !string.IsNullOrWhiteSpace(CardNumberTextBox.Text) &&
+                    !string.IsNullOrWhiteSpace(ExpiryDateTextBox.Text) &&
+                    !string.IsNullOrWhiteSpace(SecurityCodeTextBox.Text);
+            }
+
+            ProceedButton.IsEnabled =
+                hasDeliveryChoice &&
+                hasPaymentChoice &&
+                addressOk &&
+                cardOk;
+        }
+
 
         private void CardNumberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {

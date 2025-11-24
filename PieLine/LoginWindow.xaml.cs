@@ -83,6 +83,10 @@ namespace PieLine
             lockoutUntil = null;
             CommonHelpers.SetError(LoginErrorBorder, LoginErrorTextBlock, null);
 
+            CurrentUser.Name = user.FullName;
+            CurrentUser.Phone = user.PhoneNumber;
+            CurrentUser.Email = user.Email;
+
             var main = new MainWindow();
             CommonHelpers.PersistantWindows(this, main);
         }

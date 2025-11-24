@@ -10,7 +10,6 @@
     <Window.Resources>
         <!-- Colors to match other windows -->
         <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
-        <SolidColorBrush x:Key="AccentRedOutline" Color="#F13300"/>
         <SolidColorBrush x:Key="AccentGold" Color="#D4AF37"/>
         <SolidColorBrush x:Key="CardBackground" Color="White"/>
         <SolidColorBrush x:Key="HeaderBackground" Color="White"/>
@@ -18,7 +17,7 @@
         <!-- Rounded TextBox style (like login) -->
         <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
             <Setter Property="Height" Value="35"/>
-            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontSize" Value="20"/>
             <Setter Property="Padding" Value="8"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Background" Value="White"/>
@@ -30,6 +29,7 @@
                         <Border Background="{TemplateBinding Background}"
                                 BorderBrush="{TemplateBinding BorderBrush}"
                                 BorderThickness="{TemplateBinding BorderThickness}"
+                                VerticalAlignment="Center"
                                 CornerRadius="10">
                             <ScrollViewer x:Name="PART_ContentHost"/>
                         </Border>
@@ -86,25 +86,41 @@
             <Setter Property="FontWeight" Value="SemiBold"/>
             <Setter Property="Background" Value="White"/>
             <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="BorderBrush" Value="{StaticResource AccentRedOutline}"/>
+            <Setter Property="BorderBrush" Value="{StaticResource AccentRed}"/>
             <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="border"
-                                Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="25">
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="25">
                             <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                                      VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="{StaticResource AccentGold}"/>
-                                <Setter Property="BorderBrush" Value="{StaticResource AccentGold}"/>
+                            <!-- Selected state, driven by Tag="Selected" -->
+                            <Trigger Property="Tag" Value="Selected">
+                                <Setter TargetName="border"
+                                Property="Background"
+                                Value="{StaticResource AccentRed}"/>
                                 <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="border"
+                                Property="BorderBrush"
+                                Value="{StaticResource AccentRed}"/>
+                            </Trigger>
+
+                            <!-- Hover ALWAYS wins (even if selected) -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border"
+                                Property="Background"
+                                Value="{StaticResource AccentGold}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="border"
+                                Property="BorderBrush"
+                                Value="{StaticResource AccentGold}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -161,21 +177,24 @@
             <Setter Property="MinHeight" Value="36"/>
             <Setter Property="FontSize" Value="16"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="BorderThickness" Value="2"/>
             <Setter Property="Cursor" Value="Hand"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="border"
-                                Background="{TemplateBinding Background}"
-                                CornerRadius="21">
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="21">
                             <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"/>
+                                      VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter TargetName="border"
-                                        Property="Background"
-                                        Value="{StaticResource AccentGold}"/>
+                                <Setter TargetName="border" Property="Background" Value="{StaticResource AccentGold}"/>
+                                <Setter TargetName="border" Property="BorderBrush" Value="{StaticResource AccentGold}"/>
+                                <Setter Property="Foreground" Value="White"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -184,16 +203,13 @@
         </Style>
 
         <!-- Error bar style -->
-        <Style x:Key="ErrorTextBlockStyle" TargetType="TextBlock">
-            <Setter Property="Background" Value="#FFCCCC"/>
-            <Setter Property="Foreground" Value="#800000"/>
-            <Setter Property="Padding" Value="20,6"/>
-            <Setter Property="TextAlignment" Value="Center"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="FontSize" Value="12"/>
-            <Setter Property="FontWeight" Value="Normal"/>
-            <Setter Property="Margin" Value="0,12,0,0"/>
+        <Style x:Key="ErrorBorderStyle" TargetType="Border">
+            <Setter Property="Background" Value="#FFB3B3"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
         </Style>
+
 
         <local:ImagePathConverter x:Key="ImagePathConverter"/>
     </Window.Resources>
@@ -209,7 +225,7 @@
         <!-- HEADER with title + steps + header icons -->
         <Border Grid.Row="0"
                 Background="{StaticResource HeaderBackground}"
-                Padding="16,10">
+                Padding="0,10">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -217,56 +233,73 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Logo + Name -->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Width="40" Height="40" CornerRadius="4" Margin="0,0,12,0">
-                        <Border.Background>
-                            <ImageBrush ImageSource="{Binding LogoPath, Converter={StaticResource ImagePathConverter}}"
-                                        Stretch="Uniform" />
-                        </Border.Background>
-                    </Border>
+                <Border Grid.Row="0"
+                        Background="{StaticResource HeaderBackground}"
+                        Padding="16,0">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <!-- logo + name -->
+                            <ColumnDefinition Width="Auto" />
+                            <!-- step chips -->
+                            <ColumnDefinition Width="Auto" />
+                            <!-- header icons -->
+                        </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="Mom's and Pop's Pizzeria"
-                               FontSize="24"
-                               FontWeight="Bold"
-                               VerticalAlignment="Center"
-                               Foreground="#1A1A1A"/>
-                </StackPanel>
+                        <!-- Logo + Name -->
+                        <StackPanel Grid.Column="0"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+                            <Border Width="40" Height="40" CornerRadius="4" Margin="0,0,12,0">
+                                <Border.Background>
+                                    <!-- simplest: direct image path -->
+                                    <ImageBrush ImageSource="/Images/logo.png"
+                                Stretch="Uniform" />
+                                </Border.Background>
+                            </Border>
 
-                <!-- Header icon buttons (info, home, account) -->
-                <StackPanel Grid.Column="1"
-                            Orientation="Horizontal"
-                            VerticalAlignment="Center"
-                            Margin="12,0,0,0">
-                    <!-- Info -->
-                    <ToggleButton x:Name="InfoButton"
-                                  Style="{StaticResource HeaderIconToggleStyle}"
-                                  Tag="/Images/info.png"
-                                  Click="InfoButton_Click"/>
-                    <!-- Home (current page) -->
-                    <ToggleButton x:Name="HomeButton"
-                                  Style="{StaticResource HeaderIconToggleStyle}"
-                                  Tag="/Images/home.png"
-                                  Click="HomeButton_Click"/>
-                    <!-- Account -->
-                    <ToggleButton x:Name="AccountButton"
-                                  Style="{StaticResource HeaderIconToggleStyle}"
-                                  Tag="/Images/account.png"/>
-                </StackPanel>
-                
-                <!-- Step chips -->
-                <StackPanel Grid.Column="2"
-                            Orientation="Horizontal"
-                            VerticalAlignment="Center">
-                    <Button Content="1. Payment"
-                            Style="{StaticResource StepChipStyle}"
-                            Background="{StaticResource AccentRed}"
-                            Foreground="White"/>
-                    <Button Content="2. Review"
-                            Style="{StaticResource StepChipStyle}"
-                            Background="White"
-                            Foreground="Black"
-                            Click="ProceedButton_Click"/>
-                </StackPanel>
+                            <TextBlock Text="Mom's and Pop's Pizzeria"
+                                       FontSize="24"
+                                       FontWeight="Bold"
+                                       VerticalAlignment="Center"
+                                       Foreground="#1A1A1A"/>
+                        </StackPanel>
+
+                        <!-- Header icon buttons (info, home, account) -->
+                        <StackPanel Grid.Column="1"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+                            <ToggleButton x:Name="InfoButton"
+                                          Style="{StaticResource HeaderIconToggleStyle}"
+                                          Tag="/Images/info.png"
+                                          Click="InfoButton_Click"/>
+                            <ToggleButton x:Name="HomeButton"
+                                          Style="{StaticResource HeaderIconToggleStyle}"
+                                          Tag="/Images/home.png"
+                                          Click="HomeButton_Click"/>
+                            <ToggleButton x:Name="AccountButton"
+                                          Style="{StaticResource HeaderIconToggleStyle}"
+                                          Tag="/Images/account.png"/>
+                        </StackPanel>
+                        
+                        <!-- Step chips -->
+                        <StackPanel Grid.Column="2"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Center"
+                                    Margin="6,0,0,0">
+                            <Button Content="1. Payment"
+                                    Style="{StaticResource StepChipStyle}"
+                                    Background="{StaticResource AccentRed}"
+                                    Foreground="White"
+                                    BorderBrush="{StaticResource AccentRed}"/>
+                            <Button Content="2. Review"
+                                    Style="{StaticResource StepChipStyle}"
+                                    Background="White"
+                                    BorderBrush="{StaticResource AccentRed}"
+                                    Click="ProceedButton_Click"/>
+                        </StackPanel>
+                    </Grid>
+                </Border>
             </Grid>
         </Border>
 
@@ -325,16 +358,18 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                    <TextBlock Text="Street" FontSize="18" Margin="0,0,0,2"/>
+                                    <TextBlock Text="Street" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="StreetTextBox"
                                              Style="{StaticResource RoundedTextBoxStyle}"
+                                             TextChanged="AnyField_TextChanged"
                                              PreviewTextInput="StreetTextBox_PreviewTextInput"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                                    <TextBlock Text="City" FontSize="18" Margin="0,0,0,2"/>
+                                    <TextBlock Text="City" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="CityTextBox"
                                              Style="{StaticResource RoundedTextBoxStyle}"
+                                             TextChanged="AnyField_TextChanged"
                                              PreviewTextInput="LettersSpaceTextBox_PreviewTextInput"/>
                                 </StackPanel>
                             </Grid>
@@ -346,18 +381,20 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                    <TextBlock Text="State" FontSize="18" Margin="0,0,0,2"/>
+                                    <TextBlock Text="State" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="StateTextBox"
                                              Style="{StaticResource RoundedTextBoxStyle}"
+                                             TextChanged="AnyField_TextChanged"
                                              PreviewTextInput="LettersSpaceTextBox_PreviewTextInput"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                                    <TextBlock Text="ZIP" FontSize="18" Margin="0,0,0,2"/>
+                                    <TextBlock Text="ZIP" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="ZipTextBox"
                                              Style="{StaticResource RoundedTextBoxStyle}"
                                              MaxLength="5"
                                              PreviewTextInput="NumbersTextBox_PreviewTextInput"
+                                             TextChanged="AnyField_TextChanged"
                                              PreviewKeyDown="BlockSpaceCharacter_PreviewKeyDown"/>
                                 </StackPanel>
                             </Grid>
@@ -399,16 +436,18 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                    <TextBlock Text="Cardholder Name" FontSize="18" Margin="0,0,0,2"/>
+                                    <TextBlock Text="Cardholder Name" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="CardholderNameTextBox"
                                              Style="{StaticResource RoundedTextBoxStyle}"
+                                             TextChanged="AnyField_TextChanged"
                                              PreviewTextInput="LettersSpaceTextBox_PreviewTextInput"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                                    <TextBlock Text="Card Number" FontSize="18" Margin="0,0,0,2"/>
+                                    <TextBlock Text="Card Number" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="CardNumberTextBox"
                                              Style="{StaticResource RoundedTextBoxStyle}"
+                                             TextChanged="AnyField_TextChanged"
                                              MaxLength="19"
                                              PreviewTextInput="CardNumberTextBox_PreviewTextInput"
                                              PreviewKeyDown="BlockSpaceCharacter_PreviewKeyDown"/>
@@ -422,18 +461,20 @@
                                 </Grid.ColumnDefinitions>
 
                                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
-                                    <TextBlock Text="Expiry Date" FontSize="18" Margin="0,0,0,2"/>
+                                    <TextBlock Text="Expiry Date" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="ExpiryDateTextBox"
                                              Style="{StaticResource RoundedTextBoxStyle}"
+                                             TextChanged="AnyField_TextChanged"
                                              MaxLength="5"
                                              PreviewTextInput="ExpiryTextBox_PreviewTextInput"
                                              PreviewKeyDown="BlockSpaceCharacter_PreviewKeyDown"/>
                                 </StackPanel>
 
                                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
-                                    <TextBlock Text="Security Code" FontSize="18" Margin="0,0,0,2"/>
+                                    <TextBlock Text="Security Code" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="SecurityCodeTextBox"
                                              Style="{StaticResource RoundedTextBoxStyle}"
+                                             TextChanged="AnyField_TextChanged"
                                              MaxLength="3"
                                              PreviewTextInput="NumbersTextBox_PreviewTextInput"
                                              PreviewKeyDown="BlockSpaceCharacter_PreviewKeyDown"/>
@@ -444,14 +485,33 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Error bar (scrolls with content) -->
-                <TextBlock x:Name="ErrorTextBlock"
-                           Style="{StaticResource ErrorTextBlockStyle}"
-                           Visibility="Collapsed"/>
+                <!-- Error bar -->
+                <Border x:Name="ErrorBorder"
+                        Background="#FFB3B3"
+                        BorderBrush="#F13300"
+                        BorderThickness="2"
+                        CornerRadius="10"
+                        Padding="10"
+                        Margin="0,30,0,0"
+                        Visibility="Collapsed"
+                        HorizontalAlignment="Center"
+                        Width="700">
+                    <!-- match your card width -->
+                    <TextBlock x:Name="ErrorTextBlock"
+                               FontSize="18"
+                               FontWeight="Bold"
+                               TextAlignment="Center"
+                               Foreground="#1A1A1A"
+                               TextWrapping="Wrap"/>
+                </Border>
+
+
 
                 <!-- Proceed button -->
-                <Button Style="{StaticResource PrimaryActionButtonStyle}"
+                <Button x:Name="ProceedButton"
+                        Style="{StaticResource PrimaryActionButtonStyle}"
                         Content="Proceed to order summary"
+                        IsEnabled="False"
                         Click="ProceedButton_Click"/>
             </StackPanel>
         </ScrollViewer>
