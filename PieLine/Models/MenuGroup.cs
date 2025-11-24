@@ -46,7 +46,6 @@ namespace PieLine
             return removed;
         }
 
-        #region INotifyPropertyChanged
         public event PropertyChangedEventHandler? PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
@@ -59,6 +58,5 @@ namespace PieLine
             OnPropertyChanged(propertyName);
             return true;
         }
-        #endregion
     }
 }

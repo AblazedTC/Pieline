@@ -8,7 +8,6 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        <!-- Colors -->
         <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
         <SolidColorBrush x:Key="AccentGold" Color="#D4AF37"/>
 
@@ -46,7 +45,7 @@
         </Style>
 
         <!-- Header Buttons -->
-        <Style x:Key="HeaderIconToggleStyle" TargetType="ToggleButton">
+        <Style x:Key="HeaderIconStyle" TargetType="ToggleButton">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -140,17 +139,17 @@
                             Margin="16,0,5,0">
                     <!-- Info -->
                     <ToggleButton x:Name="InfoButton"
-                                  Style="{StaticResource HeaderIconToggleStyle}"
+                                  Style="{StaticResource HeaderIconStyle}"
                                   Tag="/Images/info.png"
                                   Click="InfoButton_Click"/>
                     <!-- Home -->
                     <ToggleButton x:Name="HomeButton"
-                                  Style="{StaticResource HeaderIconToggleStyle}"
+                                  Style="{StaticResource HeaderIconStyle}"
                                   Tag="/Images/home.png"
                                   Click="HomeButton_Click"/>
                     <!-- Account -->
                     <ToggleButton x:Name="AccountButton"
-                                  Style="{StaticResource HeaderIconToggleStyle}"
+                                  Style="{StaticResource HeaderIconStyle}"
                                   Tag="/Images/account.png"/>
                 </StackPanel>
 

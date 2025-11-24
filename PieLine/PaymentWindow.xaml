@@ -8,14 +8,13 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        <!-- Colors to match other windows -->
         <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
         <SolidColorBrush x:Key="AccentGold" Color="#D4AF37"/>
         <SolidColorBrush x:Key="CardBackground" Color="White"/>
         <SolidColorBrush x:Key="HeaderBackground" Color="White"/>
 
-        <!-- Rounded TextBox style (like login) -->
-        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+        <!-- Text Box -->
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
             <Setter Property="Height" Value="35"/>
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="Padding" Value="8"/>
@@ -38,8 +37,8 @@
             </Setter>
         </Style>
 
-        <!-- Header icon toggle buttons (info/home/account) -->
-        <Style x:Key="HeaderIconToggleStyle" TargetType="ToggleButton">
+        <!-- Header Icon Buttons (info/home/account) -->
+        <Style x:Key="HeaderIconStyle" TargetType="ToggleButton">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
             <Setter Property="BorderThickness" Value="0"/>
@@ -76,7 +75,7 @@
             </Setter>
         </Style>
 
-        <!-- Rounded outline button (Pickup/Delivery, Cash/Card) -->
+        <!-- Choice Button (Pickup/Delivery, Cash/Card) -->
         <Style x:Key="ChoiceButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="20,10"/>
             <Setter Property="Padding" Value="40,10"/>
@@ -93,34 +92,32 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="border"
-                        Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="25">
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                CornerRadius="25">
                             <ContentPresenter HorizontalAlignment="Center"
                                       VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <!-- Selected state, driven by Tag="Selected" -->
                             <Trigger Property="Tag" Value="Selected">
                                 <Setter TargetName="border"
-                                Property="Background"
-                                Value="{StaticResource AccentRed}"/>
+                                        Property="Background"
+                                        Value="{StaticResource AccentRed}"/>
                                 <Setter Property="Foreground" Value="White"/>
                                 <Setter TargetName="border"
-                                Property="BorderBrush"
-                                Value="{StaticResource AccentRed}"/>
+                                        Property="BorderBrush"
+                                        Value="{StaticResource AccentRed}"/>
                             </Trigger>
 
-                            <!-- Hover ALWAYS wins (even if selected) -->
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter TargetName="border"
-                                Property="Background"
-                                Value="{StaticResource AccentGold}"/>
+                                        Property="Background"
+                                        Value="{StaticResource AccentGold}"/>
                                 <Setter Property="Foreground" Value="White"/>
                                 <Setter TargetName="border"
-                                Property="BorderBrush"
-                                Value="{StaticResource AccentGold}"/>
+                                        Property="BorderBrush"
+                                        Value="{StaticResource AccentGold}"/>
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -128,8 +125,8 @@
             </Setter>
         </Style>
 
-        <!-- Primary action button (Proceed to order summary) -->
-        <Style x:Key="PrimaryActionButtonStyle" TargetType="Button">
+        <!-- Primary Button -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="Margin" Value="0,32,0,40"/>
             <Setter Property="Padding" Value="40,10"/>
@@ -151,11 +148,9 @@
                                               VerticalAlignment="Center"/>
                         </Border>
                         <ControlTemplate.Triggers>
-                            <!-- Gold hover -->
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Background" Value="{StaticResource AccentGold}"/>
                             </Trigger>
-                            <!-- Disabled -->
                             <Trigger Property="IsEnabled" Value="False">
                                 <Setter TargetName="border"
                                         Property="Background"
@@ -169,8 +164,8 @@
             </Setter>
         </Style>
 
-        <!-- Chips for step indicator -->
-        <Style x:Key="StepChipStyle" TargetType="Button">
+        <!-- Step Buttons (1. Payment / 2. Review) -->
+        <Style x:Key="StepButtonStyle" TargetType="Button">
             <Setter Property="Margin" Value="8,0,0,0"/>
             <Setter Property="Padding" Value="18,4"/>
             <Setter Property="Width" Value="140"/>
@@ -202,7 +197,7 @@
             </Setter>
         </Style>
 
-        <!-- Error bar style -->
+        <!-- Error Bar -->
         <Style x:Key="ErrorBorderStyle" TargetType="Border">
             <Setter Property="Background" Value="#FFB3B3"/>
             <Setter Property="CornerRadius" Value="10"/>
@@ -217,12 +212,10 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- header -->
             <RowDefinition Height="*"/>
-            <!-- scrollable content -->
         </Grid.RowDefinitions>
 
-        <!-- HEADER with title + steps + header icons -->
+        <!-- Header -->
         <Border Grid.Row="0"
                 Background="{StaticResource HeaderBackground}"
                 Padding="0,10">
@@ -239,22 +232,17 @@
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
-                            <!-- logo + name -->
                             <ColumnDefinition Width="Auto" />
-                            <!-- step chips -->
                             <ColumnDefinition Width="Auto" />
-                            <!-- header icons -->
                         </Grid.ColumnDefinitions>
 
-                        <!-- Logo + Name -->
                         <StackPanel Grid.Column="0"
                                     Orientation="Horizontal"
                                     VerticalAlignment="Center">
                             <Border Width="40" Height="40" CornerRadius="4" Margin="0,0,12,0">
                                 <Border.Background>
-                                    <!-- simplest: direct image path -->
                                     <ImageBrush ImageSource="/Images/logo.png"
-                                Stretch="Uniform" />
+                                                Stretch="Uniform" />
                                 </Border.Background>
                             </Border>
 
@@ -265,35 +253,35 @@
                                        Foreground="#1A1A1A"/>
                         </StackPanel>
 
-                        <!-- Header icon buttons (info, home, account) -->
+                        <!-- Header Icon Buttons (info, home, account) -->
                         <StackPanel Grid.Column="1"
                                     Orientation="Horizontal"
                                     VerticalAlignment="Center">
                             <ToggleButton x:Name="InfoButton"
-                                          Style="{StaticResource HeaderIconToggleStyle}"
+                                          Style="{StaticResource HeaderIconStyle}"
                                           Tag="/Images/info.png"
                                           Click="InfoButton_Click"/>
                             <ToggleButton x:Name="HomeButton"
-                                          Style="{StaticResource HeaderIconToggleStyle}"
+                                          Style="{StaticResource HeaderIconStyle}"
                                           Tag="/Images/home.png"
                                           Click="HomeButton_Click"/>
                             <ToggleButton x:Name="AccountButton"
-                                          Style="{StaticResource HeaderIconToggleStyle}"
+                                          Style="{StaticResource HeaderIconStyle}"
                                           Tag="/Images/account.png"/>
                         </StackPanel>
                         
-                        <!-- Step chips -->
+                        <!-- Step Buttons -->
                         <StackPanel Grid.Column="2"
                                     Orientation="Horizontal"
                                     VerticalAlignment="Center"
                                     Margin="6,0,0,0">
                             <Button Content="1. Payment"
-                                    Style="{StaticResource StepChipStyle}"
+                                    Style="{StaticResource StepButtonStyle}"
                                     Background="{StaticResource AccentRed}"
                                     Foreground="White"
                                     BorderBrush="{StaticResource AccentRed}"/>
                             <Button Content="2. Review"
-                                    Style="{StaticResource StepChipStyle}"
+                                    Style="{StaticResource StepButtonStyle}"
                                     Background="White"
                                     BorderBrush="{StaticResource AccentRed}"
                                     Click="ProceedButton_Click"/>
@@ -303,15 +291,14 @@
             </Grid>
         </Border>
 
-        <!-- Black separator -->
         <Border Background="Black" Height="1" Margin="0,55,0,0"/>
 
-        <!-- SCROLLABLE CONTENT: main card + error + proceed button -->
+        <!-- Main -->
         <ScrollViewer Grid.Row="1"
                       VerticalScrollBarVisibility="Auto">
             <StackPanel>
 
-                <!-- Main card -->
+                <!-- Main Box -->
                 <Border Width="700"
                         HorizontalAlignment="Center"
                         VerticalAlignment="Top"
@@ -322,7 +309,7 @@
                         BorderThickness="1.5">
                     <StackPanel Margin="40">
 
-                        <!-- Delivery / Pickup -->
+                        <!-- Delivery Method -->
                         <TextBlock Text="Would you like your order delivered?"
                                    FontSize="24"
                                    FontWeight="Bold"
@@ -341,7 +328,7 @@
                                     Click="DeliveryButton_Click"/>
                         </StackPanel>
 
-                        <!-- Delivery address (only when Delivery is selected) -->
+                        <!-- Delivery Address -->
                         <StackPanel x:Name="DeliveryAddressPanel"
                                     Margin="0,24,0,0"
                                     Visibility="Collapsed">
@@ -360,7 +347,7 @@
                                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
                                     <TextBlock Text="Street" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="StreetTextBox"
-                                             Style="{StaticResource RoundedTextBoxStyle}"
+                                             Style="{StaticResource TextBoxStyle}"
                                              TextChanged="AnyField_TextChanged"
                                              PreviewTextInput="StreetTextBox_PreviewTextInput"/>
                                 </StackPanel>
@@ -368,7 +355,7 @@
                                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                     <TextBlock Text="City" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="CityTextBox"
-                                             Style="{StaticResource RoundedTextBoxStyle}"
+                                             Style="{StaticResource TextBoxStyle}"
                                              TextChanged="AnyField_TextChanged"
                                              PreviewTextInput="LettersSpaceTextBox_PreviewTextInput"/>
                                 </StackPanel>
@@ -383,7 +370,7 @@
                                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
                                     <TextBlock Text="State" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="StateTextBox"
-                                             Style="{StaticResource RoundedTextBoxStyle}"
+                                             Style="{StaticResource TextBoxStyle}"
                                              TextChanged="AnyField_TextChanged"
                                              PreviewTextInput="LettersSpaceTextBox_PreviewTextInput"/>
                                 </StackPanel>
@@ -391,7 +378,7 @@
                                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                     <TextBlock Text="ZIP" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="ZipTextBox"
-                                             Style="{StaticResource RoundedTextBoxStyle}"
+                                             Style="{StaticResource TextBoxStyle}"
                                              MaxLength="5"
                                              PreviewTextInput="NumbersTextBox_PreviewTextInput"
                                              TextChanged="AnyField_TextChanged"
@@ -400,7 +387,7 @@
                             </Grid>
                         </StackPanel>
 
-                        <!-- Payment method header -->
+                        <!-- Payment Method -->
                         <TextBlock Text="Payment Method"
                                    FontSize="24"
                                    FontWeight="Bold"
@@ -419,7 +406,7 @@
                                     Click="CardButton_Click"/>
                         </StackPanel>
 
-                        <!-- Card info panel (only when Card selected) -->
+                        <!-- Card Information -->
                         <StackPanel x:Name="CardInfoPanel"
                                     Margin="0,20,0,0"
                                     Visibility="Collapsed">
@@ -438,7 +425,7 @@
                                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
                                     <TextBlock Text="Cardholder Name" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="CardholderNameTextBox"
-                                             Style="{StaticResource RoundedTextBoxStyle}"
+                                             Style="{StaticResource TextBoxStyle}"
                                              TextChanged="AnyField_TextChanged"
                                              PreviewTextInput="LettersSpaceTextBox_PreviewTextInput"/>
                                 </StackPanel>
@@ -446,7 +433,7 @@
                                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                     <TextBlock Text="Card Number" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="CardNumberTextBox"
-                                             Style="{StaticResource RoundedTextBoxStyle}"
+                                             Style="{StaticResource TextBoxStyle}"
                                              TextChanged="AnyField_TextChanged"
                                              MaxLength="19"
                                              PreviewTextInput="CardNumberTextBox_PreviewTextInput"
@@ -463,7 +450,7 @@
                                 <StackPanel Grid.Column="0" Margin="0,0,8,0">
                                     <TextBlock Text="Expiry Date" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="ExpiryDateTextBox"
-                                             Style="{StaticResource RoundedTextBoxStyle}"
+                                             Style="{StaticResource TextBoxStyle}"
                                              TextChanged="AnyField_TextChanged"
                                              MaxLength="5"
                                              PreviewTextInput="ExpiryTextBox_PreviewTextInput"
@@ -473,7 +460,7 @@
                                 <StackPanel Grid.Column="1" Margin="8,0,0,0">
                                     <TextBlock Text="Security Code" FontSize="18" FontWeight="Bold" Margin="0,0,0,2"/>
                                     <TextBox x:Name="SecurityCodeTextBox"
-                                             Style="{StaticResource RoundedTextBoxStyle}"
+                                             Style="{StaticResource TextBoxStyle}"
                                              TextChanged="AnyField_TextChanged"
                                              MaxLength="3"
                                              PreviewTextInput="NumbersTextBox_PreviewTextInput"
@@ -485,7 +472,7 @@
                     </StackPanel>
                 </Border>
 
-                <!-- Error bar -->
+                <!-- Error Bar -->
                 <Border x:Name="ErrorBorder"
                         Background="#FFB3B3"
                         BorderBrush="#F13300"
@@ -496,7 +483,6 @@
                         Visibility="Collapsed"
                         HorizontalAlignment="Center"
                         Width="700">
-                    <!-- match your card width -->
                     <TextBlock x:Name="ErrorTextBlock"
                                FontSize="18"
                                FontWeight="Bold"
@@ -505,11 +491,9 @@
                                TextWrapping="Wrap"/>
                 </Border>
 
-
-
-                <!-- Proceed button -->
+                <!-- Proceed Button -->
                 <Button x:Name="ProceedButton"
-                        Style="{StaticResource PrimaryActionButtonStyle}"
+                        Style="{StaticResource PrimaryButtonStyle}"
                         Content="Proceed to order summary"
                         IsEnabled="False"
                         Click="ProceedButton_Click"/>

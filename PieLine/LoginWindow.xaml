@@ -8,13 +8,11 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        
-        <!-- Accent color for buttons/links -->
         <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
         <SolidColorBrush x:Key="AccentGold" Color="#D4AF37"/>
 
-        <!-- Rounded TextBox style -->
-        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+        <!-- Text Box -->
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
             <Setter Property="Height" Value="35"/>
             <Setter Property="FontSize" Value="22"/>
             <Setter Property="Padding" Value="10"/>
@@ -36,8 +34,8 @@
             </Setter>
         </Style>
 
-        <!-- Rounded PasswordBox style -->
-        <Style x:Key="RoundedPasswordBoxStyle" TargetType="PasswordBox">
+        <!-- Password Box -->
+        <Style x:Key="PasswordBoxStyle" TargetType="PasswordBox">
             <Setter Property="Height" Value="35"/>
             <Setter Property="FontSize" Value="22"/>
             <Setter Property="Padding" Value="10"/>
@@ -59,7 +57,7 @@
             </Setter>
         </Style>
 
-        <!-- Rounded error bar style -->
+        <!-- Error Bar -->
         <Style x:Key="ErrorBorderStyle" TargetType="Border">
             <Setter Property="Background" Value="#FFB3B3"/>
             <Setter Property="CornerRadius" Value="10"/>
@@ -67,7 +65,7 @@
             <Setter Property="Margin" Value="0,0,0,16"/>
         </Style>
 
-        <!-- Primary rounded button style -->
+        <!-- Primary Button -->
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="44"/>
             <Setter Property="FontSize" Value="20"/>
@@ -116,7 +114,7 @@
         
     </Window.Resources>
 
-    <!-- Layout -->
+    <!-- Main -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -148,7 +146,7 @@
                                Foreground="#1A1A1A"/>
                 </StackPanel>
 
-                <!-- Center card -->
+                <!-- Main Box -->
                 <Border Width="680"
                         Height="Auto"
                         Background="White"
@@ -162,22 +160,15 @@
                     <Grid>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <!-- Titles -->
                             <RowDefinition Height="Auto"/>
-                            <!-- Phone -->
                             <RowDefinition Height="Auto"/>
-                            <!-- Password -->
                             <RowDefinition Height="Auto"/>
-                            <!-- Forgot password -->
                             <RowDefinition Height="Auto"/>
-                            <!-- Error -->
                             <RowDefinition Height="Auto"/>
-                            <!-- Sign in -->
                             <RowDefinition Height="Auto"/>
-                            <!-- Sign up -->
                         </Grid.RowDefinitions>
 
-                        <!-- Welcome + subtitle -->
+                        <!-- Title -->
                         <StackPanel Grid.Row="0" Margin="0,-8,0,30">
                             <TextBlock Text="Welcome Back"
                                        FontSize="30"
@@ -187,19 +178,19 @@
                                        FontSize="18"/>
                         </StackPanel>
 
-                        <!-- Phone field with label above -->
+                        <!-- Phone -->
                         <StackPanel Grid.Row="1" Margin="0,0,0,18">
                             <TextBlock Text="Phone Number"
                                        FontSize="22"
                                        FontWeight="Bold"
                                        Margin="4,0,0,4"/>
                             <TextBox x:Name="PhoneTextBox"
-                                     Style="{StaticResource RoundedTextBoxStyle}"
+                                     Style="{StaticResource TextBoxStyle}"
                                      MaxLength="14"
                                      TextChanged="PhoneTextBox_TextChanged"/>
                         </StackPanel>
 
-                        <!-- Password field with label above -->
+                        <!-- Password -->
                         <StackPanel Grid.Row="2" Margin="0,0,0,4">
                             <TextBlock Text="Password"
                                        FontSize="22"
@@ -207,11 +198,11 @@
                                        Margin="4,0,0,4"/>
                             <PasswordBox x:Name="PasswordBox"
                                          MaxLength="32"
-                                         Style="{StaticResource RoundedPasswordBoxStyle}"
+                                         Style="{StaticResource PasswordBoxStyle}"
                                          PasswordChanged="PasswordBox_PasswordChanged"/>
                         </StackPanel>
 
-                        <!-- Forgot password -->
+                        <!-- Forgot Password -->
                         <TextBlock Grid.Row="3"
                                    HorizontalAlignment="Right"
                                    Margin="0,0,0,10"
@@ -221,7 +212,7 @@
                             </Hyperlink>
                         </TextBlock>
 
-                        <!-- Error bar -->
+                        <!-- Error Bar -->
                         <StackPanel Grid.Row="4" Margin="0,12,0,8">
                             <Border x:Name="LoginErrorBorder"
                                     Style="{StaticResource ErrorBorderStyle}"
@@ -237,7 +228,7 @@
                             </Border>
                         </StackPanel>
 
-                        <!-- Sign in button -->
+                        <!-- Sign In Button -->
                         <Button x:Name="LoginButton"
                                 Grid.Row="5"
                                 Style="{StaticResource PrimaryButtonStyle}"
@@ -245,7 +236,7 @@
                                 IsEnabled="False"
                                 Click="LoginButton_Click"/>
 
-                        <!-- Sign up link -->
+                        <!-- Sign Up -->
                         <StackPanel Grid.Row="6"
                                     Orientation="Horizontal"
                                     HorizontalAlignment="Center"

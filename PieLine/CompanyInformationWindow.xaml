@@ -9,13 +9,10 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        <!-- Colors -->
-        <SolidColorBrush x:Key="AccentRed"
-                Color="#F13300"/>
-        <SolidColorBrush x:Key="AccentGold"
-                Color="#D4AF37"/>
+        <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
+        <SolidColorBrush x:Key="AccentGold" Color="#D4AF37"/>
 
-        <!-- Top-right icon buttons -->
+        <!-- Icon buttons -->
         <Style x:Key="HeaderIconButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -26,7 +23,7 @@
             <Setter Property="Cursor" Value="Hand"/>
         </Style>
 
-        <!-- Header icon toggle buttons (home/info/account/cart) -->
+        <!-- Header Icon Buttons (home/info/account/cart) -->
         <Style x:Key="HeaderIconToggleStyle" TargetType="ToggleButton">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -38,12 +35,10 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="ToggleButton">
                         <Border Background="Transparent" Padding="4">
-                            <!-- This Border is “filled” with the icon shape -->
                             <Border x:Name="IconBorder"
                         Width="32" Height="32"
                         Background="Black">
                                 <Border.OpacityMask>
-                                    <!-- Use the icon image as an opacity mask -->
                                     <ImageBrush ImageSource="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"/>
                                 </Border.OpacityMask>
                             </Border>
@@ -73,14 +68,11 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- Header -->
             <RowDefinition Height="1"/>
-            <!-- Black separator -->
             <RowDefinition Height="*"/>
-            <!-- Content -->
         </Grid.RowDefinitions>
 
-        <!-- ================= HEADER BAR ================= -->
+        <!-- Header -->
         <Border Grid.Row="0"
                 Background="White"
                 Padding="20,10">
@@ -110,25 +102,19 @@
                                Foreground="#1A1A1A"/>
                 </StackPanel>
 
-                <!-- Right icons -->
+                <!-- Right Icons -->
                 <StackPanel Grid.Column="1"
                             Orientation="Horizontal"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-
-                    <!-- Info -->
                     <ToggleButton x:Name="InfoButton"
                                   Style="{StaticResource HeaderIconToggleStyle}"
                                   Tag="/Images/info.png"
                                   IsChecked="True"/>
-
-                    <!-- Home -->
                     <ToggleButton x:Name="HomeButton"
                                   Style="{StaticResource HeaderIconToggleStyle}"
                                   Tag="/Images/home.png"
                                   Click="HomeButton_Click"/>
-
-                    <!-- Account -->
                     <ToggleButton x:Name="AccountButton"
                                   Style="{StaticResource HeaderIconToggleStyle}"
                                   Tag="/Images/account.png"/>
@@ -136,15 +122,14 @@
             </Grid>
         </Border>
 
-        <!-- Black separator -->
         <Border Grid.Row="1"
                 Background="Black"
                 Height="1"/>
 
-        <!-- ================= COMPANY INFORMATION CONTENT ================= -->
+        <!-- Main -->
         <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
             <Grid>
-                <!-- Center the card; margin gives breathing room -->
+                <!-- Main Box -->
                 <Border Background="White"
                 CornerRadius="30"
                 BorderBrush="#1A1A1A"

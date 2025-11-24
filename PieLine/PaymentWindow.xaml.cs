@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
@@ -270,7 +268,6 @@ namespace PieLine
                 addressOk &&
                 cardOk;
         }
-
 
         private void CardNumberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
         {

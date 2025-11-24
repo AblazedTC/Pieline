@@ -11,7 +11,7 @@
         <SolidColorBrush x:Key="AccentRed"  Color="#F13300"/>
         <SolidColorBrush x:Key="AccentGold" Color="#D4AF37"/>
 
-        <!-- Header icon toggle buttons (info/home/account) -->
+        <!-- Header Buttons -->
         <Style x:Key="HeaderIconToggleStyle" TargetType="ToggleButton">
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="BorderBrush" Value="Transparent"/>
@@ -49,8 +49,8 @@
             </Setter>
         </Style>
 
-        <!-- Big pill buttons (View Receipt / Logout / About / Return) -->
-        <Style x:Key="BigPillButtonStyle" TargetType="Button">
+        <!-- Buttons -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Width" Value="360"/>
             <Setter Property="Height" Value="48"/>
             <Setter Property="Margin" Value="0,10,0,0"/>
@@ -87,14 +87,11 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <!-- header -->
             <RowDefinition Height="1"/>
-            <!-- separator -->
             <RowDefinition Height="*"/>
-            <!-- content -->
         </Grid.RowDefinitions>
 
-        <!-- HEADER BAR -->
+        <!-- Header -->
         <Border Grid.Row="0"
                 Background="White"
                 Padding="20,10">
@@ -120,21 +117,18 @@
                                Foreground="#1A1A1A"/>
                 </StackPanel>
 
-                <!-- Header icon buttons (info, home, account) -->
+                <!-- Header Icons -->
                 <StackPanel Grid.Column="1"
                             Orientation="Horizontal"
                             VerticalAlignment="Center">
-                    <!-- Info -->
                     <ToggleButton x:Name="InfoButton"
                                   Style="{StaticResource HeaderIconToggleStyle}"
                                   Tag="/Images/info.png"
                                   Click="InfoButton_Click"/>
-                    <!-- Home -->
                     <ToggleButton x:Name="HomeButton"
                                   Style="{StaticResource HeaderIconToggleStyle}"
                                   Tag="/Images/home.png"
                                   Click="HomeButton_Click"/>
-                    <!-- Account -->
                     <ToggleButton x:Name="AccountButton"
                                   Style="{StaticResource HeaderIconToggleStyle}"
                                   Tag="/Images/account.png"/>
@@ -142,10 +136,9 @@
             </Grid>
         </Border>
 
-        <!-- black separator -->
         <Border Grid.Row="1" Background="Black" Height="1"/>
 
-        <!-- MAIN CONTENT -->
+        <!-- Main -->
         <Grid Grid.Row="2">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -157,7 +150,7 @@
                         VerticalAlignment="Top"
                         Margin="0,60,0,0">
 
-                <!-- white card with text + check image -->
+                <!-- Check Image -->
                 <Border Width="500"
                         Background="White"
                         CornerRadius="24"
@@ -179,19 +172,19 @@
                 </Border>
 
                 <!-- Buttons -->
-                <Button Style="{StaticResource BigPillButtonStyle}"
+                <Button Style="{StaticResource PrimaryButtonStyle}"
                         Content="View Receipt"
                         Click="ViewReceipt_Click"/>
 
-                <Button Style="{StaticResource BigPillButtonStyle}"
+                <Button Style="{StaticResource PrimaryButtonStyle}"
                         Content="Logout"
                         Click="Logout_Click"/>
 
-                <Button Style="{StaticResource BigPillButtonStyle}"
+                <Button Style="{StaticResource PrimaryButtonStyle}"
                         Content="About Us"
                         Click="AboutUs_Click"/>
 
-                <Button Style="{StaticResource BigPillButtonStyle}"
+                <Button Style="{StaticResource PrimaryButtonStyle}"
                         Content="Return To Menu"
                         Click="ReturnToMenu_Click"/>
             </StackPanel>

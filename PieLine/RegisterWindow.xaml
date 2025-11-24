@@ -8,13 +8,11 @@
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
-        
-        <!-- Accent red -->
         <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
         <SolidColorBrush x:Key="AccentGold" Color="#D4AF37"/>
 
-        <!-- Rounded TextBox -->
-        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+        <!-- Text Box -->
+        <Style x:Key="TextBoxStyle" TargetType="TextBox">
             <Setter Property="Height" Value="35"/>
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="Padding" Value="10"/>
@@ -36,8 +34,8 @@
             </Setter>
         </Style>
 
-        <!-- Rounded PasswordBox -->
-        <Style x:Key="RoundedPasswordBoxStyle" TargetType="PasswordBox">
+        <!-- Password Box -->
+        <Style x:Key="PasswordBoxStyle" TargetType="PasswordBox">
             <Setter Property="Height" Value="35"/>
             <Setter Property="FontSize" Value="20"/>
             <Setter Property="Padding" Value="10"/>
@@ -59,15 +57,15 @@
             </Setter>
         </Style>
 
-        <!-- Rounded error bar -->
-        <Style x:Key="ErrorBorderStyle" TargetType="Border">
+        <!-- Error Bar -->
+        <Style x:Key="ErrorStyle" TargetType="Border">
             <Setter Property="Background" Value="#FFB3B3"/>
             <Setter Property="CornerRadius" Value="10"/>
             <Setter Property="Padding" Value="6"/>
             <Setter Property="Margin" Value="0,0,0,16"/>
         </Style>
 
-        <!-- Rounded primary button -->
+        <!-- Primary Button -->
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="46"/>
             <Setter Property="FontSize" Value="20"/>
@@ -117,7 +115,7 @@
 
     </Window.Resources>
 
-    <!-- Layout -->
+    <!-- Main -->
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -149,7 +147,7 @@
                                    Foreground="#1A1A1A"/>
                     </StackPanel>
 
-                    <!-- Main Card -->
+                    <!-- Main Box -->
                     <Border Width="680"
                         Background="White"
                         BorderBrush="#1A1A1A"
@@ -162,24 +160,15 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto"/>
-                                <!-- Title -->
                                 <RowDefinition Height="Auto"/>
-                                <!-- Full name -->
                                 <RowDefinition Height="Auto"/>
-                                <!-- Phone -->
                                 <RowDefinition Height="Auto"/>
-                                <!-- Email -->
                                 <RowDefinition Height="Auto"/>
-                                <!-- Password -->
                                 <RowDefinition Height="Auto"/>
-                                <!-- Confirm -->
                                 <RowDefinition Height="Auto"/>
-                                <!-- Error -->
                                 <RowDefinition Height="Auto"/>
-                                <!-- Create -->
                                 <RowDefinition Height="*"/>
-                                <!-- Sign in -->
-                            </Grid.RowDefinitions>
+                        </Grid.RowDefinitions>
 
                             <!-- Title -->
                             <StackPanel Grid.Row="0" Margin="0,0,0,30">
@@ -191,14 +180,14 @@
                                            FontWeight="SemiBold"/>
                             </StackPanel>
 
-                            <!-- Full Name -->
+                            <!-- Name -->
                             <StackPanel Grid.Row="1" Margin="0,0,0,16">
                                 <TextBlock Text="Full Name"
                                            FontSize="20"
                                            FontWeight="Bold"
                                            Margin="4,0,0,4"/>
                                 <TextBox x:Name="NameTextBox"
-                                         Style="{StaticResource RoundedTextBoxStyle}"
+                                         Style="{StaticResource TextBoxStyle}"
                                          TextChanged="NameTextBox_TextChanged"
                                          MaxLength="32"/>
                             </StackPanel>
@@ -210,7 +199,7 @@
                                            FontWeight="Bold"
                                            Margin="4,0,0,4"/>
                                 <TextBox x:Name="PhoneTextBox"
-                                         Style="{StaticResource RoundedTextBoxStyle}"
+                                         Style="{StaticResource TextBoxStyle}"
                                          MaxLength="14"
                                          TextChanged="PhoneTextBox_TextChanged"/>
                             </StackPanel>
@@ -222,7 +211,7 @@
                                            FontWeight="Bold"
                                            Margin="4,0,0,4"/>
                                 <TextBox x:Name="EmailTextBox"
-                                         Style="{StaticResource RoundedTextBoxStyle}"
+                                         Style="{StaticResource TextBoxStyle}"
                                          TextChanged="EmailTextBox_TextChanged"
                                          MaxLength="32"/>
                             </StackPanel>
@@ -234,7 +223,7 @@
                                            FontWeight="Bold"
                                            Margin="4,0,0,4"/>
                                 <PasswordBox x:Name="PasswordBox"
-                                             Style="{StaticResource RoundedPasswordBoxStyle}"
+                                             Style="{StaticResource PasswordBoxStyle}"
                                              PasswordChanged="PasswordBox_PasswordChanged"
                                              MaxLength="32"/>
                             </StackPanel>
@@ -246,7 +235,7 @@
                                            FontWeight="Bold"
                                            Margin="4,0,0,4"/>
                                 <PasswordBox x:Name="ConfirmedPasswordBox"
-                                             Style="{StaticResource RoundedPasswordBoxStyle}"
+                                             Style="{StaticResource PasswordBoxStyle}"
                                              PasswordChanged="ConfirmedPasswordBox_PasswordChanged"
                                              MaxLength="32"/>
                             </StackPanel>
@@ -254,7 +243,7 @@
                             <!-- Error Box -->
                             <StackPanel Grid.Row="6" Margin="0,10,0,-10">
                                 <Border x:Name="RegisterErrorBorder"
-                                    Style="{StaticResource ErrorBorderStyle}"
+                                    Style="{StaticResource ErrorStyle}"
                                     Visibility="Collapsed"
                                     BorderBrush="#F13300"
                                     BorderThickness="2">
