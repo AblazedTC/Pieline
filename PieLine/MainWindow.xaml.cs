@@ -345,7 +345,7 @@ namespace PieLine
             var toppingsPanel = GetNamedControl<WrapPanel>("BuildPizzaSummaryToppingsPanel");
             var totalText = GetNamedControl<TextBlock>("BuildPizzaSummaryTotalText");
 
-            Debug.WriteLine($"Summary controls found: size={sizeText!=null}, sauce={sauceText!=null}, crust={crustText!=null}, toppings={toppingsPanel!=null}, total={totalText!=null}");
+            Debug.WriteLine($"Summary controls found: size={sizeText != null}, sauce={sauceText != null}, crust={crustText != null}, toppings={toppingsPanel != null}, total={totalText != null}");
 #if DEBUG
             if (sizeText == null || sauceText == null || crustText == null || toppingsPanel == null || totalText == null)
             {
@@ -393,6 +393,13 @@ namespace PieLine
         private void CartButton_Click(object sender, RoutedEventArgs e)
         {
             OpenCartSidebar();
+        }
+
+        private void InfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            CompanyInformationWindow infoWindow = new CompanyInformationWindow();
+            infoWindow.Show();
+            this.Close();
         }
 
         private void CartCloseButton_Click(object sender, RoutedEventArgs e)
