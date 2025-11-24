@@ -3,47 +3,75 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:local="clr-namespace:PieLine"
         Title="Mom's and Pop's Pizzeria - Main"
-        Height="800" Width="1024"
+        Height="800"
+        Width="1024"
         Background="#FFF7EE"
         WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
         <!-- Colors -->
-        <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
-        <SolidColorBrush x:Key="AccentGold" Color="#D4AF37"/>
-        <SolidColorBrush x:Key="CardBackground" Color="White"/>
-        <SolidColorBrush x:Key="HeaderBackground" Color="White"/>
+        <SolidColorBrush x:Key="AccentRed"
+                Color="#F13300"/>
+        <SolidColorBrush x:Key="AccentGold"
+                Color="#D4AF37"/>
+        <SolidColorBrush x:Key="CardBackground"
+                Color="White"/>
+        <SolidColorBrush x:Key="HeaderBackground"
+                Color="White"/>
 
         <!-- Top-right icon buttons -->
-        <Style x:Key="HeaderIconButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderBrush" Value="Transparent"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="FontSize" Value="16"/>
-            <Setter Property="Padding" Value="6"/>
-            <Setter Property="Margin" Value="4,0"/>
-            <Setter Property="Cursor" Value="Hand"/>
+        <Style x:Key="HeaderIconButtonStyle"
+                TargetType="Button">
+            <Setter Property="Background"
+                    Value="Transparent"/>
+            <Setter Property="BorderBrush"
+                    Value="Transparent"/>
+            <Setter Property="Foreground"
+                    Value="Black"/>
+            <Setter Property="FontSize"
+                    Value="16"/>
+            <Setter Property="Padding"
+                    Value="6"/>
+            <Setter Property="Margin"
+                    Value="4,0"/>
+            <Setter Property="Cursor"
+                    Value="Hand"/>
         </Style>
 
         <!-- Search TextBox (borderless inside rounded box) -->
-        <Style x:Key="SearchTextBoxStyle" TargetType="TextBox">
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Margin" Value="8,0,0,0"/>
-            <Setter Property="FontSize" Value="20"/>
-            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Style x:Key="SearchTextBoxStyle"
+                TargetType="TextBox">
+            <Setter Property="BorderThickness"
+                    Value="0"/>
+            <Setter Property="Margin"
+                    Value="8,0,0,0"/>
+            <Setter Property="FontSize"
+                    Value="20"/>
+            <Setter Property="VerticalContentAlignment"
+                    Value="Center"/>
         </Style>
 
         <!-- Card "Add to Cart" button -->
-        <Style x:Key="AddToCartButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="{StaticResource AccentRed}"/>
-            <Setter Property="Foreground" Value="White"/>
-            <Setter Property="FontWeight" Value="Bold"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="BorderBrush" Value="{StaticResource AccentRed}"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="Margin" Value="0,16,0,0"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+        <Style x:Key="AddToCartButtonStyle"
+                TargetType="Button">
+            <Setter Property="Background"
+                    Value="{StaticResource AccentRed}"/>
+            <Setter Property="Foreground"
+                    Value="White"/>
+            <Setter Property="FontWeight"
+                    Value="Bold"/>
+            <Setter Property="BorderThickness"
+                    Value="2"/>
+            <Setter Property="BorderBrush"
+                    Value="{StaticResource AccentRed}"/>
+            <Setter Property="Height"
+                    Value="40"/>
+            <Setter Property="Margin"
+                    Value="0,16,0,0"/>
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+            <Setter Property="HorizontalAlignment"
+                    Value="Stretch"/>
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
@@ -61,38 +89,55 @@
         </Style>
 
         <!-- Tag / chip style -->
-        <Style x:Key="TagChipStyle" TargetType="Border">
-            <Setter Property="Background" Value="#F0F0F0"/>
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="Padding" Value="8,2"/>
-            <Setter Property="Margin" Value="0,0,6,0"/>
+        <Style x:Key="TagChipStyle"
+                TargetType="Border">
+            <Setter Property="Background"
+                    Value="#F0F0F0"/>
+            <Setter Property="CornerRadius"
+                    Value="12"/>
+            <Setter Property="Padding"
+                    Value="8,2"/>
+            <Setter Property="Margin"
+                    Value="0,0,6,0"/>
         </Style>
 
         <!-- Builder choice buttons (size, sauce, crust, toppings) -->
-        <Style x:Key="ChoiceButtonStyle" TargetType="Button">
-            <Setter Property="Margin" Value="8"/>
-            <Setter Property="Padding" Value="18,8"/>
-            <Setter Property="Width" Value="195"/>
-            <Setter Property="BorderThickness" Value="2"/>
-            <Setter Property="BorderBrush" Value="{StaticResource AccentRed}"/>
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="Foreground" Value="Black"/>
-            <Setter Property="Cursor" Value="Hand"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="HorizontalAlignment" Value="Center"/>
-            <Setter Property="VerticalAlignment" Value="Center"/>
+        <Style x:Key="ChoiceButtonStyle"
+                TargetType="Button">
+            <Setter Property="Margin"
+                    Value="8"/>
+            <Setter Property="Padding"
+                    Value="18,8"/>
+            <Setter Property="Width"
+                    Value="195"/>
+            <Setter Property="BorderThickness"
+                    Value="2"/>
+            <Setter Property="BorderBrush"
+                    Value="{StaticResource AccentRed}"/>
+            <Setter Property="Background"
+                    Value="White"/>
+            <Setter Property="Foreground"
+                    Value="Black"/>
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+            <Setter Property="FontSize"
+                    Value="14"/>
+            <Setter Property="HorizontalAlignment"
+                    Value="Center"/>
+            <Setter Property="VerticalAlignment"
+                    Value="Center"/>
             <!-- pill-shaped template -->
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="border"
-                            CornerRadius="24"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
+                                CornerRadius="24"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
                             <ContentPresenter HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Margin="{TemplateBinding Padding}"/>
+                                              VerticalAlignment="Center"
+                                              Margin="{TemplateBinding Padding}"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
@@ -100,21 +145,33 @@
         </Style>
 
         <!-- Big rounded white panels in the builder (size / sauce / crust / toppings) -->
-        <Style x:Key="BuilderGroupBorderStyle" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="26"/>
-            <Setter Property="Padding" Value="18"/>
-            <Setter Property="Margin" Value="0,0,0,14"/>
-            <Setter Property="BorderBrush" Value="#E0E0E0"/>
-            <Setter Property="BorderThickness" Value="1"/>
+        <Style x:Key="BuilderGroupBorderStyle"
+                TargetType="Border">
+            <Setter Property="Background"
+                    Value="White"/>
+            <Setter Property="CornerRadius"
+                    Value="26"/>
+            <Setter Property="Padding"
+                    Value="18"/>
+            <Setter Property="Margin"
+                    Value="0,0,0,14"/>
+            <Setter Property="BorderBrush"
+                    Value="#E0E0E0"/>
+            <Setter Property="BorderThickness"
+                    Value="1"/>
         </Style>
 
         <!-- Selected topping pills in builder summary -->
-        <Style x:Key="ToppingPillStyle" TargetType="Border">
-            <Setter Property="Background" Value="{StaticResource AccentGold}"/>
-            <Setter Property="CornerRadius" Value="12"/>
-            <Setter Property="Padding" Value="8,2"/>
-            <Setter Property="Margin" Value="0,0,6,6"/>
+        <Style x:Key="ToppingPillStyle"
+                TargetType="Border">
+            <Setter Property="Background"
+                    Value="{StaticResource AccentGold}"/>
+            <Setter Property="CornerRadius"
+                    Value="12"/>
+            <Setter Property="Padding"
+                    Value="8,2"/>
+            <Setter Property="Margin"
+                    Value="0,0,6,6"/>
         </Style>
 
         <local:ImagePathConverter x:Key="ImagePathConverter"/>
@@ -143,11 +200,15 @@
                 </Grid.ColumnDefinitions>
 
                 <!-- Logo + Name -->
-                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Width="40" Height="40" CornerRadius="4" Margin="0,0,12,0">
+                <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                    <Border Width="40"
+                            Height="40"
+                            CornerRadius="4"
+                            Margin="0,0,12,0">
                         <Border.Background>
                             <ImageBrush ImageSource="{Binding LogoPath, Converter={StaticResource ImagePathConverter}}"
-                                        Stretch="Uniform" />
+                                        Stretch="Uniform"/>
                         </Border.Background>
                     </Border>
 
@@ -163,21 +224,31 @@
                             Orientation="Horizontal"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-                    <Button Style="{StaticResource HeaderIconButtonStyle}" Content="i"/>
+                    <Button Style="{StaticResource HeaderIconButtonStyle}"
+                            Content="i"
+                            Click="InfoButton_Click"/>
                     <Button Style="{StaticResource HeaderIconButtonStyle}">
-                        <TextBlock Text="Home" Foreground="#F13300"/>
+                        <TextBlock Text="Home"
+                                Foreground="#F13300"/>
                     </Button>
-                    <Button Style="{StaticResource HeaderIconButtonStyle}" Content="User"/>
-                    <Button x:Name="CartButton" Style="{StaticResource HeaderIconButtonStyle}" Content="Cart" Click="CartButton_Click"/>
+                    <Button Style="{StaticResource HeaderIconButtonStyle}"
+                            Content="User"/>
+                    <Button x:Name="CartButton"
+                            Style="{StaticResource HeaderIconButtonStyle}"
+                            Content="Cart"
+                            Click="CartButton_Click"/>
                 </StackPanel>
             </Grid>
         </Border>
 
         <!-- Black separator -->
-        <Border Grid.Row="1" Background="Black" Height="1"/>
+        <Border Grid.Row="1"
+                Background="Black"
+                Height="1"/>
 
         <!-- ============== SEARCH + BUILD YOUR OWN ROW ============== -->
-        <Grid Grid.Row="2" Margin="20,25">
+        <Grid Grid.Row="2"
+                Margin="20,25">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
@@ -244,13 +315,14 @@
                                     <ItemsControl ItemsSource="{Binding Items}">
                                         <ItemsControl.ItemsPanel>
                                             <ItemsPanelTemplate>
-                                                <WrapPanel />
+                                                <WrapPanel/>
                                             </ItemsPanelTemplate>
                                         </ItemsControl.ItemsPanel>
 
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate DataType="{x:Type local:MenuItem}">
-                                                <Border Width="260" Margin="34,18,0,22"
+                                                <Border Width="260"
+                                                        Margin="34,18,0,22"
                                                         Background="{StaticResource CardBackground}"
                                                         CornerRadius="20"
                                                         BorderBrush="#E0E0E0"
@@ -261,7 +333,7 @@
 
                                                             <Border.Background>
                                                                 <ImageBrush ImageSource="{Binding Image, Converter={StaticResource ImagePathConverter}}"
-                                                                            Stretch="UniformToFill" />
+                                                                            Stretch="UniformToFill"/>
                                                             </Border.Background>
                                                         </Border>
 
@@ -305,7 +377,8 @@
                                                                 <ItemsControl.ItemTemplate>
                                                                     <DataTemplate>
                                                                         <Border Style="{StaticResource TagChipStyle}">
-                                                                            <TextBlock Text="{Binding}" FontSize="11"/>
+                                                                            <TextBlock Text="{Binding}"
+                                                                                    FontSize="11"/>
                                                                         </Border>
                                                                     </DataTemplate>
                                                                 </ItemsControl.ItemTemplate>
@@ -362,7 +435,9 @@
 
 
                     <!-- ===== TITLE BAR ===== -->
-                    <Grid Grid.Row="0" Grid.ColumnSpan="3" Margin="0,0,0,10">
+                    <Grid Grid.Row="0"
+                            Grid.ColumnSpan="3"
+                            Margin="0,0,0,10">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
@@ -375,7 +450,8 @@
 
                         <Button Grid.Column="1"
                                 Content="X"
-                                Width="34" Height="34"
+                                Width="34"
+                                Height="34"
                                 FontSize="18"
                                 Background="Transparent"
                                 BorderBrush="Transparent"
@@ -386,7 +462,8 @@
 
 
                     <!-- ===== LEFT OPTIONS (scrollable) ===== -->
-                    <ScrollViewer Grid.Row="1" Grid.Column="0"
+                    <ScrollViewer Grid.Row="1"
+                            Grid.Column="0"
                                   VerticalScrollBarVisibility="Auto"
                                   Margin="0,0,25,0">
 
@@ -395,7 +472,8 @@
 
                             <!-- ***** SIZE SECTION ***** -->
                             <Border Style="{StaticResource BuilderGroupBorderStyle}"
-                                    Padding="22" Margin="0,0,25,20"
+                                    Padding="22"
+                                    Margin="0,0,25,20"
                                     BorderBrush="#1A1A1A"
                                     BorderThickness="1">
                                 <StackPanel>
@@ -405,27 +483,38 @@
                                                Margin="0,0,0,14"/>
 
                                     <!-- Buttons -->
-                                    <UniformGrid Rows="2" Columns="2" Margin="0,6,0,0" x:Name="BuildPizzaSizeButtonsPanel">
+                                    <UniformGrid Rows="2"
+                                            Columns="2"
+                                            Margin="0,6,0,0"
+                                            x:Name="BuildPizzaSizeButtonsPanel">
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                    Padding="24,12" FontSize="16"
-                                                    Content="Small" Tag="Small"
-                                                    Click="BuildPizzaSizeButton_Click"/>
+                                                Padding="24,12"
+                                                FontSize="16"
+                                                Content="Small"
+                                                Tag="Small"
+                                                Click="BuildPizzaSizeButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                    Padding="24,12" FontSize="16"
-                                                    Content="Medium" Tag="Medium"
-                                                    Click="BuildPizzaSizeButton_Click"/>
+                                                Padding="24,12"
+                                                FontSize="16"
+                                                Content="Medium"
+                                                Tag="Medium"
+                                                Click="BuildPizzaSizeButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                    Padding="24,12" FontSize="16"
-                                                    Content="Large" Tag="Large"
-                                                    Click="BuildPizzaSizeButton_Click"/>
+                                                Padding="24,12"
+                                                FontSize="16"
+                                                Content="Large"
+                                                Tag="Large"
+                                                Click="BuildPizzaSizeButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                    Padding="24,12" FontSize="16"
-                                                    Content="Extra Large" Tag="Extra Large"
-                                                    Click="BuildPizzaSizeButton_Click"/>
+                                                Padding="24,12"
+                                                FontSize="16"
+                                                Content="Extra Large"
+                                                Tag="Extra Large"
+                                                Click="BuildPizzaSizeButton_Click"/>
 
                                     </UniformGrid>
                                 </StackPanel>
@@ -441,7 +530,8 @@
 
                                 <!-- SAUCE -->
                                 <Border Style="{StaticResource BuilderGroupBorderStyle}"
-                                        Padding="22" Margin="0,0,25,0"
+                                        Padding="22"
+                                        Margin="0,0,25,0"
                                         BorderBrush="#1A1A1A"
                                         BorderThickness="1"
                                         VerticalAlignment="Center"
@@ -455,18 +545,24 @@
                                         <WrapPanel HorizontalAlignment="Center">
                                             <StackPanel x:Name="BuildPizzaSauceButtonsPanel">
                                                 <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                        Padding="22,10" FontSize="16"
-                                                        Content="Tomato" Tag="Tomato"
+                                                        Padding="22,10"
+                                                        FontSize="16"
+                                                        Content="Tomato"
+                                                        Tag="Tomato"
                                                         Click="BuildPizzaSauceButton_Click"/>
-                                                
+
                                                 <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                        Padding="22,10" FontSize="16"
-                                                        Content="Marinara" Tag="Marinara"
+                                                        Padding="22,10"
+                                                        FontSize="16"
+                                                        Content="Marinara"
+                                                        Tag="Marinara"
                                                         Click="BuildPizzaSauceButton_Click"/>
-                                                
+
                                                 <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                        Padding="22,10" FontSize="16"
-                                                        Content="Alfredo" Tag="Alfredo"
+                                                        Padding="22,10"
+                                                        FontSize="16"
+                                                        Content="Alfredo"
+                                                        Tag="Alfredo"
                                                         Click="BuildPizzaSauceButton_Click"/>
                                             </StackPanel>
                                         </WrapPanel>
@@ -475,7 +571,9 @@
 
                                 <!-- CRUST -->
                                 <Border Style="{StaticResource BuilderGroupBorderStyle}"
-                                        Padding="22" Grid.Column="1" Margin="0,0,25,0"
+                                        Padding="22"
+                                        Grid.Column="1"
+                                        Margin="0,0,25,0"
                                         BorderBrush="#1A1A1A"
                                         BorderThickness="1"
                                         VerticalAlignment="Center"
@@ -489,18 +587,24 @@
                                         <WrapPanel HorizontalAlignment="Center">
                                             <StackPanel x:Name="BuildPizzaCrustButtonsPanel">
                                                 <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                        Padding="22,10" FontSize="16"
-                                                        Content="Thin" Tag="Thin"
+                                                        Padding="22,10"
+                                                        FontSize="16"
+                                                        Content="Thin"
+                                                        Tag="Thin"
                                                         Click="BuildPizzaCrustButton_Click"/>
 
                                                 <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                        Padding="22,10" FontSize="16"
-                                                        Content="Regular" Tag="Regular"
+                                                        Padding="22,10"
+                                                        FontSize="16"
+                                                        Content="Regular"
+                                                        Tag="Regular"
                                                         Click="BuildPizzaCrustButton_Click"/>
 
                                                 <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                        Padding="22,10" FontSize="16"
-                                                        Content="Pan" Tag="Pan"
+                                                        Padding="22,10"
+                                                        FontSize="16"
+                                                        Content="Pan"
+                                                        Tag="Pan"
                                                         Click="BuildPizzaCrustButton_Click"/>
                                             </StackPanel>
                                         </WrapPanel>
@@ -512,7 +616,8 @@
 
                             <!-- ***** TOPPINGS ***** -->
                             <Border Style="{StaticResource BuilderGroupBorderStyle}"
-                                   Padding="22" Margin="0,0,25,40"
+                                    Padding="22"
+                                    Margin="0,0,25,40"
                                     BorderBrush="#1A1A1A"
                                     BorderThickness="1">
 
@@ -523,68 +628,96 @@
                                                Margin="0,0,0,14"/>
 
                                     <!-- Veg -->
-                                    <TextBlock Text="Vegetables" FontWeight="SemiBold"
-                                               FontSize="16" Margin="0,6,0,4"/>
-                                    <WrapPanel x:Name="VegToppingsButtonsPanel" HorizontalAlignment="Center">
+                                    <TextBlock Text="Vegetables"
+                                            FontWeight="SemiBold"
+                                               FontSize="16"
+                                            Margin="0,6,0,4"/>
+                                    <WrapPanel x:Name="VegToppingsButtonsPanel"
+                                            HorizontalAlignment="Center">
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="22,10" FontSize="16"
-                                                Content="Cheese" Tag="Cheese"
+                                                Padding="22,10"
+                                                FontSize="16"
+                                                Content="Cheese"
+                                                Tag="Cheese"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="22,10" FontSize="16"
-                                                Content="Onion" Tag="Onion"
+                                                Padding="22,10"
+                                                FontSize="16"
+                                                Content="Onion"
+                                                Tag="Onion"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="22,10" FontSize="16"
-                                                Content="Pineapple" Tag="Pineapple"
+                                                Padding="22,10"
+                                                FontSize="16"
+                                                Content="Pineapple"
+                                                Tag="Pineapple"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="22,10" FontSize="16"
-                                                Content="Jalapeno" Tag="Jalapeno"
+                                                Padding="22,10"
+                                                FontSize="16"
+                                                Content="Jalapeno"
+                                                Tag="Jalapeno"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="22,10" FontSize="16"
-                                                Content="Olives" Tag="Olives"
+                                                Padding="22,10"
+                                                FontSize="16"
+                                                Content="Olives"
+                                                Tag="Olives"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="22,10" FontSize="16"
-                                                Content="Mushroom" Tag="Mushroom"
+                                                Padding="22,10"
+                                                FontSize="16"
+                                                Content="Mushroom"
+                                                Tag="Mushroom"
                                                 Click="BuildPizzaToppingButton_Click"/>
                                     </WrapPanel>
 
 
                                     <!-- Meat -->
-                                    <TextBlock Text="Meat" FontWeight="SemiBold"
-                                               FontSize="16" Margin="0,14,0,4"/>
-                                    <WrapPanel x:Name="MeatToppingsButtonsPanel" HorizontalAlignment="Center">
+                                    <TextBlock Text="Meat"
+                                            FontWeight="SemiBold"
+                                               FontSize="16"
+                                            Margin="0,14,0,4"/>
+                                    <WrapPanel x:Name="MeatToppingsButtonsPanel"
+                                            HorizontalAlignment="Center">
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="22,10" FontSize="16"
-                                                Content="Pepperoni" Tag="Pepperoni"
+                                                Padding="22,10"
+                                                FontSize="16"
+                                                Content="Pepperoni"
+                                                Tag="Pepperoni"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="22,10" FontSize="16"
-                                                Content="Sausage" Tag="Italian sausage"
+                                                Padding="22,10"
+                                                FontSize="16"
+                                                Content="Sausage"
+                                                Tag="Italian sausage"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="22,10" FontSize="16"
-                                                Content="Beef" Tag="Beef"
+                                                Padding="22,10"
+                                                FontSize="16"
+                                                Content="Beef"
+                                                Tag="Beef"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="22,10" FontSize="16"
-                                                Content="Chicken" Tag="Chicken"
+                                                Padding="22,10"
+                                                FontSize="16"
+                                                Content="Chicken"
+                                                Tag="Chicken"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
-                                                Padding="22,10" FontSize="16"
-                                                Content="Bacon" Tag="Bacon"
+                                                Padding="22,10"
+                                                FontSize="16"
+                                                Content="Bacon"
+                                                Tag="Bacon"
                                                 Click="BuildPizzaToppingButton_Click"/>
                                     </WrapPanel>
                                 </StackPanel>
@@ -596,7 +729,8 @@
 
 
                     <!-- ===== RIGHT SUMMARY PANEL ===== -->
-                    <Border Grid.Row="1" Grid.Column="2"
+                    <Border Grid.Row="1"
+                            Grid.Column="2"
                             Background="White"
                             CornerRadius="20"
                             Padding="20"
@@ -618,16 +752,21 @@
                                        Margin="0,0,0,10"/>
 
 
-                            <StackPanel Grid.Row="1" Margin="0,0,0,10">
+                            <StackPanel Grid.Row="1"
+                                    Margin="0,0,0,10">
 
                                 <Grid Margin="0,0,0,6">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Size:" FontSize="16" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Size:"
+                                            FontSize="16"
+                                            FontWeight="SemiBold"/>
                                     <TextBlock x:Name="BuildPizzaSummarySizeText"
-                                               FontSize="16" Grid.Column="1" Margin="8,0,0,0"/>
+                                               FontSize="16"
+                                            Grid.Column="1"
+                                            Margin="8,0,0,0"/>
                                 </Grid>
 
                                 <Grid Margin="0,0,0,6">
@@ -635,9 +774,13 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Sauce:" FontSize="16" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Sauce:"
+                                            FontSize="16"
+                                            FontWeight="SemiBold"/>
                                     <TextBlock x:Name="BuildPizzaSummarySauceText"
-                                               FontSize="16" Grid.Column="1" Margin="8,0,0,0"/>
+                                               FontSize="16"
+                                            Grid.Column="1"
+                                            Margin="8,0,0,0"/>
                                 </Grid>
 
                                 <Grid Margin="0,0,0,6">
@@ -645,28 +788,40 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="Crust:" FontSize="16" FontWeight="SemiBold"/>
+                                    <TextBlock Text="Crust:"
+                                            FontSize="16"
+                                            FontWeight="SemiBold"/>
                                     <TextBlock x:Name="BuildPizzaSummaryCrustText"
-                                               FontSize="16" Grid.Column="1" Margin="8,0,0,0"/>
+                                               FontSize="16"
+                                            Grid.Column="1"
+                                            Margin="8,0,0,0"/>
                                 </Grid>
 
-                                <Separator Grid.Row="2" Margin="-20,10,-20,0"/>
+                                <Separator Grid.Row="2"
+                                        Margin="-20,10,-20,0"/>
 
-                                <TextBlock Text="Toppings:" FontSize="16" FontWeight="SemiBold" Margin="0,12,0,8"/>
+                                <TextBlock Text="Toppings:"
+                                        FontSize="16"
+                                        FontWeight="SemiBold"
+                                        Margin="0,12,0,8"/>
 
                                 <WrapPanel x:Name="BuildPizzaSummaryToppingsPanel"/>
                             </StackPanel>
 
-                            <Separator Grid.Row="2" Margin="-20,-40,-20,0"/>
+                            <Separator Grid.Row="2"
+                                    Margin="-20,-40,-20,0"/>
 
                             <!-- Price row -->
-                            <Grid Grid.Row="2" Margin="0,10,0,6">
+                            <Grid Grid.Row="2"
+                                    Margin="0,10,0,6">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
 
-                                <TextBlock Text="Total" FontSize="16" FontWeight="Bold"/>
+                                <TextBlock Text="Total"
+                                        FontSize="16"
+                                        FontWeight="Bold"/>
                                 <TextBlock x:Name="BuildPizzaSummaryTotalText"
                                            Grid.Column="1"
                                            FontWeight="Bold"
@@ -677,7 +832,7 @@
 
 
                             <Button x:Name="BuildPizzaAddToCartButton"
-                                    Grid.Row="3" 
+                                    Grid.Row="3"
                                     Style="{StaticResource AddToCartButtonStyle}"
                                     Content="+ Add to Cart"
                                     Height="50"
@@ -700,14 +855,24 @@
         </Grid>
 
         <!-- ================= CART SIDEBAR OVERLAY ================= -->
-        <Grid x:Name="CartSidebarOverlay" Grid.RowSpan="4" Visibility="Collapsed" IsHitTestVisible="False">
+        <Grid x:Name="CartSidebarOverlay"
+                Grid.RowSpan="4"
+                Visibility="Collapsed"
+                IsHitTestVisible="False">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="360"/>
             </Grid.ColumnDefinitions>
 
             <!-- Clickable dark overlay that closes the cart when clicked (covers full area) -->
-            <Border x:Name="CartBackgroundOverlay" Grid.Column="0" Grid.ColumnSpan="2" Background="#80000000" MouseDown="CartOverlayBackground_MouseDown" HorizontalAlignment="Stretch" Opacity="0" Visibility="Collapsed"/>
+            <Border x:Name="CartBackgroundOverlay"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="2"
+                    Background="#80000000"
+                    MouseDown="CartOverlayBackground_MouseDown"
+                    HorizontalAlignment="Stretch"
+                    Opacity="0"
+                    Visibility="Collapsed"/>
 
             <!-- Sidebar panel (starts translated to the right) -->
             <Border Grid.Column="1"
@@ -718,7 +883,8 @@
                     x:Name="CartSidebar"
                     HorizontalAlignment="Stretch">
                 <Border.RenderTransform>
-                    <TranslateTransform x:Name="CartSidebarTransform" X="360" />
+                    <TranslateTransform x:Name="CartSidebarTransform"
+                            X="360"/>
                 </Border.RenderTransform>
 
                 <Grid>
@@ -729,16 +895,30 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
 
-                    <DockPanel Grid.Row="0" Margin="10,0,0,0">
-                        <TextBlock Text="Your Cart" FontSize="20" FontWeight="Bold" DockPanel.Dock="Left"/>
-                        <Button Content="X" Width="34" Height="34" HorizontalAlignment="Right" DockPanel.Dock="Right" Click="CartCloseButton_Click"/>
+                    <DockPanel Grid.Row="0"
+                            Margin="10,0,0,0">
+                        <TextBlock Text="Your Cart"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                DockPanel.Dock="Left"/>
+                        <Button Content="X"
+                                Width="34"
+                                Height="34"
+                                HorizontalAlignment="Right"
+                                DockPanel.Dock="Right"
+                                Click="CartCloseButton_Click"/>
                     </DockPanel>
 
-                    <ScrollViewer Grid.Row="1" Margin="10,12,0,12" VerticalScrollBarVisibility="Auto">
+                    <ScrollViewer Grid.Row="1"
+                            Margin="10,12,0,12"
+                            VerticalScrollBarVisibility="Auto">
                         <ItemsControl ItemsSource="{Binding CartItems}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border Padding="8" Margin="0,0,0,10" Background="#FFF7EE" CornerRadius="8">
+                                    <Border Padding="8"
+                                            Margin="0,0,0,10"
+                                            Background="#FFF7EE"
+                                            CornerRadius="8">
                                         <Grid>
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
@@ -746,11 +926,23 @@
                                                 <ColumnDefinition Width="Auto"/>
                                             </Grid.ColumnDefinitions>
                                             <StackPanel>
-                                                <TextBlock Text="{Binding Name}" FontWeight="Bold"/>
-                                                <TextBlock Text="{Binding Toppings}" FontSize="12" Foreground="#666" TextWrapping="Wrap"/>
+                                                <TextBlock Text="{Binding Name}"
+                                                        FontWeight="Bold"/>
+                                                <TextBlock Text="{Binding Toppings}"
+                                                        FontSize="12"
+                                                        Foreground="#666"
+                                                        TextWrapping="Wrap"/>
                                             </StackPanel>
-                                            <TextBlock Grid.Column="1" Text="{Binding Price, StringFormat=$ {0:0.00}}" VerticalAlignment="Center" Margin="8,0" Foreground="{StaticResource AccentRed}"/>
-                                            <Button Grid.Column="2" Content="Remove" Margin="8,0,0,0" Click="CartRemove_Click" DataContext="{Binding}"/>
+                                            <TextBlock Grid.Column="1"
+                                                    Text="{Binding Price, StringFormat=$ {0:0.00}}"
+                                                    VerticalAlignment="Center"
+                                                    Margin="8,0"
+                                                    Foreground="{StaticResource AccentRed}"/>
+                                            <Button Grid.Column="2"
+                                                    Content="Remove"
+                                                    Margin="8,0,0,0"
+                                                    Click="CartRemove_Click"
+                                                    DataContext="{Binding}"/>
                                         </Grid>
                                     </Border>
                                 </DataTemplate>
@@ -764,8 +956,14 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="Auto"/>
                             </Grid.ColumnDefinitions>
-                            <TextBlock Text="Total" FontWeight="Bold" Padding="10,0,0,0"/>
-                            <TextBlock x:Name="CartTotalText" Padding="0,0,0,0" Grid.Column="1" FontWeight="Bold" Foreground="{StaticResource AccentRed}"/>
+                            <TextBlock Text="Total"
+                                    FontWeight="Bold"
+                                    Padding="10,0,0,0"/>
+                            <TextBlock x:Name="CartTotalText"
+                                    Padding="0,0,0,0"
+                                    Grid.Column="1"
+                                    FontWeight="Bold"
+                                    Foreground="{StaticResource AccentRed}"/>
                         </Grid>
 
                         <Button x:Name="CheckoutButton"

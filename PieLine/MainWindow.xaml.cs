@@ -438,7 +438,7 @@ namespace PieLine
             var sidebarAnim = new DoubleAnimation
             {
                 From = SidebarWidth,
-                To =0,
+                To = 0,
                 Duration = TimeSpan.FromMilliseconds(300),
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
             };
@@ -447,7 +447,7 @@ namespace PieLine
             // Ensure overlay will stretch (clear any fixed Width) and fade in (full-screen overlay)
             overlay.ClearValue(FrameworkElement.WidthProperty);
             overlay.Visibility = Visibility.Visible;
-            var overlayFadeIn = new DoubleAnimation(0,0.5, TimeSpan.FromMilliseconds(300))
+            var overlayFadeIn = new DoubleAnimation(0, 0.5, TimeSpan.FromMilliseconds(300))
             {
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseOut }
             };
@@ -468,14 +468,14 @@ namespace PieLine
             // Animate sidebar out
             var sidebarAnim = new DoubleAnimation
             {
-                From =0,
+                From = 0,
                 To = SidebarWidth,
                 Duration = TimeSpan.FromMilliseconds(250),
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
             };
 
             // Fade overlay out (full-screen overlay)
-            var overlayFadeOut = new DoubleAnimation(overlay.Opacity,0, TimeSpan.FromMilliseconds(250))
+            var overlayFadeOut = new DoubleAnimation(overlay.Opacity, 0, TimeSpan.FromMilliseconds(250))
             {
                 EasingFunction = new QuadraticEase { EasingMode = EasingMode.EaseIn }
             };
@@ -484,7 +484,7 @@ namespace PieLine
             {
                 overlayGrid.Visibility = Visibility.Collapsed;
                 overlayGrid.IsHitTestVisible = false;
-                overlay.Opacity =0;
+                overlay.Opacity = 0;
                 // reset Width so next open isn't constrained
                 overlay.ClearValue(FrameworkElement.WidthProperty);
             };
@@ -509,6 +509,13 @@ namespace PieLine
 
             decimal total = CartItems.Sum(i => i.Price);
             totalText.Text = $"$ {total:0.00}";
+        }
+
+        private void InfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            var companyInfoWindow = new CompanyInformationWindow();
+            companyInfoWindow.Show();
+            this.Close();
         }
     }
 }
