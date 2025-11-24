@@ -47,14 +47,37 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                                BorderBrush="{TemplateBinding BorderBrush}"
-                                BorderThickness="{TemplateBinding BorderThickness}"
-                                CornerRadius="10">
+                        <Border x:Name="border"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="10">
                             <ContentPresenter HorizontalAlignment="Center"
-                                              VerticalAlignment="Center"
-                                              Margin="{TemplateBinding Padding}"/>
+                                      VerticalAlignment="Center"
+                                      Margin="{TemplateBinding Padding}"/>
                         </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- Gold hover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border"
+                                Property="Background"
+                                Value="{StaticResource AccentGold}"/>
+                                <Setter TargetName="border"
+                                Property="BorderBrush"
+                                Value="{StaticResource AccentGold}"/>
+                            </Trigger>
+
+                            <!-- Greyed out when disabled -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter TargetName="border"
+                                Property="Background"
+                                Value="#DDDDDD"/>
+                                <Setter TargetName="border"
+                                Property="BorderBrush"
+                                Value="#DDDDDD"/>
+                                <Setter Property="Foreground" Value="#888888"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -81,22 +104,34 @@
             <Setter Property="FontSize" Value="14"/>
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
-            <!-- pill-shaped template -->
+
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border x:Name="border"
-                            CornerRadius="24"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
+                        <Border CornerRadius="24"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}">
                             <ContentPresenter HorizontalAlignment="Center"
-                                          VerticalAlignment="Center"
-                                          Margin="{TemplateBinding Padding}"/>
+                                      VerticalAlignment="Center"
+                                      Margin="{TemplateBinding Padding}"/>
                         </Border>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+
+            <Style.Triggers>
+                <Trigger Property="Tag" Value="Selected">
+                    <Setter Property="Background" Value="{StaticResource AccentRed}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="{StaticResource AccentGold}"/>
+                    <Setter Property="BorderBrush" Value="{StaticResource AccentGold}"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <!-- Big rounded white panels in the builder (size / sauce / crust / toppings) -->
@@ -138,6 +173,187 @@
                             <ContentPresenter HorizontalAlignment="Center"
                                       VerticalAlignment="Center"/>
                         </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource AccentGold}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Header icon toggle buttons (home/info/account/cart) -->
+        <Style x:Key="HeaderIconToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Margin" Value="4,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="Transparent" Padding="4">
+                            <!-- This Border is “filled” with the icon shape -->
+                            <Border x:Name="IconBorder"
+                                Width="32" Height="32"
+                                Background="Black">
+                                <Border.OpacityMask>
+                                    <!-- Use the icon image as an opacity mask -->
+                                    <ImageBrush ImageSource="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                </Border.OpacityMask>
+                            </Border>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="IconBorder"
+                                    Property="Background"
+                                    Value="{StaticResource AccentRed}"/>
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="IconBorder"
+                                    Property="Background"
+                                    Value="{StaticResource AccentGold}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Icon-only close button using x.png -->
+        <Style x:Key="CloseIconButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="28"/>
+            <Setter Property="Height" Value="28"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent">
+                            <Border x:Name="IconBorder"
+                                Width="24" Height="24"
+                                Background="Black">
+                                <Border.OpacityMask>
+                                    <ImageBrush ImageSource="/Images/x.png"/>
+                                </Border.OpacityMask>
+                            </Border>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="IconBorder"
+                                    Property="Background"
+                                    Value="{StaticResource AccentGold}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Primary pill button (Proceed to checkout) -->
+        <Style x:Key="PrimaryPillButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Background" Value="{StaticResource AccentRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="22">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- gold on hover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="{StaticResource AccentGold}"/>
+                            </Trigger>
+                            <!-- greyed when disabled (you already toggle IsEnabled in code) -->
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#DDDDDD"/>
+                                <Setter Property="Foreground" Value="#888888"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Secondary pill button (Clear Cart) -->
+        <Style x:Key="SecondaryPillButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="44"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="BorderBrush" Value="#1A1A1A"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="border"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="22">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                          VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!-- gold fill + no border on hover -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border"
+                                    Property="Background"
+                                    Value="{StaticResource AccentGold}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource AccentGold}"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Trash icon button -->
+        <Style x:Key="TrashIconButtonStyle" TargetType="Button">
+            <Setter Property="Width" Value="32"/>
+            <Setter Property="Height" Value="50"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="Transparent" Padding="1">
+                            <Border x:Name="IconBorder"
+                                Width="20" Height="31"
+                                Background="Black">
+                                <Border.OpacityMask>
+                                    <ImageBrush ImageSource="/Images/trash.png"/>
+                                </Border.OpacityMask>
+                            </Border>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="IconBorder"
+                                    Property="Background"
+                                    Value="{StaticResource AccentGold}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -189,12 +405,29 @@
                             Orientation="Horizontal"
                             HorizontalAlignment="Right"
                             VerticalAlignment="Center">
-                    <Button Style="{StaticResource HeaderIconButtonStyle}" Content="i" Click="InfoButton_Click"/>
-                    <Button Style="{StaticResource HeaderIconButtonStyle}">
-                        <TextBlock Text="Home" Foreground="#F13300"/>
-                    </Button>
-                    <Button Style="{StaticResource HeaderIconButtonStyle}" Content="User"/>
-                    <Button x:Name="CartButton" Style="{StaticResource HeaderIconButtonStyle}" Content="Cart" Click="CartButton_Click"/>
+
+                    <!-- Info -->
+                    <ToggleButton x:Name="InfoButton"
+                                  Style="{StaticResource HeaderIconToggleStyle}"
+                                  Tag="/Images/info.png"
+                                  Click="InfoButton_Click"/>
+
+                    <!-- Home (main page) - start as selected -->
+                    <ToggleButton x:Name="HomeButton"
+                                  Style="{StaticResource HeaderIconToggleStyle}"
+                                  Tag="/Images/home.png"
+                                  IsChecked="True"/>
+
+                    <!-- Account -->
+                    <ToggleButton x:Name="AccountButton"
+                                  Style="{StaticResource HeaderIconToggleStyle}"
+                                  Tag="/Images/account.png"/>
+
+                    <!-- Cart -->
+                    <ToggleButton x:Name="CartButton"
+                                  Style="{StaticResource HeaderIconToggleStyle}"
+                                  Tag="/Images/cart.png"
+                                  Click="CartButton_Click"/>
                 </StackPanel>
             </Grid>
         </Border>
@@ -215,7 +448,7 @@
                     CornerRadius="20"
                     Padding="10,6"
                     Margin="4,0"
-                    BorderBrush="#888"
+                    BorderBrush="#1A1A1A"
                     BorderThickness="1">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -223,8 +456,17 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
 
-                    <TextBlock Text="Search"
-                               VerticalAlignment="Center"/>
+                    <Border Width="22"
+                            Height="22"
+                            Margin="4,0,4,0"
+                            VerticalAlignment="Center">
+                        <Border.Background>
+                            <SolidColorBrush Color="Black"/>
+                        </Border.Background>
+                        <Border.OpacityMask>
+                            <ImageBrush ImageSource="/Images/search.png"/>
+                        </Border.OpacityMask>
+                    </Border>
 
                     <TextBox Grid.Column="1"
                              Style="{StaticResource SearchTextBoxStyle}"
@@ -243,12 +485,10 @@
                     Content="Build Your Own Pizza"
                     Margin="16,0,0,0"
                     Padding="24,10"
-                    Background="{StaticResource AccentRed}"
                     Foreground="White"
                     FontWeight="Bold"
                     FontSize="12"
                     VerticalAlignment="Center"
-                    BorderBrush="{StaticResource AccentRed}"
                     Cursor="Hand"
                     HorizontalAlignment="Center"
                     Click="BuildYourOwnPizzaButton_Click"/>
@@ -403,13 +643,7 @@
                                    VerticalAlignment="Center"/>
 
                         <Button Grid.Column="1"
-                                Content="X"
-                                Width="34" Height="34"
-                                FontSize="18"
-                                Background="Transparent"
-                                BorderBrush="Transparent"
-                                Foreground="Black"
-                                Cursor="Hand"
+                                Style="{StaticResource CloseIconButtonStyle}"
                                 Click="BuildPizzaClose_Click"/>
                     </Grid>
 
@@ -438,22 +672,22 @@
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                     Padding="24,12" FontSize="16"
-                                                    Content="Small" Tag="Small"
+                                                    Content="Small"
                                                     Click="BuildPizzaSizeButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                     Padding="24,12" FontSize="16"
-                                                    Content="Medium" Tag="Medium"
+                                                    Content="Medium"
                                                     Click="BuildPizzaSizeButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                     Padding="24,12" FontSize="16"
-                                                    Content="Large" Tag="Large"
+                                                    Content="Large"
                                                     Click="BuildPizzaSizeButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                     Padding="24,12" FontSize="16"
-                                                    Content="Extra Large" Tag="Extra Large"
+                                                    Content="Extra Large"
                                                     Click="BuildPizzaSizeButton_Click"/>
 
                                     </UniformGrid>
@@ -485,17 +719,17 @@
                                             <StackPanel x:Name="BuildPizzaSauceButtonsPanel">
                                                 <Button Style="{StaticResource ChoiceButtonStyle}"
                                                         Padding="22,10" FontSize="16"
-                                                        Content="Tomato" Tag="Tomato"
+                                                        Content="Tomato"
                                                         Click="BuildPizzaSauceButton_Click"/>
                                                 
                                                 <Button Style="{StaticResource ChoiceButtonStyle}"
                                                         Padding="22,10" FontSize="16"
-                                                        Content="Marinara" Tag="Marinara"
+                                                        Content="Marinara"
                                                         Click="BuildPizzaSauceButton_Click"/>
                                                 
                                                 <Button Style="{StaticResource ChoiceButtonStyle}"
                                                         Padding="22,10" FontSize="16"
-                                                        Content="Alfredo" Tag="Alfredo"
+                                                        Content="Alfredo"
                                                         Click="BuildPizzaSauceButton_Click"/>
                                             </StackPanel>
                                         </WrapPanel>
@@ -519,17 +753,17 @@
                                             <StackPanel x:Name="BuildPizzaCrustButtonsPanel">
                                                 <Button Style="{StaticResource ChoiceButtonStyle}"
                                                         Padding="22,10" FontSize="16"
-                                                        Content="Thin" Tag="Thin"
+                                                        Content="Thin"
                                                         Click="BuildPizzaCrustButton_Click"/>
 
                                                 <Button Style="{StaticResource ChoiceButtonStyle}"
                                                         Padding="22,10" FontSize="16"
-                                                        Content="Regular" Tag="Regular"
+                                                        Content="Regular"
                                                         Click="BuildPizzaCrustButton_Click"/>
 
                                                 <Button Style="{StaticResource ChoiceButtonStyle}"
                                                         Padding="22,10" FontSize="16"
-                                                        Content="Pan" Tag="Pan"
+                                                        Content="Pan"
                                                         Click="BuildPizzaCrustButton_Click"/>
                                             </StackPanel>
                                         </WrapPanel>
@@ -557,32 +791,32 @@
                                     <WrapPanel x:Name="VegToppingsButtonsPanel" HorizontalAlignment="Center">
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
-                                                Content="Cheese" Tag="Cheese"
+                                                Content="Cheese"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
-                                                Content="Onion" Tag="Onion"
+                                                Content="Onion"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
-                                                Content="Pineapple" Tag="Pineapple"
+                                                Content="Pineapple"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
-                                                Content="Jalapeno" Tag="Jalapeno"
+                                                Content="Jalapeno"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
-                                                Content="Olives" Tag="Olives"
+                                                Content="Olives"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
-                                                Content="Mushroom" Tag="Mushroom"
+                                                Content="Mushroom"
                                                 Click="BuildPizzaToppingButton_Click"/>
                                     </WrapPanel>
 
@@ -593,27 +827,27 @@
                                     <WrapPanel x:Name="MeatToppingsButtonsPanel" HorizontalAlignment="Center">
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
-                                                Content="Pepperoni" Tag="Pepperoni"
+                                                Content="Pepperoni"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
-                                                Content="Sausage" Tag="Italian sausage"
+                                                Content="Sausage"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
-                                                Content="Beef" Tag="Beef"
+                                                Content="Beef"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
-                                                Content="Chicken" Tag="Chicken"
+                                                Content="Chicken"
                                                 Click="BuildPizzaToppingButton_Click"/>
 
                                         <Button Style="{StaticResource ChoiceButtonStyle}"
                                                 Padding="22,10" FontSize="16"
-                                                Content="Bacon" Tag="Bacon"
+                                                Content="Bacon"
                                                 Click="BuildPizzaToppingButton_Click"/>
                                     </WrapPanel>
                                 </StackPanel>
@@ -711,10 +945,8 @@
                                     Content="+ Add to Cart"
                                     Height="50"
                                     FontSize="18"
-                                    Background="{StaticResource AccentRed}"
                                     Foreground="White"
                                     FontWeight="Bold"
-                                    BorderBrush="{StaticResource AccentRed}"
                                     Cursor="Hand"
                                     Margin="0,6,0,0"
                                     HorizontalAlignment="Stretch"
@@ -782,17 +1014,7 @@
                             </StackPanel>
 
                             <Button Grid.Column="1"
-                                    Content="X"
-                                    FontSize="24"
-                                    Width="28"
-                                    Height="28"
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Margin="0,0,0,0"
-                                    Padding="0"
-                                    Background="Transparent"
-                                    BorderThickness="0"
-                                    FontWeight="SemiBold"
+                                    Style="{StaticResource CloseIconButtonStyle}"
                                     Click="CartCloseButton_Click"/>
                         </Grid>
 
@@ -862,14 +1084,9 @@
 
                                                 <!-- Remove button -->
                                                 <Button Grid.Column="2"
-                                                Content="🗑"
-                                                Width="32"
-                                                Height="32"
-                                                Margin="8,0,0,0"
-                                                Background="Transparent"
-                                                BorderThickness="0"
-                                                FontSize="18"
-                                                Click="CartRemove_Click" />
+                                                        Style="{StaticResource TrashIconButtonStyle}"
+                                                        Margin="8,0,0,0"
+                                                        Click="CartRemove_Click"/>
                                             </Grid>
                                         </Border>
                                     </DataTemplate>
@@ -941,54 +1158,19 @@
                             Margin="0,4,0,0">
                             <!-- Proceed to checkout -->
                             <Button x:Name="CheckoutButton"
-                            Height="44"
-                            Margin="0,0,0,8"
-                            Content="Proceed to checkout"
-                            Click="CheckoutButton_Click"
-                            Background="{StaticResource AccentRed}"
-                            Foreground="White"
-                            FontSize="18"
-                            FontWeight="Bold"
-                            BorderThickness="0"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            Cursor="Hand">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border Background="{TemplateBinding Background}"
-                                        CornerRadius="22">
-                                            <ContentPresenter HorizontalAlignment="Center"
-                                                      VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
+                                    Grid.Row="4"
+                                    Margin="0,0,0,8"
+                                    Style="{StaticResource PrimaryPillButtonStyle}"
+                                    Content="Proceed to checkout"
+                                    Click="CheckoutButton_Click"/>
 
                             <!-- Clear cart -->
                             <Button x:Name="ClearCartButton"
-                            Height="44"
-                            Content="Clear Cart"
-                            Click="ClearCartButton_Click"
-                            Background="White"
-                            BorderBrush="#1A1A1A"
-                            BorderThickness="1"
-                            FontSize="18"
-                            FontWeight="Bold"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            Cursor="Hand">
-                                <Button.Template>
-                                    <ControlTemplate TargetType="Button">
-                                        <Border Background="{TemplateBinding Background}"
-                                        BorderBrush="{TemplateBinding BorderBrush}"
-                                        BorderThickness="{TemplateBinding BorderThickness}"
-                                        CornerRadius="22">
-                                            <ContentPresenter HorizontalAlignment="Center"
-                                                      VerticalAlignment="Center"/>
-                                        </Border>
-                                    </ControlTemplate>
-                                </Button.Template>
-                            </Button>
+                                    Grid.Row="4"
+                                    Style="{StaticResource SecondaryPillButtonStyle}"
+                                    Content="Clear Cart"
+                                    Click="ClearCartButton_Click"/>
+
                         </StackPanel>
                     </Grid>
                 </Border>

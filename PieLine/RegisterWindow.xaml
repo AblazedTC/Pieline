@@ -11,6 +11,7 @@
         
         <!-- Accent red -->
         <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
+        <SolidColorBrush x:Key="AccentGold" Color="#D4AF37"/>
 
         <!-- Rounded TextBox -->
         <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
@@ -83,10 +84,34 @@
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource AccentGold}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource AccentGold}"/>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#CCCCCC"/>
+                                <Setter Property="Foreground" Value="#777777"/>
+                                <Setter Property="Cursor" Value="Arrow"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Hyperlinks -->
+        <Style TargetType="Hyperlink">
+            <Setter Property="Foreground" Value="{StaticResource AccentRed}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource AccentGold}"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
 
         <local:ImagePathConverter x:Key="ImagePathConverter"/>
 
@@ -174,6 +199,7 @@
                                            Margin="4,0,0,4"/>
                                 <TextBox x:Name="NameTextBox"
                                          Style="{StaticResource RoundedTextBoxStyle}"
+                                         TextChanged="NameTextBox_TextChanged"
                                          MaxLength="32"/>
                             </StackPanel>
 
@@ -197,6 +223,7 @@
                                            Margin="4,0,0,4"/>
                                 <TextBox x:Name="EmailTextBox"
                                          Style="{StaticResource RoundedTextBoxStyle}"
+                                         TextChanged="EmailTextBox_TextChanged"
                                          MaxLength="32"/>
                             </StackPanel>
 
@@ -208,6 +235,7 @@
                                            Margin="4,0,0,4"/>
                                 <PasswordBox x:Name="PasswordBox"
                                              Style="{StaticResource RoundedPasswordBoxStyle}"
+                                             PasswordChanged="PasswordBox_PasswordChanged"
                                              MaxLength="32"/>
                             </StackPanel>
 
@@ -217,8 +245,9 @@
                                            FontSize="20"
                                            FontWeight="Bold"
                                            Margin="4,0,0,4"/>
-                                <PasswordBox x:Name="ConfirmPasswordBox"
+                                <PasswordBox x:Name="ConfirmedPasswordBox"
                                              Style="{StaticResource RoundedPasswordBoxStyle}"
+                                             PasswordChanged="ConfirmedPasswordBox_PasswordChanged"
                                              MaxLength="32"/>
                             </StackPanel>
 
@@ -243,19 +272,19 @@
                                     Grid.Row="7"
                                     Style="{StaticResource PrimaryButtonStyle}"
                                     Content="Create account"
+                                    IsEnabled="False"
                                     Click="RegisterButton_Click"
                                     Margin="0,20,0,0"/>
 
                             <!-- Sign in -->
                             <StackPanel Grid.Row="8"
-                                    Orientation="Horizontal"
-                                    HorizontalAlignment="Center"
-                                    Margin="0,20,0,5">
+                                        Orientation="Horizontal"
+                                        HorizontalAlignment="Center"
+                                        Margin="0,20,0,5">
                                 <TextBlock FontSize="18"
-                                        Text="Already have an account? "/>
+                                            Text="Already have an account? "/>
                                 <TextBlock FontSize="18">
-                                <Hyperlink Click="BackToLogin_Click"
-                                            Foreground="{StaticResource AccentRed}">
+                                <Hyperlink Click="BackToLogin_Click">
                                     Sign in
                                 </Hyperlink>
                                 </TextBlock>

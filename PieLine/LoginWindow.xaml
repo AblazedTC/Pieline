@@ -11,6 +11,7 @@
         
         <!-- Accent color for buttons/links -->
         <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
+        <SolidColorBrush x:Key="AccentGold" Color="#D4AF37"/>
 
         <!-- Rounded TextBox style -->
         <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
@@ -83,9 +84,32 @@
                             <ContentPresenter HorizontalAlignment="Center"
                                               VerticalAlignment="Center"/>
                         </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="{StaticResource AccentGold}"/>
+                                <Setter Property="BorderBrush" Value="{StaticResource AccentGold}"/>
+                            </Trigger>
+
+                            <Trigger Property="IsEnabled" Value="False">
+                                <Setter Property="Background" Value="#CCCCCC"/>
+                                <Setter Property="Foreground" Value="#777777"/>
+                                <Setter Property="Cursor" Value="Arrow"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+        </Style>
+
+        <!-- Hyperlinks -->
+        <Style TargetType="Hyperlink">
+            <Setter Property="Foreground" Value="{StaticResource AccentRed}"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Foreground" Value="{StaticResource AccentGold}"/>
+                </Trigger>
+            </Style.Triggers>
         </Style>
 
         <local:ImagePathConverter x:Key="ImagePathConverter"/>
@@ -183,7 +207,8 @@
                                        Margin="4,0,0,4"/>
                             <PasswordBox x:Name="PasswordBox"
                                          MaxLength="32"
-                                         Style="{StaticResource RoundedPasswordBoxStyle}"/>
+                                         Style="{StaticResource RoundedPasswordBoxStyle}"
+                                         PasswordChanged="PasswordBox_PasswordChanged"/>
                         </StackPanel>
 
                         <!-- Forgot password -->
@@ -191,8 +216,7 @@
                                    HorizontalAlignment="Right"
                                    Margin="0,0,0,10"
                                    FontSize="18">
-                            <Hyperlink Click="ForgotPassword_Click"
-                                       Foreground="{StaticResource AccentRed}">
+                            <Hyperlink Click="ForgotPassword_Click">
                                 Forgot password?
                             </Hyperlink>
                         </TextBlock>
@@ -218,6 +242,7 @@
                                 Grid.Row="5"
                                 Style="{StaticResource PrimaryButtonStyle}"
                                 Content="Sign in"
+                                IsEnabled="False"
                                 Click="LoginButton_Click"/>
 
                         <!-- Sign up link -->
@@ -229,8 +254,7 @@
                             <TextBlock FontSize="18"
                                        Text="Don’t have an account? "/>
                             <TextBlock FontSize="18">
-                                <Hyperlink Click="Register_Click"
-                                           Foreground="{StaticResource AccentRed}">
+                                <Hyperlink Click="Register_Click">
                                     Sign up
                                 </Hyperlink>
                             </TextBlock>

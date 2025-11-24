@@ -16,11 +16,17 @@ namespace PieLine
         {
             InitializeComponent();
             DataContext = this;
+            LoginButton.IsEnabled = false;
         }
 
         private void PhoneTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             CommonHelpers.HandlePhoneTextChanged(PhoneTextBox, ref isUpdatingPhone);
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            UpdateLoginButtonState();
         }
 
         private void StartLockout()
@@ -92,5 +98,14 @@ namespace PieLine
             var registerWindow = new RegisterWindow();
             CommonHelpers.PersistantWindows(this, registerWindow);
         }
+
+        private void UpdateLoginButtonState()
+        {
+            bool hasPhone = !string.IsNullOrWhiteSpace(PhoneTextBox.Text);
+            bool hasPassword = !string.IsNullOrWhiteSpace(PasswordBox.Password);
+
+            LoginButton.IsEnabled = hasPhone && hasPassword;
+        }
+
     }
 }

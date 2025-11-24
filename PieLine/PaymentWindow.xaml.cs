@@ -11,6 +11,8 @@ namespace PieLine
 {
     public partial class PaymentWindow : Window
     {
+        public string LogoPath { get; set; } = "Images/logo.png";
+
         private enum DeliveryOption {None, Pickup, Delivery}
         private enum PaymentOption {None, Cash, Card}
 
@@ -23,6 +25,20 @@ namespace PieLine
         {
             InitializeComponent();
             this.items = items ?? new List<MenuItem>();
+        }
+
+        private void HomeButton_Click(object sender, RoutedEventArgs e)
+        {
+            var mainWindow = new MainWindow();
+            mainWindow.Show();
+            this.Close();
+        }
+
+        private void InfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            var companyInfoWindow = new CompanyInformationWindow();
+            companyInfoWindow.Show();
+            this.Close();
         }
 
         private void SetError(string message)

@@ -19,6 +19,31 @@ namespace PieLine
             CommonHelpers.HandlePhoneTextChanged(PhoneTextBox, ref isUpdatingPhone);
         }
 
+        private void EmailTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            UpdateResetButtonState();
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            UpdateResetButtonState();
+        }
+
+        private void ConfirmedPasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            UpdateResetButtonState();
+        }
+
+        private void UpdateResetButtonState()
+        {
+            bool hasPhone = !string.IsNullOrWhiteSpace(PhoneTextBox.Text);
+            bool hasEmail = !string.IsNullOrWhiteSpace(EmailTextBox.Text);
+            bool hasPassword = !string.IsNullOrWhiteSpace(PasswordBox.Password);
+            bool hasConfirmedPassword = !string.IsNullOrWhiteSpace(ConfirmedPasswordBox.Password);
+
+            ResetButton.IsEnabled = hasPhone && hasPassword && hasEmail && hasConfirmedPassword;
+        }
+
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
             CommonHelpers.SetError(ResetErrorBorder, ResetErrorTextBlock, null);
@@ -26,7 +51,7 @@ namespace PieLine
             string phoneDigits = CommonHelpers.ExtractDigits(PhoneTextBox.Text);
             string email = EmailTextBox.Text.Trim();
             string password = PasswordBox.Password;
-            string confirm = ConfirmPasswordBox.Password;
+            string confirm = ConfirmedPasswordBox.Password;
 
             if (password != confirm)
             {

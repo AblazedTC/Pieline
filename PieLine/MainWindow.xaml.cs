@@ -276,8 +276,7 @@ namespace PieLine
 
                 foreach (var btn in panel.Children.OfType<Button>())
                 {
-                    btn.Background = Brushes.White;
-                    btn.Foreground = Brushes.Black;
+                    btn.Tag = null;  // let the style put it back to white state
                 }
             }
 
@@ -290,17 +289,9 @@ namespace PieLine
 
         private void BuildPizzaSetExclusiveSelection(Panel parent, Button clicked)
         {
-            foreach (var child in parent.Children)
+            foreach (var btn in parent.Children.OfType<Button>())
             {
-                if (child is Button btn)
-                {
-                    bool isSelected = (btn == clicked);
-                    btn.Background = isSelected
-                        ? (Brush)FindResource("AccentRed")
-                        : Brushes.White;
-
-                    btn.Foreground = isSelected ? Brushes.White : Brushes.Black;
-                }
+                btn.Tag = (btn == clicked) ? "Selected" : null;
             }
         }
 
@@ -308,7 +299,7 @@ namespace PieLine
         {
             if (sender is Button btn)
             {
-                _buildSize = btn.Tag as string;
+                _buildSize = btn.Content as string;
                 BuildPizzaSetExclusiveSelection((Panel)btn.Parent, btn);
                 UpdateBuildPizzaSummary();
             }
@@ -318,7 +309,7 @@ namespace PieLine
         {
             if (sender is Button btn)
             {
-                _buildSauce = btn.Tag as string;
+                _buildSauce = btn.Content as string;
                 BuildPizzaSetExclusiveSelection((Panel)btn.Parent, btn);
                 UpdateBuildPizzaSummary();
             }
@@ -328,7 +319,7 @@ namespace PieLine
         {
             if (sender is Button btn)
             {
-                _buildCrust = btn.Tag as string;
+                _buildCrust = btn.Content as string;
                 BuildPizzaSetExclusiveSelection((Panel)btn.Parent, btn);
                 UpdateBuildPizzaSummary();
             }
@@ -338,19 +329,19 @@ namespace PieLine
         {
             if (sender is Button btn)
             {
-                string topping = (btn.Tag as string) ?? btn.Content.ToString();
+                string topping = btn.Content?.ToString() ?? string.Empty;
+                if (string.IsNullOrEmpty(topping))
+                    return;
 
                 if (_buildToppings.Contains(topping))
                 {
                     _buildToppings.Remove(topping);
-                    btn.Background = Brushes.White;
-                    btn.Foreground = Brushes.Black;
+                    btn.Tag = null;
                 }
                 else
                 {
                     _buildToppings.Add(topping);
-                    btn.Background = (Brush)FindResource("AccentRed");
-                    btn.Foreground = Brushes.White;
+                    btn.Tag = "Selected";
                 }
 
                 UpdateBuildPizzaSummary();
@@ -495,6 +486,7 @@ namespace PieLine
 
         private void OpenCartSidebar()
         {
+            CartButton.IsChecked = true;
             var overlayGrid = GetNamedControl<Grid>("CartSidebarOverlay");
             var transform = GetNamedControl<TranslateTransform>("CartSidebarTransform");
             var overlay = GetNamedControl<Border>("CartBackgroundOverlay");
@@ -529,6 +521,7 @@ namespace PieLine
 
         private void CloseCartSidebar()
         {
+            CartButton.IsChecked = false;
             var overlayGrid = GetNamedControl<Grid>("CartSidebarOverlay");
             var transform = GetNamedControl<TranslateTransform>("CartSidebarTransform");
             var overlay = GetNamedControl<Border>("CartBackgroundOverlay");

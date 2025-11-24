@@ -119,7 +119,7 @@ namespace PieLine
                 },
                 {
                 ""id"": ""drink-coke-001"",
-                ""name"": ""Coke"",
+                ""name"": ""Coca-Cola"",
                 ""category"": ""Beverage"",
                 ""price"": 1.99,
                 ""description"": ""Chilled classic cola."",

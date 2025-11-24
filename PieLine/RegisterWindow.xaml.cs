@@ -19,6 +19,37 @@ namespace PieLine
             CommonHelpers.HandlePhoneTextChanged(PhoneTextBox, ref isUpdatingPhone);
         }
 
+        private void NameTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            UpdateRegisterButtonState();
+        }
+
+        private void EmailTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            UpdateRegisterButtonState();
+        }
+
+        private void PasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            UpdateRegisterButtonState();
+        }
+
+        private void ConfirmedPasswordBox_PasswordChanged(object sender, RoutedEventArgs e)
+        {
+            UpdateRegisterButtonState();
+        }
+
+        private void UpdateRegisterButtonState()
+        {
+            bool hasPhone = !string.IsNullOrWhiteSpace(PhoneTextBox.Text);
+            bool hasName = !string.IsNullOrWhiteSpace(NameTextBox.Text);
+            bool hasEmail = !string.IsNullOrWhiteSpace(EmailTextBox.Text);
+            bool hasPassword = !string.IsNullOrWhiteSpace(PasswordBox.Password);
+            bool hasConfirmedPassword = !string.IsNullOrWhiteSpace(ConfirmedPasswordBox.Password);
+
+            RegisterButton.IsEnabled = hasPhone && hasPassword && hasName && hasEmail && hasConfirmedPassword;
+        }
+
         private void RegisterButton_Click(object sender, RoutedEventArgs e)
         {
             CommonHelpers.SetError(RegisterErrorBorder, RegisterErrorTextBlock, null);
@@ -27,7 +58,7 @@ namespace PieLine
             string email = EmailTextBox.Text.Trim();
             string phoneDigits = CommonHelpers.ExtractDigits(PhoneTextBox.Text);
             string password = PasswordBox.Password;
-            string confirm = ConfirmPasswordBox.Password;
+            string confirm = ConfirmedPasswordBox.Password;
 
             if (password != confirm)
             {
