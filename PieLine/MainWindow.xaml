@@ -246,9 +246,11 @@
                     Background="{StaticResource AccentRed}"
                     Foreground="White"
                     FontWeight="Bold"
+                    FontSize="12"
+                    VerticalAlignment="Center"
                     BorderBrush="{StaticResource AccentRed}"
                     Cursor="Hand"
-                    HorizontalAlignment="Right"
+                    HorizontalAlignment="Center"
                     Click="BuildYourOwnPizzaButton_Click"/>
         </Grid>
 
@@ -809,7 +811,7 @@
                                   ItemsSource="{Binding CartItems}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <Border Margin="0,4,0,4"
+                                        <Border Margin="0,4,2,4"
                                         CornerRadius="20"
                                         BorderBrush="#1A1A1A"
                                         BorderThickness="1"
