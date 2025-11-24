@@ -8,6 +8,7 @@ using System.Text.Json;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Windows.Media.Animation;
 
@@ -22,7 +23,7 @@ namespace PieLine
         private List<MenuItem> _allMenuItems = new List<MenuItem>();
 
         // Simple cart
-        public ObservableCollection<MenuItem> CartItems { get; } = new ObservableCollection<MenuItem>();
+        public ObservableCollection<CartLine> CartItems { get; } = new ObservableCollection<CartLine>();
 
         // Build-your-own pizza state (unchanged)
         private string _buildSize;
@@ -181,9 +182,38 @@ namespace PieLine
         {
             if (sender is Button btn && btn.DataContext is MenuItem item)
             {
-                CartItems.Add(item);
+                AddItemToCart(item);
                 OpenCartSidebar();
             }
+        }
+
+        private void AddItemToCart(MenuItem item)
+        {
+            if (item == null)
+                return;
+
+            // try to merge lines with same Id (normal menu items)
+            var existing = CartItems.FirstOrDefault(l => l.Id == item.Id);
+
+            if (existing != null)
+            {
+                existing.Quantity++;
+            }
+            else
+            {
+                CartItems.Add(new CartLine
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    UnitPrice = item.Price,
+                    Category = item.Category,
+                    Description = item.Description,
+                    Quantity = 1
+                });
+            }
+
+            UpdateCartTotal();
+            UpdateCheckoutButtonState();
         }
 
         // ========= Build Your Own Pizza overlay =========
@@ -215,13 +245,13 @@ namespace PieLine
             var builtItem = new MenuItem
             {
                 Id = Guid.NewGuid().ToString(),
-                Name = $"Custom Pizza ({_buildSize ?? "?"})",
+                Name = "Custom Pizza",
                 Category = "Pizza",
                 Description = string.Join(", ", _buildToppings.OrderBy(t => t)),
                 Price = total
             };
 
-            CartItems.Add(builtItem);
+            AddItemToCart(builtItem);
 
             var overlay = GetNamedControl<Grid>("BuildPizzaOverlay");
             if (overlay != null)
@@ -335,9 +365,22 @@ namespace PieLine
                 return;
             }
 
-            var items = CartItems.ToList();
+            var items = CartItems
+                .SelectMany(line => Enumerable.Repeat(
+                    new MenuItem
+                    {
+                        Id = line.Id,
+                        Name = line.Name,
+                        Category = line.Category,
+                        Description = line.Description,
+                        Price = line.UnitPrice
+                    },
+                    line.Quantity))
+                .ToList();
 
             var paymentWindow = new PaymentWindow(items);
+
+
             paymentWindow.Show();
             this.Close();
         }
@@ -349,6 +392,33 @@ namespace PieLine
                 return;
 
             checkoutButton.IsEnabled = CartItems.Any();
+        }
+
+        private void CartIncreaseQuantity_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.DataContext is CartLine line)
+            {
+                line.Quantity++;
+                UpdateCartTotal();
+            }
+        }
+
+        private void CartDecreaseQuantity_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is Button btn && btn.DataContext is CartLine line)
+            {
+                if (line.Quantity > 1)
+                {
+                    line.Quantity--;
+                }
+                else
+                {
+                    CartItems.Remove(line);
+                }
+
+                UpdateCartTotal();
+                UpdateCheckoutButtonState();
+            }
         }
 
         private void UpdateBuildPizzaSummary()
@@ -495,20 +565,80 @@ namespace PieLine
 
         private void CartRemove_Click(object sender, RoutedEventArgs e)
         {
-            if (sender is Button btn && btn.DataContext is MenuItem item)
+            if (sender is Button btn && btn.DataContext is CartLine line)
             {
-                CartItems.Remove(item);
+                CartItems.Remove(line);
+                UpdateCartTotal();
+                UpdateCheckoutButtonState();
             }
+        }
+
+        private void ClearCartButton_Click(object sender, RoutedEventArgs e)
+        {
+            CartItems.Clear();
+            UpdateCartTotal();
+            UpdateCheckoutButtonState();
         }
 
         private void UpdateCartTotal()
         {
+            var subtotalText = GetNamedControl<TextBlock>("CartSubtotalText");
+            var taxText = GetNamedControl<TextBlock>("CartTaxText");
             var totalText = GetNamedControl<TextBlock>("CartTotalText");
-            if (totalText == null)
+            var countText = GetNamedControl<TextBlock>("CartItemCountText");
+
+            if (subtotalText == null || taxText == null || totalText == null || countText == null)
                 return;
 
-            decimal total = CartItems.Sum(i => i.Price);
+            decimal subtotal = CartItems.Sum(l => l.UnitPrice * l.Quantity);
+            decimal tax = Math.Round(subtotal * 0.08m, 2);
+            decimal total = subtotal + tax;
+
+            subtotalText.Text = $"$ {subtotal:0.00}";
+            taxText.Text = $"$ {tax:0.00}";
             totalText.Text = $"$ {total:0.00}";
+
+            int itemCount = CartItems.Sum(l => l.Quantity);
+            countText.Text = itemCount == 1
+                ? "1 item in your cart"
+                : $"{itemCount} items in your cart";
         }
+        private void InfoButton_Click(object sender, RoutedEventArgs e)
+        {
+            var companyInfoWindow = new CompanyInformationWindow();
+            companyInfoWindow.Show();
+            this.Close();
+        }
+    }
+
+    public class CartLine : INotifyPropertyChanged
+    {
+        public string Id { get; set; }
+        public string Name { get; set; }
+        public decimal UnitPrice { get; set; }
+
+        private int _quantity = 1;
+        public int Quantity
+        {
+            get => _quantity;
+            set
+            {
+                if (_quantity != value)
+                {
+                    _quantity = value;
+                    OnPropertyChanged(nameof(Quantity));
+                    OnPropertyChanged(nameof(LineTotal));
+                }
+            }
+        }
+
+        public string Category { get; set; }
+        public string Description { get; set; }
+
+        public decimal LineTotal => UnitPrice * Quantity;
+
+        public event PropertyChangedEventHandler? PropertyChanged;
+        protected void OnPropertyChanged(string propertyName) =>
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
     }
 }

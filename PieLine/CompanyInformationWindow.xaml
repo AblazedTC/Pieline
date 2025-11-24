@@ -1,0 +1,193 @@
+﻿<Window x:Class="PieLine.CompanyInformationWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:PieLine"
+        Title="Mom's and Pop's Pizzeria - Company Information"
+        Height="800"
+        Width="1024"
+        Background="#FFF7EE"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <!-- Colors -->
+        <SolidColorBrush x:Key="AccentRed"
+                Color="#F13300"/>
+        <SolidColorBrush x:Key="AccentGold"
+                Color="#D4AF37"/>
+        <SolidColorBrush x:Key="CardBackground"
+                Color="White"/>
+        <SolidColorBrush x:Key="HeaderBackground"
+                Color="White"/>
+
+        <!-- Top-right icon buttons -->
+        <Style x:Key="HeaderIconButtonStyle"
+                TargetType="Button">
+            <Setter Property="Background"
+                    Value="Transparent"/>
+            <Setter Property="BorderBrush"
+                    Value="Transparent"/>
+            <Setter Property="Foreground"
+                    Value="Black"/>
+            <Setter Property="FontSize"
+                    Value="16"/>
+            <Setter Property="Padding"
+                    Value="6"/>
+            <Setter Property="Margin"
+                    Value="4,0"/>
+            <Setter Property="Cursor"
+                    Value="Hand"/>
+        </Style>
+
+        <local:ImagePathConverter x:Key="ImagePathConverter"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <!-- Header -->
+            <RowDefinition Height="1"/>
+            <!-- Black separator -->
+            <RowDefinition Height="*"/>
+            <!-- Content -->
+        </Grid.RowDefinitions>
+
+        <!-- ================= HEADER BAR ================= -->
+        <Border Grid.Row="0"
+                Background="{StaticResource HeaderBackground}"
+                Padding="20,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo + Name -->
+                <StackPanel Orientation="Horizontal"
+                        VerticalAlignment="Center">
+                    <Border Width="40"
+                            Height="40"
+                            CornerRadius="4"
+                            Margin="0,0,12,0">
+                        <Border.Background>
+                            <ImageBrush ImageSource="{Binding LogoPath, Converter={StaticResource ImagePathConverter}}"
+                                        Stretch="Uniform"/>
+                        </Border.Background>
+                    </Border>
+
+                    <TextBlock Text="Mom's and Pop's Pizzeria"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Foreground="#1A1A1A"/>
+                </StackPanel>
+
+                <!-- Right icons -->
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <Button Style="{StaticResource HeaderIconButtonStyle}">
+                        <TextBlock Text="i"
+                                Foreground="#F13300"/>
+                    </Button>
+                    <Button Style="{StaticResource HeaderIconButtonStyle}"
+                            Content="Home"
+                            Click="HomeButton_Click"/>
+                    <Button Style="{StaticResource HeaderIconButtonStyle}"
+                            Content="User"/>
+                    <Button Style="{StaticResource HeaderIconButtonStyle}"
+                            Content="Cart"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Black separator -->
+        <Border Grid.Row="1"
+                Background="Black"
+                Height="1"/>
+
+        <!-- ================= COMPANY INFORMATION CONTENT ================= -->
+        <Viewbox Grid.Row="2"
+                 Stretch="Uniform"
+                 Margin="40">
+            <Border Background="{StaticResource CardBackground}"
+                    CornerRadius="30"
+                    BorderBrush="#1A1A1A"
+                    BorderThickness="2"
+                    Width="800"
+                    Padding="60">
+                <StackPanel>
+                    <!-- Business Name -->
+                    <TextBlock Text="Mom's and Pop's Pizzeria"
+                               FontSize="48"
+                               FontWeight="Bold"
+                               Foreground="{StaticResource AccentRed}"
+                               HorizontalAlignment="Center"
+                               Margin="0,0,0,40"/>
+
+                    <!-- Address Section -->
+                    <StackPanel Margin="0,0,0,30">
+                        <TextBlock Text="📍 Address"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   Foreground="#1A1A1A"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock Text="680 Arntson Rd, Suite 161"
+                                   FontSize="24"
+                                   Foreground="#555"
+                                   Margin="20,0,0,5"/>
+                        <TextBlock Text="Marietta, GA, 30060"
+                                   FontSize="24"
+                                   Foreground="#555"
+                                   Margin="20,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- Phone Section -->
+                    <StackPanel Margin="0,0,0,30">
+                        <TextBlock Text="📞 Phone Number"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   Foreground="#1A1A1A"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock Text="770-555-1212"
+                                   FontSize="24"
+                                   Foreground="#555"
+                                   Margin="20,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- Website Section -->
+                    <StackPanel Margin="0,0,0,30">
+                        <TextBlock Text="🌐 Website"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   Foreground="#1A1A1A"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock Text="MomAndPopPizzeria.com"
+                                   FontSize="24"
+                                   Foreground="{StaticResource AccentGold}"
+                                   Margin="20,0,0,0"
+                                   TextDecorations="Underline"
+                                   Cursor="Hand"/>
+                    </StackPanel>
+
+                    <!-- Operating Hours Section -->
+                    <StackPanel Margin="0,0,0,0">
+                        <TextBlock Text="🕒 Operating Hours"
+                                   FontSize="28"
+                                   FontWeight="Bold"
+                                   Foreground="#1A1A1A"
+                                   Margin="0,0,0,10"/>
+                        <TextBlock Text="Mon - Thur: 9AM - 11PM"
+                                   FontSize="24"
+                                   Foreground="#555"
+                                   Margin="20,0,0,8"/>
+                        <TextBlock Text="Fri - Sat: 11AM - 12AM"
+                                   FontSize="24"
+                                   Foreground="#555"
+                                   Margin="20,0,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Viewbox>
+    </Grid>
+</Window>
