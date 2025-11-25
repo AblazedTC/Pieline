@@ -421,7 +421,8 @@
                     <!-- Account -->
                     <ToggleButton x:Name="AccountButton"
                                   Style="{StaticResource HeaderIconToggleStyle}"
-                                  Tag="/Images/account.png"/>
+                                  Tag="/Images/account.png"
+                                  Click="AccountButton_Click"/>
 
                     <!-- Cart -->
                     <ToggleButton x:Name="CartButton"

@@ -602,6 +602,12 @@ namespace PieLine
             companyInfoWindow.Show();
             this.Close();
         }
+        private void AccountButton_Click(object sender, RoutedEventArgs e)
+        {
+            var accountWindow = new AccountWindow();
+            accountWindow.Show();
+            this.Close();
+        }
     }
 
     public class CartLine : INotifyPropertyChanged

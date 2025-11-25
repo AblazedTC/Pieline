@@ -1,0 +1,421 @@
+﻿<Window x:Class="PieLine.ViewOrderRecieptWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:local="clr-namespace:PieLine"
+        Title="Mom's and Pop's Pizzeria - Order Receipt"
+        Height="800"
+        Width="1024"
+        Background="#FFF7EE"
+        WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <SolidColorBrush x:Key="AccentRed" Color="#F13300"/>
+        <SolidColorBrush x:Key="AccentGold" Color="#D4AF37"/>
+
+        <!-- Header Icon Buttons (home/info/account/cart) -->
+        <Style x:Key="HeaderIconToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="4"/>
+            <Setter Property="Margin" Value="4,0"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToggleButton">
+                        <Border Background="Transparent" Padding="4">
+                            <Border x:Name="IconBorder"
+                                    Width="32" Height="32"
+                                    Background="Black">
+                                <Border.OpacityMask>
+                                    <ImageBrush ImageSource="{Binding Tag, RelativeSource={RelativeSource TemplatedParent}}"/>
+                                </Border.OpacityMask>
+                            </Border>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="IconBorder"
+                                        Property="Background"
+                                        Value="{StaticResource AccentRed}"/>
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="IconBorder"
+                                        Property="Background"
+                                        Value="{StaticResource AccentGold}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Primary Button Style (Orange) -->
+        <Style x:Key="PrimaryButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="{StaticResource AccentRed}"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Padding" Value="20,12"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}"
+                                CornerRadius="25"
+                                Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                            VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#D42E00"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <local:ImagePathConverter x:Key="ImagePathConverter"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="1"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <Border Grid.Row="0"
+                Background="White"
+                Padding="20,10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Logo + Name -->
+                <StackPanel Orientation="Horizontal"
+                            VerticalAlignment="Center">
+                    <Border Width="40"
+                            Height="40"
+                            CornerRadius="4"
+                            Margin="0,0,12,0">
+                        <Border.Background>
+                            <ImageBrush ImageSource="{Binding LogoPath, Converter={StaticResource ImagePathConverter}}"
+                                        Stretch="Uniform"/>
+                        </Border.Background>
+                    </Border>
+
+                    <TextBlock Text="Mom's and Pop's Pizzeria"
+                               FontSize="24"
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Foreground="#1A1A1A"/>
+                </StackPanel>
+
+                <!-- Right Icons -->
+                <StackPanel Grid.Column="1"
+                            Orientation="Horizontal"
+                            HorizontalAlignment="Right"
+                            VerticalAlignment="Center">
+                    <ToggleButton x:Name="InfoButton"
+                                  Style="{StaticResource HeaderIconToggleStyle}"
+                                  Tag="/Images/info.png"
+                                  Click="InfoButton_Click"/>
+                    <ToggleButton x:Name="HomeButton"
+                                  Style="{StaticResource HeaderIconToggleStyle}"
+                                  Tag="/Images/home.png"
+                                  Click="HomeButton_Click"/>
+                    <ToggleButton x:Name="AccountButton"
+                                  Style="{StaticResource HeaderIconToggleStyle}"
+                                  Tag="/Images/account.png"
+                                  Click="AccountButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Grid.Row="1"
+                Background="Black"
+                Height="1"/>
+
+        <!-- Main Content -->
+        <Grid Grid.Row="2">
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                         HorizontalAlignment="Center">
+                <StackPanel Width="600" Margin="40">
+                    <!-- Receipt Box -->
+                    <Border Background="White"
+                            CornerRadius="30"
+                            BorderBrush="#1A1A1A"
+                            BorderThickness="2"
+                            Padding="40,30"
+                            Margin="0,0,0,30">
+                        <StackPanel>
+                            <!-- Title -->
+                            <TextBlock Text="Order Receipt"
+                                       FontSize="32"
+                                       FontWeight="Bold"
+                                       Foreground="#1A1A1A"
+                                       HorizontalAlignment="Center"
+                                       Margin="0,0,0,25"/>
+
+                            <!-- Order Number and Date -->
+                            <Grid Margin="0,0,0,25">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <StackPanel Grid.Column="0">
+                                    <TextBlock Text="Order Number"
+                                               FontSize="14"
+                                               Foreground="#555"
+                                               Margin="0,0,0,3"/>
+                                    <TextBlock x:Name="OrderNumberText"
+                                               Text="#ABC123"
+                                               FontSize="16"
+                                               FontWeight="Bold"
+                                               Foreground="#1A1A1A"/>
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Right">
+                                    <TextBlock Text="Order Date"
+                                               FontSize="14"
+                                               Foreground="#555"
+                                               TextAlignment="Right"
+                                               Margin="0,0,0,3"/>
+                                    <TextBlock x:Name="OrderDateText"
+                                               Text="12/20/25 at 07:55 PM"
+                                               FontSize="16"
+                                               FontWeight="Bold"
+                                               Foreground="#1A1A1A"
+                                               TextAlignment="Right"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Separator -->
+                            <Border Height="1" Background="#CCCCCC" Margin="0,0,0,25"/>
+
+                            <!-- Store Information -->
+                            <StackPanel Margin="0,0,0,25">
+                                <TextBlock Text="Store Information"
+                                           FontSize="16"
+                                           FontWeight="Bold"
+                                           Foreground="#1A1A1A"
+                                           Margin="0,0,0,5"/>
+                                <TextBlock x:Name="StoreAddressText"
+                                           Text="680 Arntson Rd, Suite 161, Marietta, GA, 30060"
+                                           FontSize="14"
+                                           Foreground="#555"
+                                           TextWrapping="Wrap"/>
+                            </StackPanel>
+
+                            <!-- Separator -->
+                            <Border Height="1" Background="#CCCCCC" Margin="0,0,0,25"/>
+
+                            <!-- Customer Information -->
+                            <StackPanel Margin="0,0,0,25">
+                                <TextBlock Text="Customer Information"
+                                           FontSize="16"
+                                           FontWeight="Bold"
+                                           Foreground="#1A1A1A"
+                                           Margin="0,0,0,5"/>
+                                <TextBlock x:Name="CustomerNameText"
+                                           FontSize="14"
+                                           Foreground="#555"
+                                           Margin="0,0,0,2"/>
+                                <TextBlock x:Name="CustomerPhoneText"
+                                           FontSize="14"
+                                           Foreground="#555"
+                                           Margin="0,0,0,2"/>
+                                <TextBlock x:Name="CustomerEmailText"
+                                           FontSize="14"
+                                           Foreground="#555"/>
+                            </StackPanel>
+
+                            <!-- Separator -->
+                            <Border Height="1" Background="#CCCCCC" Margin="0,0,0,25"/>
+
+                            <!-- Delivery Details (conditionally visible) -->
+                            <StackPanel x:Name="DeliveryDetailsPanel" Margin="0,0,0,25">
+                                <TextBlock Text="Delivery Details"
+                                           FontSize="16"
+                                           FontWeight="Bold"
+                                           Foreground="#1A1A1A"
+                                           Margin="0,0,0,5"/>
+                                <TextBlock x:Name="DeliveryAddressText"
+                                           FontSize="14"
+                                           Foreground="#555"
+                                           TextWrapping="Wrap"/>
+
+                                <!-- Separator -->
+                                <Border Height="1" Background="#CCCCCC" Margin="0,25,0,0"/>
+                            </StackPanel>
+
+                            <!-- Items Ordered -->
+                            <StackPanel Margin="0,0,0,25">
+                                <TextBlock Text="Items Ordered"
+                                           FontSize="16"
+                                           FontWeight="Bold"
+                                           Foreground="#1A1A1A"
+                                           Margin="0,0,0,15"/>
+
+                                <!-- Items List -->
+                                <ItemsControl x:Name="ItemsList">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="#1A1A1A"
+                                                    BorderThickness="2"
+                                                    CornerRadius="15"
+                                                    Padding="15"
+                                                    Margin="0,0,0,10">
+                                                <Grid>
+                                                    <Grid.RowDefinitions>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                        <RowDefinition Height="Auto"/>
+                                                    </Grid.RowDefinitions>
+
+                                                    <!-- Item Name and Price -->
+                                                    <Grid Grid.Row="0" Margin="0,0,0,5">
+                                                        <TextBlock Text="{Binding Name}"
+                                                                   FontSize="16"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="#1A1A1A"
+                                                                   HorizontalAlignment="Left"/>
+                                                        <TextBlock Text="{Binding Price, StringFormat='${0:F2}'}"
+                                                                   FontSize="16"
+                                                                   FontWeight="Bold"
+                                                                   Foreground="#1A1A1A"
+                                                                   HorizontalAlignment="Right"/>
+                                                    </Grid>
+
+                                                    <!-- Item Details -->
+                                                    <TextBlock Grid.Row="1"
+                                                               Text="{Binding Details}"
+                                                               FontSize="14"
+                                                               Foreground="#555"
+                                                               TextWrapping="Wrap"
+                                                               Margin="0,0,0,5"/>
+
+                                                    <!-- Item Cost and Quantity -->
+                                                    <Grid Grid.Row="2">
+                                                        <TextBlock Text="{Binding UnitPrice, StringFormat='${0:F2} each'}"
+                                                                   FontSize="14"
+                                                                   Foreground="#555"
+                                                                   HorizontalAlignment="Left"/>
+                                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                                                            <TextBlock Text="{Binding Quantity, StringFormat='Qty: {0}'}"
+                                                                       FontSize="14"
+                                                                       Foreground="#555"
+                                                                       Margin="0,0,10,0"/>
+                                                            <TextBlock Text="{Binding Total, StringFormat='{}{0} x ${1:F2}'}"
+                                                                       FontSize="14"
+                                                                       Foreground="#555"/>
+                                                        </StackPanel>
+                                                    </Grid>
+                                                </Grid>
+                                            </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+
+                            <!-- Separator -->
+                            <Border Height="1" Background="#CCCCCC" Margin="0,0,0,25"/>
+
+                            <!-- Payment Details -->
+                            <StackPanel Margin="0,0,0,25">
+                                <TextBlock Text="Payment Details"
+                                           FontSize="16"
+                                           FontWeight="Bold"
+                                           Foreground="#1A1A1A"
+                                           Margin="0,0,0,5"/>
+                                <TextBlock x:Name="PaymentMethodText"
+                                           Text="Card ending in 3456"
+                                           FontSize="14"
+                                           Foreground="#555"/>
+                            </StackPanel>
+
+                            <!-- Separator -->
+                            <Border Height="1" Background="#CCCCCC" Margin="0,0,0,25"/>
+
+                            <!-- Order Total -->
+                            <StackPanel>
+                                <TextBlock Text="Order Total"
+                                           FontSize="16"
+                                           FontWeight="Bold"
+                                           Foreground="#1A1A1A"
+                                           Margin="0,0,0,15"/>
+
+                                <!-- Subtotal -->
+                                <Grid Margin="0,0,0,5">
+                                    <TextBlock Text="Subtotal"
+                                               FontSize="14"
+                                               Foreground="#555"/>
+                                    <TextBlock x:Name="SubtotalText"
+                                               Text="$27.98"
+                                               FontSize="14"
+                                               Foreground="#555"
+                                               HorizontalAlignment="Right"/>
+                                </Grid>
+
+                                <!-- Tax -->
+                                <Grid Margin="0,0,0,5">
+                                    <TextBlock Text="Tax (8%)"
+                                               FontSize="14"
+                                               Foreground="#555"/>
+                                    <TextBlock x:Name="TaxText"
+                                               Text="$2.23"
+                                               FontSize="14"
+                                               Foreground="#555"
+                                               HorizontalAlignment="Right"/>
+                                </Grid>
+
+                                <!-- Delivery Fee (conditionally visible) -->
+                                <Grid x:Name="DeliveryFeeRow" Margin="0,0,0,15">
+                                    <TextBlock Text="Delivery Fee"
+                                               FontSize="14"
+                                               Foreground="#555"/>
+                                    <TextBlock x:Name="DeliveryFeeText"
+                                               Text="$3.99"
+                                               FontSize="14"
+                                               Foreground="#555"
+                                               HorizontalAlignment="Right"/>
+                                </Grid>
+
+                                <!-- Total Paid -->
+                                <Grid Margin="0,10,0,0">
+                                    <TextBlock Text="Total Paid"
+                                               FontSize="18"
+                                               FontWeight="Bold"
+                                               Foreground="#1A1A1A"/>
+                                    <TextBlock x:Name="TotalPaidText"
+                                               Text="$34.20"
+                                               FontSize="18"
+                                               FontWeight="Bold"
+                                               Foreground="{StaticResource AccentRed}"
+                                               HorizontalAlignment="Right"/>
+                                </Grid>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Back to Orders Button -->
+                    <Button Content="Back to Account"
+                            Style="{StaticResource PrimaryButtonStyle}"
+                            Width="380"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,0,40"
+                            Click="BackToAccountButton_Click"/>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>
