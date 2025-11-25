@@ -57,6 +57,25 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <!-- Error Style (same as RegisterWindow) -->
+        <Style x:Key="ErrorStyle" TargetType="Border">
+            <Setter Property="Background" Value="#FFB3B3"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+        </Style>
+
+        <!-- Success Style (green) -->
+        <Style x:Key="SuccessStyle" TargetType="Border">
+            <Setter Property="Background" Value="#DFF2DF"/>
+            <Setter Property="CornerRadius" Value="10"/>
+            <Setter Property="Padding" Value="6"/>
+            <Setter Property="Margin" Value="0,0,0,16"/>
+            <Setter Property="BorderBrush" Value="#0F9A0F"/>
+            <Setter Property="BorderThickness" Value="2"/>
+        </Style>
+
         <!-- Primary Button -->
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Height" Value="46"/>
@@ -300,7 +319,10 @@
                                  Style="{StaticResource TextBoxStyle}"
                                  Width="280"
                                  HorizontalAlignment="Center"
-                                 Margin="0,0,0,20"/>
+                                 Margin="0,0,0,20"
+                                 MaxLength="10"
+                                 PreviewTextInput="PhoneNumberTextBox_PreviewTextInput"
+                                 DataObject.Pasting="PhoneNumberTextBox_Pasting"/>
 
                         <!-- Email Address -->
                         <TextBlock Text="Email Address"
@@ -324,7 +346,7 @@
                                    HorizontalAlignment="Center"
                                    Margin="0,0,0,5"/>
                         <PasswordBox x:Name="PasswordBox"
-                                     Password="············"
+                                     Password=""
                                      Style="{StaticResource PasswordBoxStyle}"
                                      Width="280"
                                      HorizontalAlignment="Center"
@@ -354,6 +376,50 @@
                                 Width="320"
                                 HorizontalAlignment="Center"
                                 Click="UpdateAccountButton_Click"/>
+
+                        <!-- Error Message Example (to be dynamically updated) -->
+                        <!-- Define a default Border style for errors -->
+                        <Border x:Name="ErrorBorder"
+                                Style="{StaticResource ErrorStyle}"
+                                Visibility="Collapsed">
+                            <!-- Statically define a TextBlock for the error message -->
+                            <TextBlock x:Name="ErrorMessageTextBlock"
+                                       Text="Sample error message"
+                                       Foreground="#9A0F0F"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       HorizontalAlignment="Center"/>
+                        </Border>
+
+                        <!-- Account Update Error Message (collapsed by default) -->
+                        <Border x:Name="AccountErrorBorder"
+                                Style="{StaticResource ErrorStyle}"
+                                Visibility="Collapsed"
+                                Margin="0,16,0,0">
+                            <TextBlock x:Name="AccountErrorTextBlock"
+                                       Text="Error updating account. Please try again."
+                                       Foreground="#9A0F0F"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       MaxWidth="320"/>
+                        </Border>
+
+                        <!-- Account Update Success Message (collapsed by default) -->
+                        <Border x:Name="AccountSuccessBorder"
+                                Style="{StaticResource SuccessStyle}"
+                                Visibility="Collapsed"
+                                Margin="0,8,0,0">
+                            <TextBlock x:Name="AccountSuccessTextBlock"
+                                       Text="Account successfully updated"
+                                       Foreground="#0F9A0F"
+                                       FontSize="14"
+                                       FontWeight="SemiBold"
+                                       TextWrapping="Wrap"
+                                       TextAlignment="Center"
+                                       MaxWidth="320"/>
+                        </Border>
                     </StackPanel>
                 </Border>
 

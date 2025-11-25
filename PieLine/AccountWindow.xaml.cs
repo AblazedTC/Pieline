@@ -31,6 +31,7 @@ namespace PieLine
             FullNameTextBox.Text = string.IsNullOrWhiteSpace(CurrentUser.Name) ? string.Empty : CurrentUser.Name;
             PhoneNumberTextBox.Text = string.IsNullOrWhiteSpace(CurrentUser.Phone) ? string.Empty : CurrentUser.Phone;
             EmailTextBox.Text = string.IsNullOrWhiteSpace(CurrentUser.Email) ? string.Empty : CurrentUser.Email;
+            PasswordBox.Password = string.Empty;
 
             LoadOrdersList();
         }
@@ -48,24 +49,78 @@ namespace PieLine
         }
         private void UpdateAccountButton_Click(object sender, RoutedEventArgs e)
         {
+            // clear prior error and success
+            CommonHelpers.SetError(AccountErrorBorder, AccountErrorTextBlock, null);
+            if (this.FindName("AccountSuccessBorder") is Border sb) sb.Visibility = Visibility.Collapsed;
+
             // ensure a user is signed in
             string originalPhone = CurrentUser.Phone ?? string.Empty;
             string originalEmail = CurrentUser.Email ?? string.Empty;
             if (string.IsNullOrWhiteSpace(originalPhone) && string.IsNullOrWhiteSpace(originalEmail))
             {
-                MessageBox.Show("No user is currently signed in.", "Update Account", MessageBoxButton.OK, MessageBoxImage.Warning);
+                CommonHelpers.SetError(AccountErrorBorder, AccountErrorTextBlock, "Error: No user is currently signed in.");
                 return;
             }
 
             string newFullName = FullNameTextBox.Text?.Trim() ?? string.Empty;
-            string newPhone = PhoneNumberTextBox.Text?.Trim() ?? string.Empty;
+            string newPhoneRaw = PhoneNumberTextBox.Text?.Trim() ?? string.Empty;
             string newEmail = EmailTextBox.Text?.Trim() ?? string.Empty;
+            string newPassword = PasswordBox.Password?.Trim() ?? string.Empty;
 
-            if (UserFile.TryUpdateUser(originalPhone, newFullName, newEmail, newPhone, out string errorMessage))
+            // basic validation similar to register
+            if (string.IsNullOrWhiteSpace(newFullName))
+            {
+                CommonHelpers.SetError(AccountErrorBorder, AccountErrorTextBlock, "Error: Invalid name, please enter a valid name, then try again.");
+                return;
+            }
+
+            string phoneDigits = CommonHelpers.ExtractDigits(newPhoneRaw);
+            if (string.IsNullOrWhiteSpace(phoneDigits) || phoneDigits.Length !=10)
+            {
+                CommonHelpers.SetError(AccountErrorBorder, AccountErrorTextBlock, "Error: Invalid phone number, please enter a valid phone number then try again.");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(newEmail) || !newEmail.Contains("@") || !newEmail.Contains('.'))
+            {
+                CommonHelpers.SetError(AccountErrorBorder, AccountErrorTextBlock, "Error: Invalid email address, please enter a valid email address then try again.");
+                return;
+            }
+
+            // Only apply password change if provided and different from current stored password
+            var users = UserFile.LoadUsers();
+            var currentUser = users.FirstOrDefault(u => u.PhoneNumber == originalPhone || u.Email.Equals(originalEmail, StringComparison.OrdinalIgnoreCase));
+            bool passwordChanged = false;
+            if (!string.IsNullOrEmpty(newPassword))
+            {
+                if (currentUser != null && currentUser.Password == newPassword)
+                {
+                    // password same as existing, ignore
+                    passwordChanged = false;
+                }
+                else
+                {
+                    if (!UserFile.IsValidPassword(newPassword))
+                    {
+                        CommonHelpers.SetError(AccountErrorBorder, AccountErrorTextBlock, "Error: Passwords must contain a number0-9, capital letter A-Z, and be more then8 characters.");
+                        return;
+                    }
+
+                    // apply change
+                    if (!UserFile.TryResetPassword(originalPhone, originalEmail, newPassword, out string pwdError))
+                    {
+                        CommonHelpers.SetError(AccountErrorBorder, AccountErrorTextBlock, pwdError);
+                        return;
+                    }
+                    passwordChanged = true;
+                }
+            }
+
+            if (UserFile.TryUpdateUser(originalPhone, newFullName, newEmail, phoneDigits, out string errorMessage))
             {
                 // update in-memory current user
                 CurrentUser.Name = newFullName;
-                CurrentUser.Phone = newPhone;
+                CurrentUser.Phone = phoneDigits;
                 CurrentUser.Email = newEmail;
 
                 // update any existing orders that belong to this user (matching old phone or old email)
@@ -89,7 +144,7 @@ namespace PieLine
                                     (!string.IsNullOrWhiteSpace(originalEmail) && o.Email.Equals(originalEmail, StringComparison.OrdinalIgnoreCase)))
                                 {
                                     o.CustomerName = newFullName;
-                                    o.Phone = newPhone;
+                                    o.Phone = phoneDigits;
                                     o.Email = newEmail;
                                     changed = true;
                                 }
@@ -107,16 +162,27 @@ namespace PieLine
                 catch
                 {
                     // ignore errors updating orders.json but notify user
-                    MessageBox.Show("Account updated but failed to update existing orders.", "Update Account", MessageBoxButton.OK, MessageBoxImage.Warning);
+                    CommonHelpers.SetError(AccountErrorBorder, AccountErrorTextBlock, "Account updated but failed to update existing orders.");
                 }
 
-                MessageBox.Show("Account updated successfully.", "Update Account", MessageBoxButton.OK, MessageBoxImage.Information);
+                // show success green box
+                var successBorder = this.FindName("AccountSuccessBorder") as Border;
+                if (successBorder != null)
+                {
+                    successBorder.Visibility = Visibility.Visible;
+                }
+                // hide any error
+                CommonHelpers.SetError(AccountErrorBorder, AccountErrorTextBlock, null);
+
+                // clear password box after successful change
+                PasswordBox.Password = string.Empty;
+
                 // reload last order (in case phone/email changed)
                 LoadOrdersList();
             }
             else
             {
-                MessageBox.Show(errorMessage, "Update Account", MessageBoxButton.OK, MessageBoxImage.Error);
+                CommonHelpers.SetError(AccountErrorBorder, AccountErrorTextBlock, errorMessage);
             }
         }
         private void ViewReceiptButton_Click(object sender, RoutedEventArgs e)
@@ -201,6 +267,70 @@ namespace PieLine
             OrdersListBox.ItemsSource = null;
             NoOrdersTextBlock.Visibility = Visibility.Visible;
             ViewReceiptButton.IsEnabled = false;
+        }
+
+        private void PhoneNumberTextBox_PreviewTextInput(object sender, TextCompositionEventArgs e)
+        {
+            // allow only digits and limit to10 characters
+            if (sender is TextBox tb)
+            {
+                // if input is not digit, reject
+                if (!e.Text.All(char.IsDigit))
+                {
+                    e.Handled = true;
+                    return;
+                }
+
+                // if resulting length would exceed10, reject
+                int selectionLength = tb.SelectionLength;
+                int currentLength = tb.Text.Length;
+                int newLength = currentLength - selectionLength + e.Text.Length;
+                if (newLength >10)
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
+        }
+
+        private void PhoneNumberTextBox_Pasting(object sender, DataObjectPastingEventArgs e)
+        {
+            if (sender is TextBox tb)
+            {
+                if (e.DataObject.GetDataPresent(DataFormats.Text))
+                {
+                    string pasted = e.DataObject.GetData(DataFormats.Text) as string ?? string.Empty;
+                    string digits = new string(pasted.Where(char.IsDigit).ToArray());
+                    if (string.IsNullOrEmpty(digits))
+                    {
+                        e.CancelCommand();
+                        return;
+                    }
+
+                    int selectionLength = tb.SelectionLength;
+                    int currentLength = tb.Text.Length;
+                    int newLength = currentLength - selectionLength + digits.Length;
+                    if (newLength >10)
+                    {
+                        // trim to fit
+                        int allowed =10 - (currentLength - selectionLength);
+                        if (allowed <=0)
+                        {
+                            e.CancelCommand();
+                            return;
+                        }
+
+                        string trimmed = digits.Substring(0, allowed);
+                        var data = new DataObject();
+                        data.SetData(DataFormats.Text, trimmed);
+                        e.DataObject = data;
+                    }
+                }
+                else
+                {
+                    e.CancelCommand();
+                }
+            }
         }
 
     }
