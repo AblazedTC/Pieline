@@ -51,7 +51,7 @@
             </Setter>
         </Style>
 
-        <!-- Primary Button Style (Orange) -->
+        <!-- Primary Button Style -->
         <Style x:Key="PrimaryButtonStyle" TargetType="Button">
             <Setter Property="Background" Value="{StaticResource AccentRed}"/>
             <Setter Property="Foreground" Value="White"/>

@@ -58,7 +58,7 @@
             </Setter>
         </Style>
 
-        <!-- Error Style (same as RegisterWindow) -->
+        <!-- Error Style -->
         <Style x:Key="ErrorStyle" TargetType="Border">
             <Setter Property="Background" Value="#FFB3B3"/>
             <Setter Property="CornerRadius" Value="10"/>
@@ -66,7 +66,7 @@
             <Setter Property="Margin" Value="0,0,0,16"/>
         </Style>
 
-        <!-- Success Style (green) -->
+        <!-- Success Style -->
         <Style x:Key="SuccessStyle" TargetType="Border">
             <Setter Property="Background" Value="#DFF2DF"/>
             <Setter Property="CornerRadius" Value="10"/>
@@ -354,8 +354,8 @@
 
                         <!-- Instructions -->
                         <TextBlock Text="Update desired account information, then click Update Account."
-                                   FontSize="14"
-                                   Foreground="#555"
+                                   FontSize="16"
+                                   Foreground="#1A1A1A"
                                    TextWrapping="Wrap"
                                    TextAlignment="Center"
                                    HorizontalAlignment="Center"
@@ -377,12 +377,10 @@
                                 HorizontalAlignment="Center"
                                 Click="UpdateAccountButton_Click"/>
 
-                        <!-- Error Message Example (to be dynamically updated) -->
-                        <!-- Define a default Border style for errors -->
+                        <!-- Error Message -->
                         <Border x:Name="ErrorBorder"
                                 Style="{StaticResource ErrorStyle}"
                                 Visibility="Collapsed">
-                            <!-- Statically define a TextBlock for the error message -->
                             <TextBlock x:Name="ErrorMessageTextBlock"
                                        Text="Sample error message"
                                        Foreground="#9A0F0F"
@@ -391,7 +389,6 @@
                                        HorizontalAlignment="Center"/>
                         </Border>
 
-                        <!-- Account Update Error Message (collapsed by default) -->
                         <Border x:Name="AccountErrorBorder"
                                 Style="{StaticResource ErrorStyle}"
                                 Visibility="Collapsed"
@@ -406,7 +403,7 @@
                                        MaxWidth="320"/>
                         </Border>
 
-                        <!-- Account Update Success Message (collapsed by default) -->
+                        <!-- Account Update Success Message -->
                         <Border x:Name="AccountSuccessBorder"
                                 Style="{StaticResource SuccessStyle}"
                                 Visibility="Collapsed"
@@ -446,8 +443,8 @@
                                        HorizontalAlignment="Center"
                                        Margin="0,0,0,5"/>
                             <TextBlock Text="Select an order to view the receipt"
-                                       FontSize="14"
-                                       Foreground="#555"
+                                       FontSize="16"
+                                       Foreground="#1A1A1A"
                                        HorizontalAlignment="Center"
                                        Margin="0,0,0,30"/>
                         </StackPanel>
@@ -499,7 +496,6 @@
 
                                     <ListBox.ItemTemplate>
                                         <DataTemplate DataType="{x:Type local:OrderRecord}">
-                                            <!-- Grid layout keeps items and totals from overlapping -->
                                             <Grid>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
@@ -512,7 +508,6 @@
                                                     <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
 
-                                                <!-- Row 0: Order Number and Item Count -->
                                                 <TextBlock Grid.Row="0" Grid.Column="0"
                                    Text="{Binding OrderId, StringFormat='Order Number: {0}'}"
                                    FontSize="15"
@@ -556,8 +551,8 @@
 
                                 <TextBlock x:Name="NoOrdersTextBlock" 
                    Text="No orders found. Place an order to see it here."
-                   FontSize="14" 
-                   Foreground="#555" 
+                   FontSize="16" 
+                   Foreground="#1A1A1A" 
                    HorizontalAlignment="Center" 
                    Visibility="Collapsed" />
                             </Grid>

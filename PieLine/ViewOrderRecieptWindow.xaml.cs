@@ -14,9 +14,6 @@ using System.Windows.Shapes;
 
 namespace PieLine
 {
-    /// <summary>
-    /// Interaction logic for ViewOrderRecieptWindow.xaml
-    /// </summary>
     public partial class ViewOrderRecieptWindow : Window
     {
         public ViewOrderRecieptWindow(String order_id, OrderRecord order)
