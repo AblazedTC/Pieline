@@ -250,7 +250,7 @@
                 Height="1"/>
 
         <!-- Main Content -->
-        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="2" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Grid Margin="40">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -386,62 +386,116 @@
                                        Margin="0,0,0,30"/>
                         </StackPanel>
 
-                        <!-- Order List -->
-                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                            <StackPanel>
-                                <!-- Order Item -->
-                                <Border x:Name="LastOrderBorder" BorderBrush="#1A1A1A"
+                        <!-- Order List: selectable -->
+                        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <Grid>
+                                <ListBox x:Name="OrdersListBox"
+                 SelectionChanged="OrdersListBox_SelectionChanged"
+                 BorderThickness="0"
+                 Background="Transparent"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+
+                                    <!-- Container style controls the card look and selected state -->
+                                    <ListBox.ItemContainerStyle>
+                                        <Style TargetType="ListBoxItem">
+                                            <Setter Property="Padding" Value="0"/>
+                                            <Setter Property="Margin" Value="0,0,0,15"/>
+                                            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                                            <Setter Property="Foreground" Value="#1A1A1A"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="ListBoxItem">
+                                                        <Border x:Name="ItemBorder"
+                                        Background="White"
+                                        BorderBrush="#1A1A1A"
                                         BorderThickness="2"
                                         CornerRadius="15"
-                                        Padding="20"
-                                        Margin="0,0,0,15"
-                                        Background="White"
-                                        Cursor="Hand">
-                                    <Grid>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
+                                        Padding="15"
+                                        SnapsToDevicePixels="True"
+                                        MinHeight="110">
+                                                            <ContentPresenter/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="ItemBorder" Property="Background" Value="{StaticResource AccentGold}"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsSelected" Value="True">
+                                                                <Setter TargetName="ItemBorder" Property="Background" Value="{StaticResource AccentRed}"/>
+                                                                <Setter Property="Foreground" Value="White"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </ListBox.ItemContainerStyle>
 
-                                        <Grid Grid.Row="0" Margin="0,0,0,8">
-                                            <TextBlock x:Name="OrderNumberTextBlock" Text="Order Number: ABC123"
-                                                       FontSize="15"
-                                                       FontWeight="SemiBold"
-                                                       Foreground="#1A1A1A"
-                                                       HorizontalAlignment="Left"/>
-                                            <TextBlock x:Name="ItemAmountTextBlock" Text="Item Amount: 2"
-                                                       FontSize="15"
-                                                       FontWeight="SemiBold"
-                                                       Foreground="#1A1A1A"
-                                                       HorizontalAlignment="Right"/>
-                                        </Grid>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type local:OrderRecord}">
+                                            <!-- Grid layout keeps items and totals from overlapping -->
+                                            <Grid>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
 
-                                        <TextBlock x:Name="OrderedTextBlock" Grid.Row="1"
-                                                   Text="Ordered: 12/20/2025"
-                                                   FontSize="14"
-                                                   Foreground="#555"
-                                                   Margin="0,0,0,8"/>
+                                                <!-- Row 0: Order Number and Item Count -->
+                                                <TextBlock Grid.Row="0" Grid.Column="0"
+                                   Text="{Binding OrderId, StringFormat='Order Number: {0}'}"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   TextTrimming="CharacterEllipsis"
+                                   Margin="0,0,10,0"/>
 
-                                        <Grid Grid.Row="2">
-                                            <TextBlock x:Name="PaymentTextBlock" Text="Payment: Card ending in 3456"
-                                                       FontSize="14"
-                                                       Foreground="#555"
-                                                       HorizontalAlignment="Left"/>
-                                            <TextBlock x:Name="TotalTextBlock" Text="Total: $34.20"
-                                                       FontSize="15"
-                                                       FontWeight="Bold"
-                                                       Foreground="#1A1A1A"
-                                                       HorizontalAlignment="Right"/>
-                                        </Grid>
-                                    </Grid>
-                                </Border>
+                                                <TextBlock Grid.Row="0" Grid.Column="1"
+                                   Text="{Binding Items.Count, StringFormat='Item Amount: {0}'}"
+                                   FontSize="15"
+                                   FontWeight="SemiBold"
+                                   HorizontalAlignment="Right"/>
 
-                                <TextBlock x:Name="NoOrdersTextBlock" Text="No orders found. Place an order to see it here."
-                                           FontSize="14" Foreground="#555" HorizontalAlignment="Center" Visibility="Collapsed" />
-                            </StackPanel>
+                                                <!-- Row 1: Order Date -->
+                                                <TextBlock Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                                   Text="{Binding OrderDate, StringFormat='Ordered: {0:MM/dd/yyyy}'}"
+                                   FontSize="14"
+                                   Margin="0,8,0,0"/>
+
+                                                <!-- Row 2: Spacer -->
+                                                <Border Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Height="8"/>
+
+                                                <!-- Row 3: Payment and Total -->
+                                                <TextBlock Grid.Row="3" Grid.Column="0"
+                                   Text="{Binding PaymentSummary, StringFormat='Payment: {0}'}"
+                                   FontSize="14"
+                                   TextTrimming="CharacterEllipsis"
+                                   Margin="0,0,10,0"
+                                   VerticalAlignment="Center"/>
+
+                                                <TextBlock Grid.Row="3" Grid.Column="1"
+                                   Text="{Binding Total, StringFormat='Total: ${0:F2}'}"
+                                   FontSize="15"
+                                   FontWeight="Bold"
+                                   HorizontalAlignment="Right"
+                                   VerticalAlignment="Center"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+
+                                <TextBlock x:Name="NoOrdersTextBlock" 
+                   Text="No orders found. Place an order to see it here."
+                   FontSize="14" 
+                   Foreground="#555" 
+                   HorizontalAlignment="Center" 
+                   Visibility="Collapsed" />
+                            </Grid>
                         </ScrollViewer>
-
                         <!-- View Receipt Button -->
                         <Button Grid.Row="2"
                                 x:Name="ViewReceiptButton"
@@ -450,7 +504,8 @@
                                 Width="320"
                                 HorizontalAlignment="Center"
                                 Margin="0,20,0,0"
-                                Click="ViewReceiptButton_Click"/>
+                                Click="ViewReceiptButton_Click"
+                                IsEnabled="False"/>
                     </Grid>
                 </Border>
             </Grid>

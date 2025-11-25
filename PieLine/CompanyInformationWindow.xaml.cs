@@ -24,5 +24,6 @@ namespace PieLine
             accountWindow.Show();
             this.Close();
         }
+        
     }
 }

@@ -122,5 +122,50 @@ namespace PieLine
             errorMessage = string.Empty;
             return true;
         }
+
+        public static bool TryUpdateUser(string oldPhoneNumber, string fullName, string email, string newPhoneNumber, out string errorMessage)
+        {
+            if (string.IsNullOrWhiteSpace(fullName))
+            {
+                errorMessage = "Error: Invalid name, please enter a valid name, then try again.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(newPhoneNumber) || newPhoneNumber.Length != 10)
+            {
+                errorMessage = "Error: Invalid phone number, please enter a valid phone number then try again.";
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(email) || !email.Contains("@") || !email.Contains("."))
+            {
+                errorMessage = "Error: Invalid email address, please enter a valid email address then try again.";
+                return false;
+            }
+
+            var users = LoadUsers();
+            var user = users.FirstOrDefault(u => u.PhoneNumber == oldPhoneNumber);
+            if (user == null)
+            {
+                errorMessage = "Error: Original user not found.";
+                return false;
+            }
+
+            // Check for conflicts with other users (email or phone)
+            if (users.Any(u => u != user && (u.PhoneNumber == newPhoneNumber || u.Email.Equals(email, StringComparison.OrdinalIgnoreCase))))
+            {
+                errorMessage = "Error: Another user already uses that phone number or email.";
+                return false;
+            }
+
+            // apply changes
+            user.FullName = fullName;
+            user.Email = email;
+            user.PhoneNumber = newPhoneNumber;
+
+            SaveUsers(users);
+            errorMessage = string.Empty;
+            return true;
+        }
     }
 }
