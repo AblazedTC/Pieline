@@ -267,7 +267,8 @@
                                           Click="HomeButton_Click"/>
                             <ToggleButton x:Name="AccountButton"
                                           Style="{StaticResource HeaderIconStyle}"
-                                          Tag="/Images/account.png"/>
+                                          Tag="/Images/account.png"
+                                          Click="AccountButton_Click"/>
                         </StackPanel>
                         
                         <!-- Step Buttons -->
